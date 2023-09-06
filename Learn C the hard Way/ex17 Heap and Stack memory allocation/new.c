@@ -67,7 +67,40 @@ void printAddress(struct Address *addr) // This function will print the data mem
 	printf("%d %s %s\n",addr->ID,addr->name,addr->email);
 }
 
+// Creating a Database
+struct Connection *createDatabase(const char* filename,char mode) // This function will return a pointer to a dynamically allocated and new created variable of struct Database
+{
+	struct Connection *conn = malloc(sizeof(struct Database)); // Dynamically allocting memory
+	if(!conn) // Here we are checking if the memory was correctly allocated or not
+	// As if the memory was correctly allocated the conn pointer will be pointing to a memory address, and using '!' on that memory address will give a 0
+	// i.e. !(any_correctly_allocated_pointer) = 0, and if its zero the if block will not be executed
+	// However if the memory was not allocated the pointer will not be pointing to any memory address  and will have the value NULL(if you print it, it'll either say nil or 0)
+	// so now !(NULL or you can say its 0) = 1, so in this case the if block will run
+	{
+		
+		die("Memory Error");
+	}
+}
+
+// Loading the Database
+void loadDatabase(struct Connection *conn)
+{
+	size_t read_count = fread(conn->db,sizeof(struct Database),1,conn->file);
+	// The fread and fwrite functions are used for reading an writing binary data, it could be the whole array or struct
+	// while the fprintf and fscanf can be used to read text data
+	// Here we are reading a whole instance of the struct Database which will be stored in the file
+	// both fread and fwrite returns the no. items read/written when eno of file is reached or an error occrus
+	// FUNCTION TEMPLATE (fread) : size_t fread(void *ptr,size_t size,size_t nmemb(no. of instances of ptr to be read),FILE *stream)
+	// Now as we provide the pointer of the databasae to the fread function, by call of reference all the data will automatically be stored in it	
+	// here as we are only reading 1 instance of the database therefore when function completes it should return 1 (meaning read count must be 1)
+	
+	if(read_count != 1) // Now if the read count is not 1, means we have not succesfully read the file
+	{
+		die("Failed to load Database"); // Terminating the program with an error message
+	}
+}
+
 int main(int argc, char *argv[])
 {
-	
+	createDatabase("test.db",'c');
 }
