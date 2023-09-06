@@ -17,5 +17,6 @@
 
 // EXTRA CREDIT PROGRAMS HERE
 
-#include <stdio.h> // 
+#include <stdio.h> // defines functions for handling standard input output data streams
+#include <assert.h> // defines a macro which helps in debugging as it checks for a condition and terminates the program with an error message in case the condition is false
  
