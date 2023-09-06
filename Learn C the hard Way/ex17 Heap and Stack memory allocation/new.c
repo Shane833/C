@@ -117,17 +117,33 @@ int main(int argc, char *argv[])
 				die("Need ID, Name, Email to set");
 			}
 			// Else we will set the data into database and then write the changes to the file
-			setData(conn,id,name,email);
+			setData(conn,id,argv[4],argv[5]); // as the name is the 5th argument and the email is the 6th
 			writeDatabase(conn);
 			break;
 		// Deleting data from the database
 		case 'd':
-			if
-			
+			if(argc != 4) // Explicitely checking for the required no. of arguments
+			{
+				die("Need ID to delete"); // terminating program other wise
+			}
+			removeData(conn,id); // Deleting the address at the given ID
+			writeDatabase(conn); // Writing those changes to the file
+			break;
+		// Listing all the available addresses in the database
+		case 'l':
+			if(argc != 4) // // Explicitely checking for the required no. of arguments
+			{
+				listDatabase(conn); // Listing the data from the database
+			}
+			break;
 		
 		default: // This case will get executed when an unknonwn action type is provided
 			die("Invalid action : c = create, g = get, s = set, d = del, l = list");
 	}
+
+	// Finally doing some clean up work and deallocating memory from the variables
+	closeDatabase(conn);
+
 	
 }
 
@@ -228,7 +244,9 @@ void setData(struct Connection *conn,int id,const char *name,const char *email)
 	
 	// If its not set then we will set it
 	addr->set = 1;
-	
+	// Also updating its ID
+	addr->ID = id;
+
 	// Now we will set the name using strncpy function
 	// Function Definition : strncpy(char *dest,const char *src,size_t n)
 	// we provide a maximum length of characters for the destination as to save it from overflow
