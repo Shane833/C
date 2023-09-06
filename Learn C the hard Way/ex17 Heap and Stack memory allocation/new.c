@@ -46,7 +46,7 @@ struct Connection // As the name suggests this struct will be useful in making a
 	struct Database *db; // This is a pointer to the struct Database which will help in writing and loading values from the locally stored database file
 };
 
-// Function Prototyping
+// Forward Declaration
 void die(const char *message);
 void printAddress(struct Address *addr);
 struct Connection *createDatabase(const char *filename,char mode);
@@ -54,16 +54,80 @@ void loadDatabase(struct Connection *conn);
 void closeDatabase(struct Connection *conn);
 void writeDatabase(struct Connection *conn);
 void initializeDatabase(struct Connection *conn);
-void setDatabase(struct Connection *conn,int id,const char *name,const char *email);
-void getDatabase(struct Connection *conn,int id);
+void setData(struct Connection *conn,int id,const char *name,const char *email);
+void getData(struct Connection *conn,int id);
+void removeData(struct Connection *conn,int id);
 void listDatabase(struct Connection *conn);
 
 
 int main(int argc, char *argv[])
 {
-	struct Connection *conn = createDatabase("shane.db",'g');
-	listDatabase(conn);
+	if(argc < 3) // Here we are checking the no. of commandline arguments
+	{
+		// as we atleast need 3 arguments for the executio of the program and failure to do so will result in error
+		// The first argument is the destination path of the executible itself
+		die("Usage : main <dbfile> <action> [action params]");
+	}
 	
+	// Moving forward, i.e. if the arguments are greater than equal to 3
+	const char *filename = argv[1]; // Since the filename is the second parameter, hence it will be stored at index '1' of the argument arrays
+	const char action = argv[2][0]; // Again since the action is provided as the third paramter, also since we storing a single char we only require the character at the 0th index
+	struct Connection *conn = createDatabase(filename,action); // creating our database
+
+	int id = 0; // We will use this variable to store the ID of the address to be operated upon, initially we will set it to 0
+	
+	if(argc > 3) // Now if we get more than 3 argument, then as per the program the 4th argument will always be the ID
+	{
+		id = atoi(argv[3]); // Setting it equal to the item at 3rd index
+							// atoi() is a function  that converst the string part into integer upto the null character
+	
+	}
+
+	// Error checking for the value of the ID, as it shouldn't be equal to exceed the max amount of rows in the array
+	if(id >= MAX_ROWS)
+	{
+		die("There are not that many records");
+	}
+
+	// Now after all the initialization we will move onto handling the action
+	// So we will simply start a switch based on the type of action
+	
+	switch(action)
+	{
+		// Creating the database
+		case 'c':
+			// Since we have already created an instance of the connection we will simply initialize the values and write them into a file
+			initializeDatabase(conn);
+			writeDatabase(conn);
+			break;
+		// Getting data from the database
+		case 'g':
+			if(argc != 4) // Here we are explicitely checking if the no. of commandline arguments are 4 ('main','database file','action','id')
+						  // anything other then will be considered invalid
+			{
+				die("Need an ID to get");
+			}
+			getData(conn,id); // If the user have indeed provided the right amounts of arguments then display the data
+			break;
+		// Setting data into the database
+		case 's':
+			if(argc != 6) // Explicitely checking for the required no. of arguments
+			{
+				// terminating the program else wise
+				die("Need ID, Name, Email to set");
+			}
+			// Else we will set the data into database and then write the changes to the file
+			setData(conn,id,name,email);
+			writeDatabase(conn);
+			break;
+		// Deleting data from the database
+		case 'd':
+			if
+			
+		
+		default: // This case will get executed when an unknonwn action type is provided
+			die("Invalid action : c = create, g = get, s = set, d = del, l = list");
+	}
 	
 }
 
@@ -151,7 +215,7 @@ void initializeDatabase(struct Connection *conn)
 }
 
 // Setting the data in the database
-void setDatabase(struct Connection *conn,int id,const char *name,const char *email)
+void setData(struct Connection *conn,int id,const char *name,const char *email)
 {
 	// First we will create a pointer to the address variable whose value we are to set
 	struct Address *addr = &conn->db->rows[id];
@@ -187,7 +251,7 @@ void setDatabase(struct Connection *conn,int id,const char *name,const char *ema
 }
 
 // Getting the data from the Database
-void getDatabase(struct Connection *conn, int id)
+void getData(struct Connection *conn, int id)
 {
 	// First we will create a pointer to the address variable whose value we are to retrieve
 	struct Address *addr = &conn->db->rows[id];
@@ -201,6 +265,14 @@ void getDatabase(struct Connection *conn, int id)
 	{
 		die("Address is not set");
 	}
+}
+
+void removeData(struct Connection *conn,int id)
+{
+	// In order to remove the data from the database
+	// we will simply overwrite the variable stored at that id in the database
+	struct Address addr = {.ID = id,.set = 0}; // defining a temporary variable
+	conn->db->rows[id] = addr; // Simply overwriting the address at the given ID
 }
 
 // Writing data to the database
@@ -281,4 +353,3 @@ void closeDatabase(struct Connection *conn)
 		free(conn->db);
 	}
 }
-
