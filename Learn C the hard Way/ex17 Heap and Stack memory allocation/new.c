@@ -46,6 +46,27 @@ struct Connection // As the name suggests this struct will be useful in making a
 	struct Database *db; // This is a pointer to the struct Database which will help in writing and loading values from the locally stored database file
 };
 
+// Function Prototyping
+void die(const char *message);
+void printAddress(struct Address *addr);
+struct Connection *createDatabase(const char *filename,char mode);
+void loadDatabase(struct Connection *conn);
+void closeDatabase(struct Connection *conn);
+void writeDatabase(struct Connection *conn);
+void initializeDatabase(struct Connection *conn);
+void setDatabase(struct Connection *conn,int id,const char *name,const char *email);
+void getDatabase(struct Connection *conn,int id);
+void listDatabase(struct Connection *conn);
+
+
+int main(int argc, char *argv[])
+{
+	struct Connection *conn = createDatabase("shane.db",'g');
+	listDatabase(conn);
+	
+	
+}
+
 // Custom function to terminate the program with an error message
 void die(const char *message)
 {
@@ -78,7 +99,131 @@ struct Connection *createDatabase(const char* filename,char mode) // This functi
 	// so now !(NULL or you can say its 0) = 1, so in this case the if block will run
 	{
 		
-		die("Memory Error");
+		die("Memory Error!!!");
+	}
+	
+	conn->db = malloc(sizeof(struct Database)); // Now here we are allocating memory to the pointer to the database struct
+	// Since pointer members are not allocated memory when the whole struct is allocated, you have to separately allocated memory to them
+	if(!conn->db) // Again checking for correct memory allocation
+	{
+		die("Memory Error!!!");
+	}
+
+	if(mode == 'c') // if the mode is c that means we must create a file
+	{
+		conn->file = fopen(filename,"w"); // You can create a file with fopen function, which takes two parameters : 1. Filename 2. accessing mode (w : for writing, r : for reading,w+/r+ : both read and write)
+		// It will create a new file if the specified file does not exists or will simply overwrite if it does exists
+	}
+	else // This block will get executed in case you want to open the database in any other mode other than 'c'
+	{
+		conn->file = fopen(filename,"r+"); // Now as we are not creating the file which means it probably exists and we can simply open it in read/write mode, however even if the file doesn't exits it will create one
+			
+		if(conn->file) // checking if the file is actually holds some value (i.e. is it valid)
+		{
+			// If it is indeed valid we will simply load the database from that file
+			loadDatabase(conn);
+		}
+	}
+
+	if(!conn->file) // Again checking if the file pointer is valid
+	{
+		// and in case its not we will abort the program
+		die("Failed to open the File !!!");
+	}
+	
+	return conn; // Finally we will return this newly created struct variable
+}
+
+// Initializing our Database
+void initializeDatabase(struct Connection *conn)
+{
+	// we will initialize all the value to 0
+	// We will create a local variable of the struct address and initialize its data members to be 0
+	// and simply assign its value to each of the address variables stored in the array rows
+	
+	for(int i = 0;i < MAX_ROWS;i++) 
+	{
+		struct Address addr = {.ID = 0,.set = 0};
+		// here we are using designated initializer (.) which can help to initialize the variables by name
+		// so its clear which variables are being initialized
+		conn->db->rows[i] = addr; // here we are simply assigning the value of this struct to the other of the same type
+	}
+}
+
+// Setting the data in the database
+void setDatabase(struct Connection *conn,int id,const char *name,const char *email)
+{
+	// First we will create a pointer to the address variable whose value we are to set
+	struct Address *addr = &conn->db->rows[id];
+	
+	if(addr->set) // Now we will check if the value is already set
+	{
+		// If the value is already set we might not want to overwrite it so we can simply terminate the program
+		die("Already set, delete it first");
+	}
+	
+	// If its not set then we will set it
+	addr->set = 1;
+	
+	// Now we will set the name using strncpy function
+	// Function Definition : strncpy(char *dest,const char *src,size_t n)
+	// we provide a maximum length of characters for the destination as to save it from overflow
+	// However if the source it less than the specified size then additional null character are copied onto the destination
+	// It returns the address of the destination string, so it its null means something is wrong
+	char *res = strncpy(addr->name,name,MAX_DATA); // setting the name
+	
+	if(!res) // Checking for validity of the operation
+	{
+		die("Name copy failed");
+	}
+	
+	res = strncpy(addr->email,email,MAX_DATA); // setting the email
+	
+	if(!res)
+	{
+		die("Email copy failed");
+	}
+		
+}
+
+// Getting the data from the Database
+void getDatabase(struct Connection *conn, int id)
+{
+	// First we will create a pointer to the address variable whose value we are to retrieve
+	struct Address *addr = &conn->db->rows[id];
+
+	// Now we will check if the ID provided actually have some data or not
+	if(addr->set) // i.e. if the data is set then only will be display the data
+	{
+		printAddress(addr);
+	}
+	else // This block means the address was invalid and no data was initially set
+	{
+		die("Address is not set");
+	}
+}
+
+// Writing data to the database
+void writeDatabase(struct Connection *conn)
+{
+	// This program works by overwriting the existing database file, so for overwriting the complete, first we move to the top of the file
+	rewind(conn->file); // rewind(File *file) function ensure that provided file pointer points to the beginning of the file
+
+	size_t read_count = fwrite(conn->db,sizeof(struct Database),1,conn->file); // Writing the data to the file
+	
+	if(read_count != 1) // Since we are only writing one instance of the data its value should be 1
+	{
+		// However if its not 1 meaning some error has occured so we will terminate the program
+		die("Failed to write Database");
+	}
+	
+	read_count = fflush(conn->file); // fflush(void *stream) function basically forces to clear any associated buffers with the provided stream, 
+									 // since the data is buffered (i.e. stored in an internal memory and then operated upon later for better efficiency)
+									 // we can force it immediately write (clear) all the contents of the provided stream
+									 // on successful operation, this function will return a 0, and on unsuccessful operation it returns the EOF (end of file, -1) and other error no.
+	if(read_count == -1) // Checking for unsuccessful flush
+	{
+		die("Cannot flush Database"); // we simply terminate the program
 	}
 }
 
@@ -100,7 +245,40 @@ void loadDatabase(struct Connection *conn)
 	}
 }
 
-int main(int argc, char *argv[])
+// Listing all the set data fields in the database
+void listDatabase(struct Connection *conn)
 {
-	createDatabase("test.db",'c');
+	// We will simple traverse through the whole database and print only those addresses whose values are set
+
+	// 1. making a pointer to the database
+	struct Database *db = conn->db;
+
+	// 2. Looping through array of addresses
+	for(int i = 0;i < MAX_ROWS;i++)
+	{
+		// 3. Create a pointer to addresses in the database
+		struct Address *addr = &db->rows[i];
+
+		// 4. Checking if the address is already set the print
+		if(addr->set)
+		{
+			printAddress(addr);
+		}
+	}
 }
+
+// Closing out Database
+void closeDatabase(struct Connection *conn)
+{
+	if(conn) // checking if the pointer provided is not NULL i.e. valid
+	{
+		// If so then first we will first close our file pointer
+		fclose(conn->file);
+	}
+	if(conn->db) // Now checking the same for the database variable
+	{
+		// If its valid then free its memory
+		free(conn->db);
+	}
+}
+
