@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include <ctype.h>
 
-//forward declaractions
+// FUNCTIONS - They are certain peices of a program that are designed to perform a specific task
+// It is better to use functions when you have to perform
+
+// This is forward declaractions or function prototyping, where we let the compiler know that we are have declared some functions to be defined later
+// This is useful as these functions are now added to the global scope before definitions and they can be called at uneven
 int can_print_it(char ch);
 void print_letters(char arg[]);
 
+//
 void print_arguments(int argc,char *argv[])
 {
 	int i = 0;
