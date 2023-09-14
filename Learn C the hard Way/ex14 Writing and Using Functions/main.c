@@ -1,13 +1,43 @@
 #include <stdio.h>
-#include <ctype.h>
+#include <ctype.h> // Defines functions for handling the characters
 
 // FUNCTIONS - They are certain peices of a program that are designed to perform a specific task
-// It is better to use functions when you have to perform
+// It is better to use functions when you have to perform similar task again and again and for a more cleaner program
+// Syntax of a function :
+/* 
+	return_type name(argument1,argument2){body}
+	
+	// The return_type of the function tells what kind of data will the function will be returning after it will done with its execution
+	// For example if you are making a function to obtain the sum of numbers you might want to make the return type as int as you will be returning integer result
+	// However there is also a type called called void which
+	// Eg: int sum() or float power() or void print() or could be any other type depending on your work use
+	
+	// The name of the function should follow the naming convention of the variables
+	// name of the function should reflect the kind of work it will perform like you won't name a function multiply if it is perfoming a division
+	
+	// arguments : These are provided in the brackets after the name of the function, these argument are the things the function is going to need for its execution
+	// For example if you're making a function to print something on the screen you would need the argument which will be the message to be printed i.e. your void print(message)
+	
+*/
+
 
 // This is forward declaractions or function prototyping, where we let the compiler know that we are have declared some functions to be defined later
-// This is useful as these functions are now added to the global scope before definitions and they can be called at uneven
+// This is useful as these functions are now added to the global scope before definitions and they can be called at uneven times before definition
 int can_print_it(char ch);
 void print_letters(char arg[]);
+// However if you try to call a function without forward declaration and before its declaration it will result in an error
+
+/* Case 1:
+   func1(){func2()}	
+   func2(){something}
+  // This would be wrong as we are trying to call func2 before the compiler knows it exists i.e. before its declaration or definition
+ 
+   Case 2:
+   func1();
+   func2(){func1()}
+   func1(){something}
+   // Now this scenario is completely perfect as even though we didn't define
+*/
 
 //
 void print_arguments(int argc,char *argv[])
@@ -37,6 +67,7 @@ int can_print_it(char ch)
 {
 	return isalpha(ch) || isblank(ch);
 }
+
 int main(int argc,char *argv[])
 {
 
