@@ -16,8 +16,18 @@
 	// name of the function should reflect the kind of work it will perform like you won't name a function multiply if it is perfoming a division
 	
 	// arguments : These are provided in the brackets after the name of the function, these argument are the things the function is going to need for its execution
-	// For example if you're making a function to print something on the screen you would need the argument which will be the message to be printed i.e. your void print(message)
-	
+	// For example if you're making a function to print something on the screen you would need the argument which will be the message to be printed i.e. void print(message)
+        // Or say you're creating a function for adding two numbers then you would provide those two numbers in the arguments i.e. int add(int a, int b)
+
+        // You define the functionality/work of the function in the body of the function and may use the arguments defined in the function declaration 
+	// However remember the scope of these arguments and the local variables is only valid for the runtime of the function and after them any reference to them will be invalid
+        // For actually reflecting the changes in the arguments (not the local variables within the function) you must use the concept of call by reference 
+
+        // For returning a value after computation or for exiting the function prior to the end you should use the return keyword
+	// In case of void return type function using return keywors will let you exit the program at that instance and any code written below that will not be executed 
+        // In case of non-void return type functions you must provide additional data when using the return keyword For eg: in case if add(a, b) you should return the sum i.e. return (a+b)
+	// Again for other non-void return types you'll return the values accordingly and in case no value is returned by the function it'll automatically return zero equivalent of that return type 
+        // Again no code after the return keyword will get executed as it exists the function at that instance 
 */
 
 
