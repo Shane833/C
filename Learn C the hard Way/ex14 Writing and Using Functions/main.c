@@ -30,46 +30,55 @@
 	// Again no code after the return keyword will get executed as it exists the function at that instance 
 */
 
-
 // This is forward declaractions or function prototyping, where we let the compiler know that we are have declared some functions to be defined later
 // Using this method you can provide a neater look to your program and increase its readability
 int can_print_it(char ch);
 void print_letters(char arg[]);
 
-// However there is another method of declaring functions called implicity declaration where the working(definition) of the function is provided along with declaration
-// This can result in 
+// However there is another method of declaring functions called implicit declaration where the working(definition) of the function is provided along with declaration as done with the function below
+// Although this method is also very valid however implicit declaration can sometimes make your program look messy so personally I would prefere the prototyping
 void print_arguments(int argc,char *argv[])
 {
+	// Working : This function is designed to print all the command line arguments given to the program at the time of execution
+	// When you run the program from the commandline you type ('main.exe' or './main') so when you does so the first argument you have provided is the name of the file
+	// then say you run the file as './main Shane 20' now you have total 3 argument that are 'main' 'Shane' and '20', hence the argc = 3 and arg[0] = 'main', arg[1] = 'Shane', arg[2] = '20'
 	int i = 0;
-	for(i = 0;i < argc;i++)
+	for(i = 0;i < argc;i++) // Now we are going to print all the arguments provided by the user since the no. of argument will be stored in argc we'll loop uptil then
 	{
-		print_letters(argv[i]);
+		print_letters(argv[i]);  // Here we are calling another function which takes a char array as its argument and we are providing the commandline argument array with argc as index
 	}
 }
 
+// Now this part is function definition where after the declaration of the function we can define its working
 void print_letters(char arg[])
 {
+	// Working : This function is designed to print all the characters in a the argument array
 	int i = 0;
-	for(i = 0;arg[i] != '\0';i++)
+	for(i = 0;arg[i] != '\0';i++) // We loop through the argument array till we encounter a null character 
 	{
-		char ch = arg[i];
-		if(can_print_it(ch))
+		char ch = arg[i]; // Storing individual character in the variable ch
+		if(can_print_it(ch)) // Calling another function to check if the given character is a alphabet or a blank space
 		{
-			printf("'%c' == '%d'",ch,ch);
+			printf("'%c' == '%d'",ch,ch); // Printing the character and its integer value 
 		}
 	}
 	printf("\n");
 }
 
+// This function will return a 1 or a 0 depending upon if the character is an alphabet or a blank space
 int can_print_it(char ch)
 {
 	return isalpha(ch) || isblank(ch);
 }
 
+// The main function is the first function that executed whenever you run the program
 int main(int argc,char *argv[])
 {
-
-	print_arguments(argc,argv);
+	// Calling a function : This means you are telling the function to start its execution 
+	// In order to do so, just write the name of the function with the parenthesis, Eg : print_Hello() or if you have a function that takes argument then provide the parenthesis in the brackets Eg : int c = sum(a,b)
+	// Now since sum will return the addition of a and b we will store it in c, as at the end of the execution of the function the whole value of the function will be equal to value returned
+	// NOTE : Now always remember that you can only ever call a function within another function, if you try to call a function outside it will be considered as declration instead of a function call and would likely result in an error
+	print_arguments(argc,argv); // Here we are calling thr print_arguments function providing the argc and argv in the function argument
 
 return 0;
 }
