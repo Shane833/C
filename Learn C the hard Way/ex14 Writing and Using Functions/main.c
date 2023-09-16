@@ -7,9 +7,9 @@
 /* 
 	return_type name(argument1,argument2){body}
 	
-	// The return_type of the function tells what kind of data will the function will be returning after it will done with its execution
+	// The return_type of the function tells what kind of data will the function will be returning after it will be done with its execution
 	// For example if you are making a function to obtain the sum of numbers you might want to make the return type as int as you will be returning integer result
-	// However there is also a type called called void which
+	// However there is also a type called void which returns nothing after its execution and is helpful when you just want to carry out execution and dont want to return anything
 	// Eg: int sum() or float power() or void print() or could be any other type depending on your work use
 	
 	// The name of the function should follow the naming convention of the variables
@@ -20,11 +20,11 @@
     // Or say you're creating a function for adding two numbers then you would provide those two numbers in the arguments i.e. int add(int a, int b)
 
     // You define the functionality/work of the function in the body of the function and may use the arguments defined in the function declaration 
-	// However remember the scope of these arguments and the local variables is only valid for the runtime of the function and after them any reference to them will be invalid
+	// However remember the scope of these arguments and the local variables is only valid for the runtime of the function and after ecexution, any reference to them will be invalid
     // For actually reflecting the changes in the arguments (not the local variables within the function) you must use the concept of call by reference 
 
     // For returning a value after computation or for exiting the function prior to the end you should use the return keyword
-	// In case of void return type function using return keywors will let you exit the program at that instance and any code written below that will not be executed 
+	// In case of void return type function using return keyword will let you exit the program at that instance and any code written below that will not be executed 
     // In case of non-void return type functions you must provide additional data when using the return keyword For eg: in case if add(a, b) you should return the sum i.e. return (a+b)
 	// Again for other non-void return types you'll return the values accordingly and in case no value is returned by the function it'll automatically return zero equivalent of that return type 
 	// Again no code after the return keyword will get executed as it exists the function at that instance 
