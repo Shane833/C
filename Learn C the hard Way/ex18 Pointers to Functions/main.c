@@ -1,7 +1,7 @@
 #include <stdio.h> // defines functions for handling standard input output data streams
 #include <stdlib.h> // defines functions for dynamic memory allocation
 #include <errno.h> // defines a macro for reporting and retrieving error condtions, by providing an integer error no. which gets its value from system calls
-#include <string.h>
+#include <string.h> // This library actually contains the memcpy function to be used in the program
 
 // POINTERS TO FUNCTIONS
 /**
@@ -169,7 +169,7 @@ int main(int argc,char *argv[])
 	
 	int count = argc - 1; // Since argc tells the number of commandline arguments and './main' is always one among them
 						  // Hence if we remove one from the 1 from the argc we would get the amount of numbers provided in the input
-	char **inputs = argv + 1; // Since the argv would point to the base (where './main' is stored) we are moving one after that where the actual number input is stored
+	char **inputs = argv + 1; // Since the argv would point to the base (where './main' is stored) we are moving one after that where the actual number input is stored it is also equivalent to argv[1]
 	int i = 0; // will be used as an iterator in the loop
 
 	int *numbers = malloc(count * sizeof(int)); // Creating a pointer to integer arrays of the provided size
