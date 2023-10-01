@@ -84,7 +84,27 @@ int test_sentinel(int code)
 		return -1;
 }
 
+int test_check_mem()
+{
+	char *test = NULL;
+	check_mem(test);
 
+	free(test);
+	return 1;
+
+	error:
+		return -1;
+}
+
+int test_check_debug()
+{
+	int i = 0;
+	check_debug(i != 0,"Oops I was 0.");
+	return 0;
+
+	error:
+		return -1;
+}
 
 int main(int argc,char *argv[])
 {
@@ -97,6 +117,7 @@ int main(int argc,char *argv[])
 	printf("Add : %d\n",c);
 
 	test_sentinel(0);
+	test_check_debug();
 	
 
 }
