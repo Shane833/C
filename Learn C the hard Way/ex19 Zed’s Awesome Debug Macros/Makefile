@@ -11,7 +11,7 @@ CFLAGS = -Wall -g
 
 # Compiling
 compile:
-	$(CC) $(CFLAGS) $(SRC) -o $(OUT)
+	$(CC) $(CFLAGS) $(SRC) -DNDEBUG -o $(OUT)
 
 # Cleaning
 clean:

@@ -56,11 +56,11 @@ void dump(compare_cb fun)
 {
 	int i = 0; // Used as an iterator in the loop
 	unsigned char *data = (unsigned char *)fun; // Literally reading the data from the function pointer and converting into string format
-	for(i = 0;;i++)
+	for(i = 0;i < 20;i++)
 	{
 		printf("%x ",data[i]); // Printing the given data into hex digit form
 		// data[i] = i; // Overwriting the data itself
-		if(data[i] == '\0') break;
+		//if(data[i] == '\0') break;
 	}
 	printf("\n");
 

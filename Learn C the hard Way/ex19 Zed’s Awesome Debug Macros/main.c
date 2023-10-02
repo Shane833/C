@@ -2,17 +2,14 @@
 #include <stdlib.h>
 #include "dbg.h"
 
-// This is a macro Sum which returns a value
+// This is a macro Sum which returns a value, i.e. whatever value is in the last section of the definition of the macro get returned 
+// or more accurately whatever expression is in the end the value of the macro equates to that
 #define Sum(a,b) ({int c; c = a + b; c;})
 // This is a macro Add which performs the addition and updates the value of a (as it directly works on the reference of the value)
 #define Add(a,b) (a = a + b)
 
 #define returnAdd(a,b) (a + b) // Simply returns the value in the end
 
-// MACROS :
-/**
-
-*/
 
 void test_debug()
 {
@@ -108,16 +105,44 @@ int test_check_debug()
 
 int main(int argc,char *argv[])
 {
-	printf("Hello there\n");
+/*
+	// My own little experiments
 	int a = 5;
 	int b = 2;
 	a = Sum(a,b);
 	printf("Sum : %d\n",a);
 	int c = returnAdd(a,b);
 	printf("Add : %d\n",c);
-
-	test_sentinel(0);
-	test_check_debug();
+	// Test : can we equate a variable to a block 
 	
+	a = ({int c; c = a + b; c;})
+	
+	// Unfortunately we cannot this syntax seems to have been reserved for macros only
+
+	// The '==' operator returns a 1 for a true expression and a 0 for a false expresion	
+	printf("%d",1==1); // The answer will be 1
+	printf("%d",1==2); // The answer will be 0
+*/
+
+	// Actual source code from the book
+	
+	check(argc == 2,"Need an argument.");
+	
+	test_debug();
+	test_log_err();
+	test_log_warn();
+	test_log_info();
+
+	check(test_check("main.c") == 0,"Failed with main.c");
+	check(test_check(argv[1]) == -1,"Failed with argv");
+	check(test_sentinel(1) == 0,"test_sentinel failed");
+	check(test_sentinel(100) == -1,"test_senitnel failed");
+	check(test_check_mem() == -1,"test_check_mem failed");
+	check(test_check_debug() == -1,"test_check_debug failed");
+	
+	return 0;
+
+	error:
+		return 1;
 
 }
