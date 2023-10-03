@@ -1,6 +1,6 @@
+#include "dbg.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "dbg.h"
 
 // This is a macro Sum which returns a value, i.e. whatever value is in the last section of the definition of the macro get returned 
 // or more accurately whatever expression is in the end the value of the macro equates to that
@@ -18,22 +18,27 @@ void test_debug()
 	
 	// Passing in arguments like printf
 	debug("I am %d years old.",20);
+	// as the macro takes the argument in the form debug(M,...)
+	// M actually stores the strings and then ... takes whatever arguments are to be placed in that string as per their format specifiers
 }
 
 void test_log_err()
 {
+	// Simply passing arguments as a string or with formats
 	log_err("I believe everything is broken.");
 	log_err("There is %d problem in %s",0,"space");
 }
 
 void test_log_warn()
 {
+	// Simply passing arguments as a string or with formats
 	log_warn("You can safely ignore this.");
 	log_warn("Maybe consider taking a look at %s","/etc/passwd");
 }
 
 void test_log_info()
 {
+	// Simply passing arguments as a string or with formats
 	log_info("Well I did something mundane today.");
 	log_info("It happened %f times this day",1.3f);
 }
