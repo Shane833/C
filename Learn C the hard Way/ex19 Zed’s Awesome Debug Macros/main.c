@@ -146,6 +146,7 @@ int main(int argc,char *argv[])
 	test_log_warn();
 	test_log_info();
 
+	// Using check macro 
 	check(test_check("main.c") == 0,"Failed with main.c");
 	check(test_check(argv[1]) == -1,"Failed with argv");
 	check(test_sentinel(1) == 0,"test_sentinel failed");
