@@ -45,19 +45,22 @@ void test_log_info()
 
 int test_check(char *filename)
 {
+	// Declaring two null pointers
 	FILE *input = NULL;
 	char *block = NULL;
+	// Dynamically allocating memory
+	block = malloc(100); // 100 bytes of memory should be allocated to that pointer
+	check_mem(block); // Checking the allocation
 
-	block = malloc(100);
-	check_mem(block);
+	input = fopen(filename,"r"); // Opening the given file
+	check(input,"Failed to open %s",filename); // Checking the if the file pointer is valid and throwing an error message just in case
 
-	input = fopen(filename,"r");
-	check(input,"Failed to open %s",filename);
-
-	free(block);
-	fclose(input);
+	// If everything goes right
+	free(block); // Closing the file pointer
+	fclose(input); // Deallocating memory
 	return 0;
 
+	// If some error occurs the program will jump to this section of the code
 	error:
 		if(block) free(block);
 		if(input) fclose(input);
@@ -66,6 +69,7 @@ int test_check(char *filename)
 
 int test_sentinel(int code)
 {
+	// Dynamic allocatin and error checking
 	char *temp = malloc(100);
 	check_mem(temp);
 
@@ -75,12 +79,15 @@ int test_sentinel(int code)
 			log_info("It worked.");
 			break;
 		default:
+			// Checking that this section of the program shouln't run
 			sentinel("It shouldn't run.");
 	}
 
+	// If everything goes right	
 	free(temp);
 	return 0;
 
+	// In case some error occurs
 	error:
 		if(temp) free(temp);
 		return -1;
@@ -89,7 +96,7 @@ int test_sentinel(int code)
 int test_check_mem()
 {
 	char *test = NULL;
-	check_mem(test);
+	check_mem(test); // This will throw an error message as the pointer is invalid
 
 	free(test);
 	return 1;
@@ -101,7 +108,7 @@ int test_check_mem()
 int test_check_debug()
 {
 	int i = 0;
-	check_debug(i != 0,"Oops I was 0.");
+	check_debug(i != 0,"Oops I was 0."); // Checks the given statement i.e. we wrote i != 0, so it will exactly check, if i is not 0 then its ok however if it is 0 then its gonna be a problem
 	return 0;
 
 	error:
@@ -131,6 +138,7 @@ int main(int argc,char *argv[])
 
 	// Actual source code from the book
 	
+	// Using the macros and their designated functions
 	check(argc == 2,"Need an argument.");
 	
 	test_debug();

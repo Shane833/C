@@ -57,7 +57,7 @@ TYPES :
 // 1. Do some work 2. Check for errors 3. Cleanup the resources
 // Now the below macro does exactly that it will first check the value of the provided variable A
 // and its checks it like the assert function (For eg : if I wrote assert(A == 1), so it will check if A is infact 1 and if not then terminate the program)
-// However instead of terminating the program it will be first hard reset the errno variable and its convention and then jump to the cleanup section of the program
+// However instead of terminating the program it will be first hard reset the errno variable as its convention and then jump to the cleanup section of the program
 #define check(A, M, ...) if(!(A)){ log_err(M, ##__VA_ARGS__); errno = 0; goto error; }
 
 // This works exactly the same the macro above without any error checking however its use is different
