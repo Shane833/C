@@ -26,7 +26,7 @@ TYPES :
 
 #ifdef NDEBUG // This statement will let us turn on/off the debugging messages as per our need 
 // This is simply means that if you have already defined the NDEBUG variable then the given statement will be executed
-#define debug(M, ...) // Here in case of NDEBUG the debug macro is empty and has no value
+#define debug(M, ...) // Here in case of NDEBUG the debug macro is empty and has no value (Check the makefile to gain info about how to define vairables while compiling)
 #else
 // However if you have not defined NDEBUG then the program is to be ran with debug messages and we define the debug macro properly
 #define debug(M, ...) fprintf(stderr, "DEBUG %s:%d: " M "\n",__FILE__, __LINE__, ##__VA_ARGS__)
