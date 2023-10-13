@@ -39,6 +39,7 @@ int main(int argc,char *argv[])
 	// If you can't figure out how type conversions are working then explicitely type cast them for you. For eg : say x = 2 and y = 3.14f, then typecast as such y + (float)x
 	// Just put whatever you want to type cast it to in the parenthesis and it will be type casted for you
 	// However, remember a general rule of thumb that you should always try to typecast up not down like don't cast long into chars unless you know what you are doing
+	// So remember "When in doubt, Parens it out"
 	
 	// TYPE SIZES IN C
 	// The stdint.h library defines certain macros that are platform independent in terms of their sizes as they are exact sized integers as well as a set of macros for the sizes of all the types
