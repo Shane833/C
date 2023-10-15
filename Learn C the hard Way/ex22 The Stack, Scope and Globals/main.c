@@ -1,8 +1,10 @@
 #include "dbg.h"
-#include "ex22.h"
+#include "ex22.h" // Since we want to use the features of this file we simply include it 
 
+// This is a pointer to characters defining a name
 const char *MY_NAME = "Shane Williams";
 
+// This function demonstrates the concept of scope by having multiple variables having the same name but having different scopes
 void scope_demo(int count)
 {
 	log_info("count is: %d",count);
@@ -32,7 +34,9 @@ int main(int argc,char *argv[])
 	log_info("The size is: %d",THE_SIZE);
 	print_size();
 
-	THE_SIZE = 9;
+	// Since this variable was declared as extern hence it could be used outside of the file
+	THE_SIZE = 9; // and can be referenced and updated accordingly
+	// However, if this were to be declared static we won't be able to reference it directly in another files
 
 	log_info("The size now is: %d",THE_SIZE);
 	print_size();

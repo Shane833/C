@@ -1,6 +1,6 @@
 // This is source file which defines variables, functions declared in header file and defines one variables of its own 
 #include <stdio.h>
-#include "ex22.h"
+#include "ex22.h" // We include this file to provide a definition to the various variables and functions declared in this header file
 #include "dbg.h"
 
 // This below is the definition of the extern variable declared in the header file
@@ -42,17 +42,28 @@ void set_age(int age)
 	THE_AGE = age;
 }
 
-// This function internally defines a static variable
+// This function internally defines a static variable and updates it
 double update_ratio(double new_ratio)
 {
+	// First we declare a static variable and initialize it (If static variables are not initialized their value defaults to 0)
 	static double ratio = 1.0;
+	// Then we store its value in another variable called old_ratio
 	double old_ratio = ratio;
+	// Then we finally update its value to the value provided in the function argument
 	ratio = new_ratio;
 	
+	// But here we return the old value of the static variable i.e. before we changed it
 	return old_ratio;
+
+	// So how it works is that the first its value is initialized to 1.0, hence, the value of old ratio is also 1.0
+	// But then in the subsequent line the value of ratio is updated to say 5.0 but value of old ratio still remains the same hence it return 1.0
+	
+	// Second time you can simply neglect the first line of initialization as it simply don't affect the status of the program
+	// So now the value of old ratio is 5.0 as ratio was updated to 5.0, but then ratio gets updated again say to 10.0 but the value of old ratio is still 5.0 and hence it returns that
 }
 
 void print_size()
 {
+	// This simply prints the current value of the THE_SIZE variable
 	log_info("I think the size is: %d",THE_SIZE);
 }
