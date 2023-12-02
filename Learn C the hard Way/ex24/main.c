@@ -78,8 +78,8 @@ int main(int argc, char *argv[])
   check(rc > 0,"Enter a floating point number.")
 
   printf("-----------RESULTS-----------\n");
-  printf("First Name: %s\n",you.first_name);
-  printf("Last Name: %s\n",you.last_name);
+  printf("First Name: %s",you.first_name);
+  printf("Last Name: %s",you.last_name);
   printf("Age: %d\n",you.age);
   printf("Eyes: %s\n",EYE_COLOR_NAMES[you.eyes]);
   printf("Income: %0.2f\n",you.income);
