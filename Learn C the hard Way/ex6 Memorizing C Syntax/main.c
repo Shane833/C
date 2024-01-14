@@ -1,4 +1,4 @@
-// Memorizing the C syntax for various structures
+`// Memorizing the C syntax for various structures
 
 /*
 auto - give the local variable a local lifetime

@@ -1,17 +1,21 @@
-#include <stdio.h> // This library includes the I/O functions
+#include <stdio.h> // This library includes the I/O functions                  
 #include "dbg.h" // Custom file for debugging
-#include <string.h>
+#include <string.h> // library for handling strings
 
 #define MAX_DATA 100 // Constant for defining the max size
 
-// Creating a new type using an enum called EyeColor which holds symbolic representation for numeric values
-// So instead of referring to this "enum EyeColor variable" again and again, we can simply use "EyeColor variable"
+// Creating a new type using an enum called EyeColor which holds symbolic 
+// representation for numeric values
+// So instead of referring to this "enum EyeColor variable" again and again, 
+// we can simply use "EyeColor variable"
 typedef enum EyeColor{BLUE_EYES,GREEN_EYES,BROWN_EYES,BLACK_EYES,OTHER_EYES} EyeColor;
 
 // Defining a array of strings
-// This is basically an array of const char * (i.e, there is only read only right and no one can change the data after declaration)
+// This is basically an array of const char * (i.e, there is only read only right 
+// and no one can change the data after declaration)
 const char *EYE_COLOR_NAMES[] = {"Blue", "Green", "Brown", "Black", "Other"};
-// So we are storing the strings in the same order as defined in the enum to refer to them in the same order
+// So we are storing the strings in the same order as defined in the enum to refer 
+// to them in the same order
 
 // Here we are again creating a new type using a struct which holds a strucutre of data for a Person
 // So instead of using "struct Person variable", you can simply write "Person variable"
@@ -59,27 +63,33 @@ int main(int argc, char *argv[])
   int rc = fscanf(stdin," %d",&you.age); // This will return the no. of items read
   check(rc > 0,"You have to enter a number.");
 
-  printf("What color are your eyes ? :");
+	// Reading the eye colors from the user
+  printf("What color are your eyes ? :\n");
   for(i = 0;i <= OTHER_EYES;i++)
   {
+		// Displaying the all the possible options
     printf("%d) %s\n",i+1,EYE_COLOR_NAMES[i]);
   }
   printf("> ");
 
-  int eyes = -1;
+	// Since our indexes
+  int eyes = -1; // Better to initialize than have garbage values
   rc = fscanf(stdin," %d",&eyes);
   check(rc > 0,"You have to enter a number");
 
-  you.eyes = eyes - 1;
+	// Here eyes stores the value as displayed values not the indexes
+  you.eyes = eyes - 1; // Converting that value to indexes
   check(you.eyes <= OTHER_EYES && you.eyes >= 0,"Do it right, that's not an option.");
 
+	// Storing the income 
   printf("How much do you make ? : ");
   rc = fscanf(stdin," %f",&you.income);
   check(rc > 0,"Enter a floating point number.")
 
+  // Displaying the Results
   printf("-----------RESULTS-----------\n");
-  printf("First Name: %s",you.first_name);
-  printf("Last Name: %s",you.last_name);
+  printf("First Name: %s",you.first_name); // don't require new line here
+  printf("Last Name: %s",you.last_name); // as fscanf stores it in the buffer
   printf("Age: %d\n",you.age);
   printf("Eyes: %s\n",EYE_COLOR_NAMES[you.eyes]);
   printf("Income: %0.2f\n",you.income);

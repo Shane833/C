@@ -1,10 +1,12 @@
 #include <stdlib.h>																													   // Limit point shouldn't exceed this
 #include <stdio.h>
-#include <stdarg.h>
-#include "dbg.h"
+#include <stdarg.h> // This library contains a set of macros which allows portable
+					// functions that accept variable arguments
+#include "dbg.h"   
 
 #define MAX_DATA 100
 
+// This function reads a string from the user
 int read_string(char **out_string,int max_buffer)
 {
   *out_string = calloc(1,max_buffer + 1);
