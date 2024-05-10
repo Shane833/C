@@ -171,7 +171,7 @@ void printAddress(struct Address *addr) // This function will print the data mem
 // Creating a Database
 struct Connection *createDatabase(const char* filename,char mode) // This function will return a pointer to a dynamically allocated and new created variable of struct Database
 {
-	struct Connection *conn = malloc(sizeof(struct Database)); // Dynamically allocting memory
+	struct Connection *conn = malloc(sizeof(struct Connection)); // Dynamically allocting memory
 	if(!conn) // Here we are checking if the memory was correctly allocated or not
 	// As if the memory was correctly allocated the conn pointer will be pointing to a memory address, and using '!' on that memory address will give a 0
 	// i.e. !(any_correctly_allocated_pointer) = 0, and if its zero the if block will not be executed

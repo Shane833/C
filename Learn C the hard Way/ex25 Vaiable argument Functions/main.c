@@ -43,8 +43,8 @@ int read_int(int *out_int)
 
 int read_scan(const char *fmt,...)
 {
-  int i = 0;
-  int rc = 0;
+	int i = 0;
+	int rc = 0;
 	int *out_int = NULL;
 	char *out_char = NULL;
 	char **out_string = NULL;
