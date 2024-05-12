@@ -77,6 +77,7 @@ int main(int argc,char* argv[])
 	SDL_DestroyWindow(window);
 	
 	// Quit SDL subsystems
+	// This function will close all the subsystems
 	SDL_Quit();
 	
 	return 0;
