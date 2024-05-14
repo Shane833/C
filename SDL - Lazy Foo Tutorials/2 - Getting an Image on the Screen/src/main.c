@@ -67,6 +67,7 @@ int main(int argc, char* argv[]){
 	}
 	
 	// Freeing the resources
+	close();
 	
 return 0;
 error:
