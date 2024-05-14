@@ -12,6 +12,7 @@ compile: $(SOURCES) $(OBJECTS)
 
 link:
 	$(CC) $(OBJECTS) -o $(TARGET) $(LIBS)
-
+	
 clean:
+	del /q main.exe
 	del /q src\*.o

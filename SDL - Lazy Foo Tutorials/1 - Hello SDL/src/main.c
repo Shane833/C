@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdbool.h> // provides a new data type 'bool'
+#include <dbg.h>
 
 // Screen Dimensions constant
 const int SCREEN_WIDTH = 640;
