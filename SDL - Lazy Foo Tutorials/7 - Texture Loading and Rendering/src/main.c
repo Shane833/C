@@ -33,7 +33,9 @@ int main(int argc, char* argv[]){
 			if(e.type == SDL_QUIT) quit = true;
 		}
 		
-		SDL_RenderClear(renderer); // Clears the screen
+		SDL_RenderClear(renderer); // Clears the screen	
+		SDL_RenderCopy(renderer,current_texture, NULL, NULL);
+		SDL_RenderPresent(renderer);
 	}
 	
 	close();
