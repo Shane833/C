@@ -1,5 +1,6 @@
 CFLAGS=-Wall -g -Wextra -O2 -rdynamic
 
+
 TARGET=main
 SOURCES=main.c
 OBJECTS=main.o

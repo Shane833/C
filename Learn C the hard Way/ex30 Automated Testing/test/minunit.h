@@ -6,7 +6,8 @@
 #include "dbg.h"
 #include <stdlib.h>
 
-#define mu_suite_start() char* message = NULL
+// creates a local variabe message, which is used to hold the contents of a 
+#define mu_suite_start() char* message = NULL 
 
 #define mu_assert(test, message) if(!(test)){ log_err(message); return message; }
 

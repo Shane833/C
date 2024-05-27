@@ -1,5 +1,6 @@
-CFLAGS=-Wall -g -O2
-
+CFLAGS=-Wall -g -O2 -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
+# The -rdynamic flag allows the compiler to output all the symbols(variables, data structures etc.) to the symbol table of the executible
+# so that any dynamic libraries or when you debug using gdb, all those symbols are available for use
 SOURCES=$(wildcard src/*.c)
 LIB_SOURCES=$(wildcard src/libc/*.c)
 
