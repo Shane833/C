@@ -16,9 +16,12 @@ windows: buildw compile $(LIB_TARGET) $(TARGET)
 
 # Cannot provide OBJECTS or LIB_OBJECTS bcz it will lead to error
 # as apparently you cannot compile multiple files as give multiple outputs
-compile: $(SOURCES) $(OBJECTS) $(LIB_SOURCES) $(LIB_OBJECTS)
+compile: $(OBJECTS) $(LIB_OBJECTS)
 # So it seems like that just providing these pre-requistites seem to do the work
 # Still I don't understand how it works
+# I understand now, make has some implicit functions that can automatically compile the
+# the object files from their respective sources files, you only need to provide the 
+# name of the object files as the pre-requisite, which you need to compile
 	
 $(TARGET):
 	$(CC) $(SOURCES) -o $@
