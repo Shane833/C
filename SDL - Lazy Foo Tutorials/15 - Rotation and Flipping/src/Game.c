@@ -1,7 +1,7 @@
 #include <Game.h>
 #include <Texture.h>
 
-#define TOTAL_FRAMES 4
+
 
 // Some globals
 // Usual Global Variables
@@ -12,9 +12,9 @@ const int SCREEN_HEIGHT = 480;
 bool quit = false;
 	
 // Texture Variable
-Texture sprite_sheet;
-SDL_Rect sheet[TOTAL_FRAMES];
-int current_frame = 0;
+Texture arrow;
+double degrees = 0;
+SDL_RendererFlip flip_type = SDL_FLIP_NONE;
 
 int run()
 {
@@ -27,13 +27,7 @@ int run()
 	while(!quit)
 	{	
 		handleEvents();
-		render();
-		
-		current_frame++;
-		if(current_frame / TOTAL_FRAMES >= TOTAL_FRAMES){
-			current_frame = 0;
-		}
-		
+		render();	
 	}
 	
 	close();
@@ -64,64 +58,9 @@ error:
 
 bool loadMedia()
 {
-	bool r = Texture_loadFromFile(renderer, &sprite_sheet, "Assets/foo.png");
+	bool r = Texture_loadFromFile(renderer, &arrow, "Assets/arrow.png");
 	check(r == true, "Failed to load the front texture");
 	
-	/*
-	sheet[0].x = 0;
-	sheet[0].y = 0;
-	sheet[0].w = 48;
-	sheet[0].h = 48;
-	
-	sheet[1].x = 48;
-	sheet[1].y = 0;
-	sheet[1].w = 48;
-	sheet[1].h = 48;
-	
-	sheet[2].x = 96;
-	sheet[2].y = 0;
-	sheet[2].w = 48;
-	sheet[2].h = 48;
-	
-	sheet[3].x = 144;
-	sheet[3].y = 0;
-	sheet[3].w = 48;
-	sheet[3].h = 48;
-	
-	sheet[4].x = 192;
-	sheet[4].y = 0;
-	sheet[4].w = 48;
-	sheet[4].h = 48;
-	
-	sheet[5].x = 240;
-	sheet[5].y = 0;
-	sheet[5].w = 48;
-	sheet[5].h = 48;
-	*/
-	
-	
-   //Set sprite clips
-	sheet[ 0 ].x =   0;
-	sheet[ 0 ].y =   0;
-	sheet[ 0 ].w =  64;
-	sheet[ 0 ].h = 205;
-
-	sheet[ 1 ].x =  64;
-	sheet[ 1 ].y =   0;
-	sheet[ 1 ].w =  64;
-	sheet[ 1 ].h = 205;
-
-	sheet[ 2 ].x = 128;
-	sheet[ 2 ].y =   0;
-	sheet[ 2 ].w =  64;
-	sheet[ 2 ].h = 205;
-
-	sheet[ 3 ].x = 192;
-	sheet[ 3 ].y =   0;
-	sheet[ 3 ].w =  64;
-	sheet[ 3 ].h = 205;
-	
-
 	return true;
 	error:
 		return false;
@@ -135,6 +74,29 @@ void handleEvents()
 		if(e.type == SDL_QUIT){
 			quit = true;
 		}
+		else if(e.type == SDL_KEYDOWN){
+			switch(e.key.keysym.sym){
+				case SDLK_a:
+					degrees -= 60;
+					break;
+					
+				case SDLK_d:
+					degrees += 60;
+					break;
+					
+				case SDLK_q:
+					flip_type = SDL_FLIP_HORIZONTAL;
+					break;
+				
+				case SDLK_w:
+					flip_type = SDL_FLIP_NONE;
+					break;
+				
+				case SDLK_e:
+					flip_type = SDL_FLIP_VERTICAL;
+					break;
+			}
+		}
 		
 	}
 }
@@ -143,16 +105,15 @@ void render()
 {
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer); // Clears the current frame
-			
-		SDL_Rect* current_clip = &sheet[current_frame / TOTAL_FRAMES];	
-		Texture_render(renderer, &sprite_sheet, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, current_clip);
+				
+		Texture_renderEx(renderer, &arrow, (SCREEN_WIDTH - Texture_getWidth(&arrow)) / 2, (SCREEN_HEIGHT - Texture_getHeight(&arrow)) / 2, NULL, degrees, NULL, flip_type);
 		
 		SDL_RenderPresent(renderer); // Display the frame to the screen
 }
 
 void close()
 {
-	Texture_destroy(&sprite_sheet);
+	Texture_destroy(&arrow);
 	
 	SDL_DestroyWindow(window);
 	window = NULL;
