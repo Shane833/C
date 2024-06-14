@@ -39,15 +39,15 @@ char* run_sort_test(int (*func) (DArray*, DArray_compare), const char* name)
 	int rc = func(words, (DArray_compare)strcmp);
 	mu_assert(rc == 0, "sort failed");
 	mu_assert(is_sorted(words), "didn't sort it");
-	
+		
 	DArray_destroy(words);
 	
 	return NULL;
 }
 
-char* test_qsort()
+char* test_quicksort()
 {
-	return run_sort_test(DArray_qsort, "qsort");
+	return run_sort_test(DArray_quicksort, "quicksort");	
 }
 
 char* test_mergesort()
@@ -60,6 +60,7 @@ char* all_tests()
 	mu_suite_start();
 	
 	mu_run_test(test_mergesort);
+	mu_run_test(test_quicksort);
 	
 	return NULL;
 }

@@ -1,9 +1,55 @@
 #include <lcthw/darray_algos.h>
 
-static void merge(DArray* array, unsigned int low, unsigned int mid, unsigned int high, DArray_compare cmp)
+// Forward declarations
+static void merge(DArray* array, int low, int mid, int high, DArray_compare cmp);
+static void divide(DArray* array, int low, int high, DArray_compare cmp);
+static int mergesort(DArray* array, size_t size, DArray_compare cmp);
+static int partition(DArray* array, int low, int high, DArray_compare cmp);
+static void quicksort(DArray* array, int low, int high, DArray_compare cmp);
+
+// DARRAY MERGESORT
+int DArray_mergesort(DArray* array, DArray_compare cmp)
+{
+	return mergesort(array, DArray_count(array), cmp);
+}
+
+// DARRAY QUICKSORT
+int DArray_quicksort(DArray* array, DArray_compare cmp)
+{
+	quicksort(array, 0, DArray_count(array) - 1, cmp);
+	return 0;
+}
+
+// Main Mergesort function
+static int mergesort(DArray* array, size_t size, DArray_compare cmp)
+{
+	check(array != NULL, "Can't sort a NULL pointed array");
+	check(array->contents != NULL, "Can't sort a NULL pointed array");
+	
+	divide(array, 0, size - 1,(DArray_compare) cmp);
+	
+	return 0;
+error:
+	return 1;
+}
+
+// Utility Merge Sort function : Divide
+static void divide(DArray* array, int low, int high, DArray_compare cmp) // helper function
+{
+	if(low >= high) return; // base case
+	
+	int mid = low + (high - low) / 2;
+	
+	divide(array, low, mid,(DArray_compare) cmp);
+	divide(array, mid + 1, high,(DArray_compare) cmp);
+	merge(array, low, mid, high,(DArray_compare) cmp); 	
+}
+
+// Utility MergeSort function : merge
+static void merge(DArray* array, int low, int mid, int high, DArray_compare cmp)
 {
 	// Index / Counter
-	unsigned int i = 0; 
+	int i = 0; 
 	
 	// Buffers for holding the data
 	List* left = List_create();
@@ -42,28 +88,33 @@ error: // Fallthrough
 	return;
 }
 
-static void divide(DArray* array, unsigned int low, unsigned int high, DArray_compare cmp) // helper function
-{
-	if(low >= high) return; // base case
+// quicksort utility function : partition
+static int partition(DArray* array, int low, int high, DArray_compare cmp)
+{	
+	// Linear Approach to finding the position of the pivot element
+	int pivot = high; 
+	int final_pos = low; // After the loop this variable will have the actual 
+							            //position of where pivot element should be placed
+	for(int i = low; i < high;i++){
+		if(cmp(DArray_get(array, i), DArray_get(array, pivot)) <= 0){ 
+			DArray_swap(array, i, final_pos); // Moving all the smaller elements to the left and larger to the right
+			final_pos++;
+		}	
+	}
+
+	DArray_swap(array, pivot, final_pos); // put the pivot at its right place in the final array
 	
-	unsigned int mid = low + (high - low) / 2;
-	
-	divide(array, low, mid,(DArray_compare) cmp);
-	divide(array, mid + 1, high,(DArray_compare) cmp);
-	merge(array, low, mid, high,(DArray_compare) cmp); 	
+	return final_pos;
 }
 
-
-int mergesort(DArray* array, size_t size, DArray_compare cmp)
+// Main quicksort function
+static void quicksort(DArray* array, int low, int high, DArray_compare cmp)
 {
-	check(array != NULL, "Can't sort a NULL pointed array");
-	check(array->contents != NULL, "Can't sort a NULL pointed array");
+	if(low >= high) return;
 	
-	divide(array, 0, size - 1,(DArray_compare) cmp);
-	
-	return 0;
-error:
-	return 1;
+	int pivot = partition(array, low, high, cmp);
+	quicksort(array, low, pivot - 1, cmp);
+	quicksort(array, pivot + 1 , high, cmp);
 }
 
 int DArray_heapsort(DArray* array, DArray_compare cmp)
@@ -72,13 +123,3 @@ int DArray_heapsort(DArray* array, DArray_compare cmp)
 	return 0;
 }
 
-int DArray_mergesort(DArray* array, DArray_compare cmp)
-{
-	return mergesort(array, DArray_count(array), cmp);
-}
-
-int DArray_qsort(DArray* array, DArray_compare cmp)
-{
-	qsort(array->contents, DArray_count(array), sizeof(void*), cmp);
-	return 0;
-}

@@ -1,12 +1,12 @@
 #include <Sorting.h>
 
-bool bubble_sort(void** array, size_t size, Compare cmp)
+bool Sort_bubble(void** array, size_t size, Compare cmp)
 {
 	check(array != NULL, "Can't sort a NULL pointed array!");
 		
 	bool swapped = true;
-	unsigned int pass = 0;
-	unsigned int index = 0;
+	int pass = 0;
+	int index = 0;
 	
 	for(pass = 0; pass < size && swapped; pass++){ // n - 1 pass to sort the array
 		swapped = false;
@@ -23,13 +23,13 @@ error:
 	return false;
 } 
 
-bool selection_sort(void** array, size_t size, Compare cmp) // Declare a minimum at the start of each loop and swap it if it changes
+bool Sort_selection(void** array, size_t size, Compare cmp) // Declare a minimum at the start of each loop and swap it if it changes
 {
 	check(array != NULL, "Can't sort a NULL pointed array!");
 	
-	unsigned int pass = 0;
-	unsigned int index = 0;
-	unsigned int min = 0;
+	int pass = 0;
+	int index = 0;
+	int min = 0;
 	
 	for(pass = 0; pass < size; pass++){
 		min = pass;
@@ -47,12 +47,12 @@ error:
 	return false;
 }
 
-bool insertion_sort(void** array, size_t size, Compare cmp) // Here we keep inserting the elements in a sorted manner
+bool Sort_insertion(void** array, size_t size, Compare cmp) // Here we keep inserting the elements in a sorted manner
 {
 	check(array != NULL, "Can't sort a NULL pointer array!");
 	
-	unsigned int pass = 0;
-	unsigned int index = 0;
+	int pass = 0;
+	int index = 0;
 	
 	for(pass = 1; pass < size; pass++){
 		for(index = pass; index > 0 && (cmp(array[index - 1],array[index]) > 0); index--){ // Continously move the element until it is in the right position
@@ -65,12 +65,13 @@ error:
 	return false;
 }
 
-static void sort_and_merge(void** array, unsigned int low, unsigned int middle, unsigned int high, Compare cmp)
+static void sort_and_merge(void** array, int low, int middle, int high, Compare cmp)
 {
 	// Counter / index
 	int i = 0; 
 	int j = 0;
-	
+	int l = 0;
+	int r = 0;
 	// Temporary buffers (need to be queues, and thats why I'm halting its production for now)
 	void* left[middle - low + 1];
 	void* right[high - middle]; // Why is the right size high - middle ?
@@ -84,54 +85,49 @@ static void sort_and_merge(void** array, unsigned int low, unsigned int middle, 
 	}
 	
 	printf("Left Array before : ");
-	for(int i = 0;i < middle - low + 1; i++){printf("%d ", left[i]);}
+	for(int i = 0;i < middle - low + 1; i++){printf("%f ", left[i]);}
 	printf("\n");
 	
 	printf("Right Array before : ");
-	for(int i = 0;i < high - middle; i++){printf("%d ", right[i]);}
+	for(int i = 0;i < high - middle; i++){printf("%f ", right[i]);}
 	printf("\n");
 	
+	
 	// Sort and add back into the original array
-	for(i = low, j = 0; j < middle - low + 1;j++){
-		if(cmp(left[j], right[j]) < 0){
-			array[i++] = left[j];
-			left[j] = -1;
+	for(i = low; l < middle - low + 1 && r < high - middle;){ // if any of the indexes reaches the end then break the loop
+		
+		printf("%f ? %f = %d\n",left[l], right[r], cmp(left[l], right[r]));
+		if(cmp(left[l], right[r]) > 0){
+			array[i++] = left[l++];
 		}else{
-			array[i++] = right[j];
-			right[j] = -1;
+			array[i++] = right[r++];
 		}
 	} 
 	
+	
 	printf("Left Array after : ");
-	for(int i = 0;i < middle - low + 1; i++){printf("%d ", left[i]);}
+	for(int i = 0;i < middle - low + 1; i++){printf("%f ", left[i]);}
 	printf("\n");
 	
 	printf("Right Array after : ");
-	for(int i = 0;i < high - middle; i++){printf("%d ", right[i]);}
+	for(int i = 0;i < high - middle; i++){printf("%f ", right[i]);}
 	printf("\n");
 	
 	
+	
 	// Now copy the additional elements which are left, from both the temporary arrays
-	for(int index = 0;index < middle - low + 1; index++){
-		if(left[index] != -1){
-			array[i++] = left[index];
-		}
-	}
-	for(int index = 0;index < high - middle; index++){
-		if(right[index] != -1){
-			array[i++] = right[index];
-		}
-	}
+	while(l < middle - low + 1) array[i++] = left[l++];
+	while(r < high - middle) array[i++] = right[r++];
 	
 	printf("Main Array : ");
 	for(int i = low; i <= high;i++){
-		printf("%d ", array[i]);
+		printf("%f ", array[i]);
 	}
 	printf("\n");
 	
 }
 
-static void divide(void** array, unsigned int low, unsigned int high, Compare cmp)
+static void divide(void** array, int low, int high, Compare cmp)
 {
 	// 1. Display the array as is
 	// 2. calculate the mid point and call the function with that again
@@ -146,14 +142,15 @@ static void divide(void** array, unsigned int low, unsigned int high, Compare cm
 	sort_and_merge(array, low, mid, high, cmp);
 }
 
-bool merge_sort(void** array, size_t size, Compare cmp)
+bool Sort_merge(void** array, size_t size, Compare cmp)
 {
-	printf("Original Array : ");
+	// char* ptr = (char*)array;
+	printf("Original Array : %f\n", ptr);
 	for(int i = 0;i < size;i++){
-		printf("%d ", array[i]);
+		printf("%f ", *(float*)array);
 	}
 	printf("\n");
-	
-	divide(array, 0, size - 1, cmp);
+	//divide(array, 0, size - 1, cmp);
+	return true;
 }
 

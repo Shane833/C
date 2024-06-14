@@ -17,13 +17,17 @@ static inline void swap(void** array, const int index_a, const int index_b) // F
 // This is so bcz I'm using a void* and it sizes up to 4 bytes, hence
 // when I actually increament data it is incremented in terms of 4 bytes
 
-bool bubble_sort(void** array, size_t size, Compare cmp); 
+bool Sort_bubble(void** array, size_t size, Compare cmp); 
 
-bool selection_sort(void** array, size_t size, Compare cmp);
+bool Sort_selection(void** array, size_t size, Compare cmp);
 
-bool insertion_sort(void** array, size_t size, Compare cmp);
+bool Sort_insertion(void** array, size_t size, Compare cmp);
 
-bool merge_sort(void** array, size_t size, Compare cmp);
+bool Sort_merge(void** array, size_t size, Compare cmp);
+
+bool Sort_quick(void** array, size_t size, Compare cmp);
+
+
 
 
 #endif

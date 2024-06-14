@@ -10,7 +10,7 @@ static char* string[] = {"vini","nish","shiv","laks","anub"};
 // These algorithms don't seem to work with double data type I will research and try to understand later
 /*
 display_double_arr(d_arr, 5);
-bool r =  bubble_sort(d_arr, 5, (Compare)double_increasing_order);
+bool r =  Sort_bubble(d_arr, 5, (Compare)double_increasing_order);
 mu_assert(r == true, "Bubble Sort Failed");
 display_double_arr(d_arr, 5);
 
@@ -18,7 +18,6 @@ mu_assert(d_arr[0] == 1.8, "Checking if d_arr is sorted");
 mu_assert(d_arr[4] == 8.5, "Checking if d_arr is sorted");
 */
 
-/*
 int int_increasing_order(const int a, const int b)
 {
 	return a - b;
@@ -28,7 +27,8 @@ int float_increasing_order(const float a, const float b)
 {
 	float result = a - b;
 	if(result > 0.0f) return 1; // must  take into 
-	else return 0;
+	else if(result == 0.0f) return 0;
+	else return -1;
 }
 
 int double_increasing_order(const double a, const double b)
@@ -71,25 +71,25 @@ void display_string(char** arr, size_t size)
 	printf("\n");
 }
 
-char* test_bubble_sort()
+char* test_Sort_bubble()
 {	
 	char* strings[] = {"vini","nish","shiv","laks","anub"};
 	int i_arr[5] = {9,3,7,5,4};	
 	float f_arr[5] = {5.6f,2.4f,1.8f,8.5f,5.3f};
 
-	bool r = bubble_sort(i_arr, 5, (Compare)int_increasing_order);
+	bool r = Sort_bubble(i_arr, 5, (Compare)int_increasing_order);
 	mu_assert(r == true, "Bubble Sort Failed for i_arr");
 	
 	mu_assert(i_arr[0] == 3, "Checking if i_arr is sorted");
 	mu_assert(i_arr[4] == 9, "Checking if i_arr is sorted");
 	
-	r =  bubble_sort(f_arr, 5, (Compare)float_increasing_order);
+	r =  Sort_bubble(f_arr, 5, (Compare)float_increasing_order);
 	mu_assert(r == true, "Bubble Sort Failed for f_arr");
 	
 	mu_assert(f_arr[0] == 1.8f, "Checking if f_arr is sorted");
 	mu_assert(f_arr[4] == 8.5f, "Checking if f_arr is sorted");
 	
-	r = bubble_sort(strings, 5, (Compare)strcmp);
+	r = Sort_bubble(strings, 5, (Compare)strcmp);
     mu_assert(r == true, "Bubble Sort Failed at strings");
 	
 	mu_assert(strcmp(strings[0], "anub") == 0, "Checking if strings is sorted");
@@ -98,25 +98,25 @@ char* test_bubble_sort()
 	return NULL;
 }
 
-char* test_selection_sort()
+char* test_Sort_selection()
 {
 	char* strings[] = {"vini","nish","shiv","laks","anub"};
 	int i_arr[5] = {9,3,7,5,4};
 	float f_arr[5] = {5.6f,2.4f,1.8f,8.5f,5.3f};
 	
-	bool r = selection_sort(i_arr, 5, (Compare)int_increasing_order);
+	bool r = Sort_selection(i_arr, 5, (Compare)int_increasing_order);
 	mu_assert(r == true, "Selection sort failed for i_arr");
 	
 	mu_assert(i_arr[0] == 3, "Checking if i_arr is sorted");
 	mu_assert(i_arr[4] == 9, "Checking if i_arr is sorted");
 	
-	r =  selection_sort(f_arr, 5, (Compare)float_increasing_order);
+	r =  Sort_selection(f_arr, 5, (Compare)float_increasing_order);
 	mu_assert(r == true, "Bubble Sort Failed for f_arr");
 	
-	mu_assert(f_arr[0] == 1.8f, "Checking if i_arr is sorted");
-	mu_assert(f_arr[4] == 8.5f, "Checking if i_arr is sorted");
+	mu_assert(f_arr[0] == 1.8f, "Checking if f_arr is sorted");
+	mu_assert(f_arr[4] == 8.5f, "Checking if f_arr is sorted");
 	
-	r = selection_sort(strings, 5, (Compare)strcmp);
+	r = Sort_selection(strings, 5, (Compare)strcmp);
     mu_assert(r == true, "Bubble Sort Failed for strings");
 	
 	mu_assert(strcmp(strings[0], "anub") == 0, "Checking is strings is sorted");
@@ -125,30 +125,62 @@ char* test_selection_sort()
 	return NULL;
 }
 
-char* test_insertion_sort()
+char* test_Sort_insertion()
 {
 	char* strings[] = {"vini","nish","shiv","laks","anub"};
 	int i_arr[5] = {9,3,7,5,4};	
 	float f_arr[5] = {5.6f,2.4f,1.8f,8.5f,5.3f};
 	
-	bool r = insertion_sort(i_arr, 5, (Compare)int_increasing_order);
+	bool r = Sort_insertion(i_arr, 5, (Compare)int_increasing_order);
 	mu_assert(r == true, "Selection sort failed for i_arr");
 
 	mu_assert(i_arr[0] == 3, "Checking if i_arr is sorted");
 	mu_assert(i_arr[4] == 9, "Checking if i_arr is sorted");
 	
-	r =  insertion_sort(f_arr, 5, (Compare)float_increasing_order);
+	r =  Sort_insertion(f_arr, 5, (Compare)float_increasing_order);
 	mu_assert(r == true, "Bubble Sort Failed for f_arr");
 	
-	mu_assert(f_arr[0] == 1.8f, "Checking if i_arr is sorted");
-	mu_assert(f_arr[4] == 8.5f, "Checking if i_arr is sorted");
+	mu_assert(f_arr[0] == 1.8f, "Checking if f_arr is sorted");
+	mu_assert(f_arr[4] == 8.5f, "Checking if f_arr is sorted");
 	
-	r = insertion_sort(strings, 5, (Compare)strcmp);
+	r = Sort_insertion(strings, 5, (Compare)strcmp);
     mu_assert(r == true, "Bubble Sort Failed for strings");
 	
 	mu_assert(strcmp(strings[0], "anub") == 0, "Checking is strings is sorted");
 	mu_assert(strcmp(strings[4], "vini") == 0, "Checking is strings is sorted");
 
+	return NULL;
+}
+
+char* test_Sort_merge()
+{
+	/*
+	char* strings[] = {"vini","nish","shiv","laks","anub"};
+	int i_arr[5] = {9,3,7,5,4};	
+	float f_arr[5] = {5.6f,2.4f,1.8f,8.5f,5.3f};
+	
+	
+	bool r = merge_sort(i_arr, 5, sizeof(int), (Compare)int_increasing_order);
+	mu_assert(r == true, "Selection sort failed for i_arr");
+
+	mu_assert(i_arr[0] == 3, "Checking if i_arr is sorted");
+	mu_assert(i_arr[4] == 9, "Checking if i_arr is sorted");
+	*/
+	
+	
+	bool r =  merge_sort(f_arr, 5, sizeof(float), (Compare)float_increasing_order);
+	mu_assert(r == true, "Merge Sort Failed for f_arr");
+	
+	mu_assert(f_arr[0] == 1.8f, "Checking if f_arr is sorted");
+	mu_assert(f_arr[4] == 8.5f, "Checking if f_arr is sorted");
+	
+	/*
+	r = merge_sort(strings, 5, (Compare)strcmp);
+    mu_assert(r == true, "Bubble Sort Failed for strings");
+	
+	mu_assert(strcmp(strings[0], "anub") == 0, "Checking is strings is sorted");
+	mu_assert(strcmp(strings[4], "vini") == 0, "Checking is strings is sorted");
+	*/
 	return NULL;
 }
 
@@ -166,17 +198,19 @@ char* test_swap()
 char* all_tests()
 {
 	mu_suite_start();
-	mu_run_test(test_bubble_sort);
-	mu_run_test(test_selection_sort);
-	mu_run_test(test_insertion_sort);
-	
-	
+	/*
+	mu_run_test(test_Sort_bubble);
+	mu_run_test(test_Sort_insertion);
+	mu_run_test(test_Sort_selection);
+	*/
+	mu_run_test(test_merge_sort);
 	return NULL;
 }
 
 RUN_TESTS(all_tests);
-*/
 
+
+/*
 int ch_cmp(const char a, const char b)
 {
 	//printf("%c - %c = %d\n", a, b, a - b);
@@ -215,3 +249,4 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
+*/
