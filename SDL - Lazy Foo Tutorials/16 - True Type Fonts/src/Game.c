@@ -7,12 +7,11 @@ SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
+TTF_Font* font = NULL;
 bool quit = false;
 	
 // Texture Variable
-Texture arrow;
-double degrees = 0;
-SDL_RendererFlip flip_type = SDL_FLIP_NONE;
+Texture text_texture;
 
 int run()
 {
@@ -38,16 +37,16 @@ error:
 // Function definitions
 bool init()
 {
-	check(SDL_Init(SDL_INIT_EVERYTHING) >= 0, "Failed to initialize SDL! SDL_Error: %s\n", SDL_GetError());
+	check(SDL_Init(SDL_INIT_EVERYTHING) >= 0, "Failed to initialize SDL! SDL_Error: %s", SDL_GetError());
+	check((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) > 0, "Failed to initialize SDL_image! IMG_Error: %s", IMG_GetError());
+	check(TTF_Init() != -1, "Failed to intialzie SDL_ttf! TTF_Error: %s", TTF_GetError()); // returns 0 on success and -1 on failure
 	
 	window = SDL_CreateWindow("Color Keying",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
-	check(window != NULL, "Failed to create a window! SDL_Error: %s\n", SDL_GetError());
+	check(window != NULL, "Failed to create a window! SDL_Error: %s", SDL_GetError());
 	
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	check(renderer != NULL, "Failed to create a renderer! SDL_Error: %s\n", SDL_GetError());
+	check(renderer != NULL, "Failed to create a renderer! SDL_Error: %s", SDL_GetError());
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	
-	check((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) > 0, "Failed to initialize SDL_Image! IMG_Error: %s\n", IMG_GetError());
 	
 	return true;
 error:
@@ -56,12 +55,20 @@ error:
 
 bool loadMedia()
 {
-	bool r = Texture_loadFromFile(renderer, &arrow, "Assets/arrow.png");
-	check(r == true, "Failed to load the front texture");
+	// First we will load the global font using TTF_OpenFont(path, size) function
+	font = TTF_OpenFont("Assets/lazy.ttf", 28);
+	check(font != NULL, "Failed to load the font! TTF_Error : %s", TTF_GetError());
+	
+	// Set up the color you want your text to be rendered in
+	SDL_Color text_color = {0, 0, 0}; // RGB
+	
+	// create the texture
+	bool r = Texture_loadFromRenderedText(renderer, &text_texture, font, "The quick brown fox jumps over the lazy dog", text_color);
+	check(r != false, "Failed to load the rendered text!");
 	
 	return true;
-	error:
-		return false;
+error:
+	return false;
 }
 
 void handleEvents()
@@ -72,31 +79,7 @@ void handleEvents()
 		if(e.type == SDL_QUIT){
 			quit = true;
 		}
-		else if(e.type == SDL_KEYDOWN){
-			switch(e.key.keysym.sym){
-				case SDLK_a:
-					degrees -= 60;
-					break;
-					
-				case SDLK_d:
-					degrees += 60;
-					break;
-					
-				case SDLK_q:
-					flip_type = SDL_FLIP_HORIZONTAL;
-					break;
-				
-				case SDLK_w:
-					flip_type = SDL_FLIP_NONE;
-					break;
-				
-				case SDLK_e:
-					flip_type = SDL_FLIP_VERTICAL;
-					break;
-			}
-		}
-		
-	}
+	}		
 }
 
 void render()
@@ -104,20 +87,26 @@ void render()
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer); // Clears the current frame
 				
-		Texture_renderEx(renderer, &arrow, (SCREEN_WIDTH - Texture_getWidth(&arrow)) / 2, (SCREEN_HEIGHT - Texture_getHeight(&arrow)) / 2, NULL, degrees, NULL, flip_type);
+		Texture_render(renderer, &text_texture, (SCREEN_WIDTH - Texture_getWidth(&text_texture)) / 2, (SCREEN_HEIGHT - Texture_getHeight(&text_texture)) / 2,NULL);
 		
 		SDL_RenderPresent(renderer); // Display the frame to the screen
 }
 
 void close()
 {
-	Texture_destroy(&arrow);
+	Texture_destroy(&text_texture);
+	
+	// Close the global font
+	TTF_CloseFont(font);
+	font = NULL;
 	
 	SDL_DestroyWindow(window);
 	window = NULL;
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
 	
+	// Quit SDL subsystems
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }

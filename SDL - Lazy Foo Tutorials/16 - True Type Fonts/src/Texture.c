@@ -6,14 +6,10 @@ Texture* Texture_create()
 {
 	Texture* result = calloc(1, sizeof(Texture));
 	check(result != NULL, "Failed to create a custom Texture");
-	
-	result->texture = NULL;
-	result->width = 0;
-	result->height = 0;
-	
+		
 	return result;
-	error:
-		return NULL;
+error:
+	return NULL;
 }
 
 void Texture_destroy(Texture* texture)
@@ -35,7 +31,7 @@ bool Texture_loadFromFile(SDL_Renderer* renderer, Texture* texture, const char* 
 	
 	// Load the image at the specified path
 	SDL_Surface* loaded_surface = IMG_Load(filepath);
-	check(loaded_surface != NULL, "Failed to load the surface from %s! IMG_Error : %s\n", filepath, IMG_GetError());
+	check(loaded_surface != NULL, "Failed to load the surface from %s! IMG_Error : %s", filepath, IMG_GetError());
 	
 	// Color keying the image
 	SDL_SetColorKey(loaded_surface, SDL_TRUE, SDL_MapRGB(loaded_surface->format, 0, 255, 255));
@@ -46,7 +42,7 @@ bool Texture_loadFromFile(SDL_Renderer* renderer, Texture* texture, const char* 
 	
 	// Now to create a texture from surface pixels
 	new_texture = SDL_CreateTextureFromSurface(renderer, loaded_surface);
-	check(new_texture != NULL, "Failed to convert surface of %s to a texture! SDL_Error : %s\n", filepath, SDL_GetError());
+	check(new_texture != NULL, "Failed to convert surface of %s to a texture! SDL_Error : %s", filepath, SDL_GetError());
 	
 	// Get the image dimension
 	texture->width = loaded_surface->w;
@@ -56,11 +52,11 @@ bool Texture_loadFromFile(SDL_Renderer* renderer, Texture* texture, const char* 
 	SDL_FreeSurface(loaded_surface);
 	
 	texture->texture = new_texture;
-	check(texture->texture != NULL, "Failed to copy the new texture of %s! SDL_Error: %s\n", filepath, SDL_GetError());
+	check(texture->texture != NULL, "Failed to copy the new texture of %s! SDL_Error: %s", filepath, SDL_GetError());
 	
 	return true;
-	error:
-		return false;
+error:
+	return false;
 }
 
 void Texture_render(SDL_Renderer* renderer, Texture* texture, int x, int y, SDL_Rect* clip)
@@ -79,8 +75,8 @@ void Texture_render(SDL_Renderer* renderer, Texture* texture, int x, int y, SDL_
 	SDL_RenderCopy(renderer, texture->texture, clip, &render_quad); // Here the new argumet is the source rect which must be provided
 	return;
 	// Don't forget to add the return before this as it will execute as a normal flow of the program
-	error:
-		SDL_RenderCopy(renderer, texture->texture, NULL, &render_quad); // This is in the case the clip is not provided 
+error:
+	SDL_RenderCopy(renderer, texture->texture, NULL, &render_quad); // This is in the case the clip is not provided 
 }
 void Texture_renderEx(SDL_Renderer* renderer, Texture* texture, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
@@ -106,8 +102,8 @@ void Texture_renderEx(SDL_Renderer* renderer, Texture* texture, int x, int y, SD
 	SDL_RenderCopyEx(renderer, texture->texture, clip, &render_quad, angle, center, flip);
 	return;
 	// Don't forget to add the return before this as it will execute as a normal flow of the program
-	error:
-		SDL_RenderCopyEx(renderer, texture->texture, NULL, &render_quad, angle, center, flip); // This is in the case the clip is not provided 
+error:
+	SDL_RenderCopyEx(renderer, texture->texture, NULL, &render_quad, angle, center, flip); // This is in the case the clip is not provided 
 }
  
 
@@ -145,4 +141,31 @@ size_t Texture_getWidth(Texture* texture)
 size_t Texture_getHeight(Texture* texture)
 {
 	return texture->height;
+}
+
+bool Texture_loadFromRenderedText(SDL_Renderer* renderer, Texture* texture, TTF_Font* font, const char* text, SDL_Color text_color)
+{
+	// Get rid of the preexisting texture
+	Texture_destroy(texture);
+	
+	// Render the text surface
+	// For rendering text use the TTF_RenderText_*(TTF_Font*, text, SDL_Color)
+	// This function returns a SDL_Surface on successful render of the text
+	SDL_Surface* temp_text = TTF_RenderText_Solid(font, text, text_color); 
+	check(temp_text != NULL, "Unable to render text surface! SDL_ttf Error: %s", TTF_GetError());
+	
+	// Now create a texture from the surface as usual
+	texture->texture = SDL_CreateTextureFromSurface(renderer, temp_text);
+	check(texture->texture != NULL, "Unable to create texture from rendered text! SDL Error: %s", SDL_GetError());
+	
+	// Now get the image dimensions
+	texture->width = temp_text->w;
+	texture->height = temp_text->h;
+	
+	// Get rid of the old surface
+	SDL_FreeSurface(temp_text);
+	
+	return true;
+error:
+	return false;
 }

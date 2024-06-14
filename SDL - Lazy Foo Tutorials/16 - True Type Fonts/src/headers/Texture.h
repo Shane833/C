@@ -2,9 +2,11 @@
 #define __TEXTURE_H__
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_Image.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <dbg.h>
 #include <stdbool.h>
+#include <math.h>
 
 // Texture Data Structure
 typedef struct Texture{
@@ -24,5 +26,6 @@ void Texture_destroy(Texture* texture); // Deallocates the memory from the textu
 void Texture_setColor(Texture* texture, Uint8 red, Uint8 green, Uint8 blue); // Set the color modulation of the texture
 void Texture_setBlendMode(Texture* texture, SDL_BlendMode blending); // Set the different blending mode on a texture
 void Texture_setAlpha(Texture* texture, Uint8 alpha); // Modulates the alpha values
+bool Texture_loadFromRenderedText(SDL_Renderer* renderer, Texture* texture, TTF_Font* font, const char* text, SDL_Color text_color); // This function will return images based on the font and the color and obviosuly the text too duh!
 
 #endif

@@ -2,7 +2,8 @@
 #define __GAME_H__
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_Image.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 #include <dbg.h>
 // Usual Global Variables
@@ -10,6 +11,7 @@ extern SDL_Window* window;
 extern SDL_Renderer* renderer;
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
+extern TTF_Font* font; // globally used font
 extern bool quit;
 
 // Functions
