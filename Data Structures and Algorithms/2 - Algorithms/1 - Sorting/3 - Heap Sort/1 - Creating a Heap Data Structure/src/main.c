@@ -11,3 +11,15 @@ int main(int argc, char* argv[])
 	
 	return 0;
 }
+
+int Heap_Parent(int* heap, int child_index)
+{
+	
+}
+
+int Heap_LeftChild(int* heap, int parent_index)
+{
+	
+}
+
+int 
