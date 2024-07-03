@@ -145,7 +145,7 @@ static void divide(void** array, int low, int high, Compare cmp)
 bool Sort_merge(void** array, size_t size, Compare cmp)
 {
 	// char* ptr = (char*)array;
-	printf("Original Array : %f\n", ptr);
+	// printf("Original Array : %f\n", ptr);
 	for(int i = 0;i < size;i++){
 		printf("%f ", *(float*)array);
 	}

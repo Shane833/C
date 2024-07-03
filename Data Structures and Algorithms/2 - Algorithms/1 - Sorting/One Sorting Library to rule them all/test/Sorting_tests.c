@@ -154,12 +154,12 @@ char* test_Sort_insertion()
 
 char* test_Sort_merge()
 {
-	/*
+
 	char* strings[] = {"vini","nish","shiv","laks","anub"};
 	int i_arr[5] = {9,3,7,5,4};	
 	float f_arr[5] = {5.6f,2.4f,1.8f,8.5f,5.3f};
 	
-	
+	/*
 	bool r = merge_sort(i_arr, 5, sizeof(int), (Compare)int_increasing_order);
 	mu_assert(r == true, "Selection sort failed for i_arr");
 
@@ -168,7 +168,7 @@ char* test_Sort_merge()
 	*/
 	
 	
-	bool r =  merge_sort(f_arr, 5, sizeof(float), (Compare)float_increasing_order);
+	bool r =  Sort_merge(f_arr, 5,(Compare)float_increasing_order);
 	mu_assert(r == true, "Merge Sort Failed for f_arr");
 	
 	mu_assert(f_arr[0] == 1.8f, "Checking if f_arr is sorted");
@@ -203,7 +203,7 @@ char* all_tests()
 	mu_run_test(test_Sort_insertion);
 	mu_run_test(test_Sort_selection);
 	*/
-	mu_run_test(test_merge_sort);
+	mu_run_test(test_Sort_merge);
 	return NULL;
 }
 

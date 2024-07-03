@@ -26,6 +26,17 @@
 
 // Using these two functions we can create a heap from any array
 
+// Extracting the minimum or maximum from the heap depending upon the type of heap, since the most dominant elementt is 
+// always at the root of the hoop we can simply remove it but then it will leave a hole in the heap which 
+// is to filled by the right most element in the heap or the element at the last position of the heap, however
+// this would disrupt the dominance and that element would need to be placed at its right position in the heap.
+// so we would need to compare the children and obtain the most dominant of those and replace the parent with that
+// and keep continuing this process till we can't find any dominant children which means our element is at its right place
+// in the heap.
+
+// Heap Sort - This is a mixture of both creating and removing the elements from the heap. We first make the heap by inserting
+// the elements and bubblin them up, and keep on removing them from the heap and inserting them in the array
+
 typedef struct Heap{
 	int array[MAX_SIZE];
 	int end;
@@ -42,5 +53,9 @@ int Heap_RightChild(Heap* heap, int parent_index);
 
 void Heap_Insert(Heap* heap, int element);
 void Heap_MakeHeap(Heap* heap, int* array, size_t size);
+int Heap_Remove(Heap* heap);
+
+void Heap_Sort(int* array, size_t size);
+
 
 #endif
