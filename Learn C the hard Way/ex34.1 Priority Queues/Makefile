@@ -45,7 +45,6 @@ clean:
 
 cleanw:
 	del /q src\*.o
-	del /q src\lcthw\*.o
 	del /q test\*.exe
 	del /q build\*.*
 

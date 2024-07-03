@@ -20,6 +20,8 @@ char* creation_test()
 {
 	PQueue* pq = PQueue_Create(1, (PQ_Compare)intCompare);
 	mu_assert(pq != NULL,"Failed to create the PQueue!");
+	
+	PQueue_Destroy(pq);
 		
 	return NULL;
 }
@@ -55,6 +57,10 @@ char* array_test()
 		printf("%f ", *(float*)PQueue_Get(fq, i));
 	}
 	*/
+	
+	PQueue_Destroy(iq);
+	PQueue_Destroy(fq);
+	PQueue_Destroy(cq);
 	
 	return NULL;
 }
@@ -92,6 +98,10 @@ char* removal_test()
 		printf("%s ", (char*)PQueue_Get(cq, i));
 	}
 	*/
+	
+	PQueue_Destroy(iq);
+	PQueue_Destroy(fq);
+	PQueue_Destroy(cq);
 	
 	return NULL;
 }
