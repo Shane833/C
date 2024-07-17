@@ -3,6 +3,7 @@
 
 #include <lcthw/darray.h>
 #include <lcthw/list.h>
+#include <lcthw/PQueue.h>
 
 typedef int (*DArray_compare) (const void* a, const void* b);
 

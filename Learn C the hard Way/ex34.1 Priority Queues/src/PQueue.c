@@ -9,7 +9,7 @@ static void BubbleDown(PQueue* q, int element_index);
 static void PQ_Swap(PQueue* q, const int a_index, const int b_index);
 
 // Function Definitions
-PQueue* PQueue_Create(size_t size, PQ_Compare cmp)
+PQueue* PQueue_Create(size_t size, PQueue_Compare cmp)
 {
 	PQueue *q = (PQueue*)malloc(sizeof(PQueue));
 	check_mem(q);
@@ -25,7 +25,7 @@ error:
 	return NULL;
 }
 
-PQueue* PQueue_CreateFromArray(void** array, size_t size, PQ_Compare cmp)
+PQueue* PQueue_CreateFromArray(void** array, size_t size, PQueue_Compare cmp)
 {
 	check(array != NULL, "Invalid Array!");
 	
@@ -41,7 +41,7 @@ error:
 	return NULL;
 }
 
-PQueue* PQueue_CreateFromStaticArray(void** array, size_t size, PQ_Compare cmp)
+PQueue* PQueue_CreateFromStaticArray(void** array, size_t size, PQueue_Compare cmp)
 {
 	check(array != NULL, "Invalid Array!");
 	
@@ -128,7 +128,7 @@ static void BubbleUp(PQueue* q, int element_index)
 	
 	if(parent_index == -1) return; // basically reaching the root
 	
-	if(q->cmp(q->array[element_index], q->array[parent_index]) > 0)
+	if(q->cmp(q->array[element_index], q->array[parent_index]) < 0)
 	{
 		// swap and call the function again with the updated index
 		PQ_Swap(q, element_index, parent_index);
@@ -141,17 +141,17 @@ static void BubbleDown(PQueue* q, int element_index)
 	// we will check either of the child if they will dominate the
 	// current element then we swap and continue till leaf nodes
 	
-	if(PQueue_Size(q) == 1) return; // When only one element remains 
+	if(PQueue_Size(q) == 0) return; // When no element remains
 	
 	int dominant = element_index; // assuming this to be dominant element
 	
 	if(LeftChild(q, element_index) != -1){
 		int left = LeftChild(q, element_index);
-		dominant = q->cmp(q->array[dominant], q->array[left]) > 0 ? dominant : left;
+		dominant = q->cmp(q->array[dominant], q->array[left]) < 0 ? dominant : left;
 	}
 	if(RightChild(q, element_index) != -1){
 		int right = RightChild(q, element_index);
-		dominant = q->cmp(q->array[dominant], q->array[right]) > 0 ? dominant : right;
+		dominant = q->cmp(q->array[dominant], q->array[right]) < 0 ? dominant : right;
 	}
 	
 	if(dominant != element_index){

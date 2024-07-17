@@ -6,6 +6,7 @@ static List* list = NULL;
 char* test1 = "test1 data";
 char* test2 = "test2 data";
 char* test3 = "test3 data";
+char* test4 = "test4 data";
 
 char* test_create()
 {
@@ -90,6 +91,60 @@ char* test_shift()
 	return NULL;
 }
 
+char* test_split()
+{
+	char* test_data[3] = {test1, test3, test4};
+	
+	List* combined = List_create();
+	
+	for(int i = 0;i < sizeof(test_data)/sizeof(test_data[0]);i++){
+		List_push(combined, test_data[i]);
+	}
+	
+	mu_assert(List_count(combined) == 3, "Push failed!");
+	
+	mu_assert(combined->first->value == test1, "Push failed at first!");
+	mu_assert(combined->last->value == test4, "Push failed at last!");
+	
+	List* splitted = List_split(combined, 1); // split at the second position
+	mu_assert(splitted != NULL, "Split List failed!");
+	mu_assert(splitted->first->value == test3, "Split failed!");
+	mu_assert(splitted->last->value == test4, "Split failed!");
+	mu_assert(List_count(splitted) == 2, "Split failed!");
+	
+	mu_assert(combined->last->value == test1, "Split failed!");
+	mu_assert(List_count(combined) == 1, "Split failed!");
+	
+	List_destroy(combined);
+	List_destroy(splitted);
+	
+	return NULL;
+}
+
+char* test_merge()
+{	
+	List* first = List_create();
+	List_push(first, test1);
+	List_push(first, test2);
+	
+	List* second = List_create();
+	List_push(second, test3);
+	List_push(second, test4);
+	
+	List_merge(first, second);
+	
+	mu_assert(List_count(first) == 4, "Count update failed");
+	mu_assert(List_count(second) == 0, "Count update failed");
+
+	mu_assert(List_last(first) == test4, "Last update failed");
+	mu_assert(second->last == NULL, "Last update failed");
+	
+	List_destroy(first);
+	List_destroy(second);
+	
+	return NULL;
+}
+
 char* all_tests()
 {
 	mu_suite_start();
@@ -99,6 +154,8 @@ char* all_tests()
 	mu_run_test(test_unshift);
 	mu_run_test(test_remove);
 	mu_run_test(test_shift);
+	mu_run_test(test_split)
+	mu_run_test(test_merge);
 	mu_run_test(test_destroy);
 	
 	return NULL;

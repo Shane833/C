@@ -2,7 +2,7 @@
 #define __PQUEUE_H__
 
 #include <stdlib.h>
-#include <dbg.h>
+#include <lcthw/dbg.h>
 
 /*  A Priority Queue is a special data structure which organize the elements ba- 
 	sed on their priority/dominance in the heirarchy. It is basically a complete
@@ -25,27 +25,27 @@
 */
 
 // Comparison Function - used to organize the data
-typedef int (*PQ_Compare) (const void*, const void* b);
+typedef int (*PQueue_Compare) (const void*, const void* b);
 
 // PQueue Data Structure
 typedef struct PQueue{
 	int end;
 	size_t max;
 	void** array;
-	PQ_Compare cmp;
+	PQueue_Compare cmp;
 }PQueue;
 
-PQueue* PQueue_Create(size_t size, PQ_Compare cmp);
+PQueue* PQueue_Create(size_t size, PQueue_Compare cmp);
 
 void PQueue_Enqueue(PQueue* q, void* element);
 
 void* PQueue_Dequeue(PQueue* q);
 
-PQueue* PQueue_CreateFromArray(void** array, size_t size, PQ_Compare cmp);
+PQueue* PQueue_CreateFromArray(void** array, size_t size, PQueue_Compare cmp);
 
 // Since we mostly work with pointers it and in case of static arrays we don't necessarily
 // have any pointers and therefore we store the addresses of each of the elements
-PQueue* PQueue_CreateFromStaticArray(void** array, size_t size, PQ_Compare cmp); 
+PQueue* PQueue_CreateFromStaticArray(void** array, size_t size, PQueue_Compare cmp); 
 
 // Additional Function
 static inline void* PQueue_Get(PQueue* q, int index)

@@ -119,7 +119,23 @@ static void quicksort(DArray* array, int low, int high, DArray_compare cmp)
 
 int DArray_heapsort(DArray* array, DArray_compare cmp)
 {
-	// return heapsort(array->contents, DArray_count(array), sizeof(void*), cmp);
+	check(array != NULL, "Can't sort a NULL pointed array!");
+	check(array->contents != NULL, "Can't sort a NULL pointed array!");
+	
+	// we will get create a priority queue from the current data
+	PQueue* q = PQueue_CreateFromArray(array->contents, DArray_count(array), (PQueue_Compare)cmp);
+	check_mem(q);
+	
+	// Now simply remove the data
+	for(int i = 0;i < DArray_count(array);i++){
+		DArray_set(array, i, PQueue_Dequeue(q));
+	}
+	
+	// Deallocate memory from the priority queue
+	PQueue_Destroy(q);
+	
 	return 0;
+error:
+	return -1;
 }
 

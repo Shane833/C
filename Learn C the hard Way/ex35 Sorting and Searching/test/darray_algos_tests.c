@@ -52,7 +52,12 @@ char* test_quicksort()
 
 char* test_mergesort()
 {
-	return run_sort_test(DArray_mergesort, "mergersort");
+	return run_sort_test(DArray_mergesort, "mergesort");
+}
+
+char* test_heapsort()
+{
+	return run_sort_test(DArray_heapsort, "heapsort");
 }
 
 char* all_tests()
@@ -61,6 +66,7 @@ char* all_tests()
 	
 	mu_run_test(test_mergesort);
 	mu_run_test(test_quicksort);
+	mu_run_test(test_heapsort)
 	
 	return NULL;
 }
