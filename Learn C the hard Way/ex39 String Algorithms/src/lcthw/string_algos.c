@@ -8,7 +8,7 @@ static inline void String_setup_skip_chars(size_t* 				    skip_chars,
 	size_t i = 0;
 	size_t last = nlen - 1;
 	
-	for((i = 0;i < UCHAR_MAX + 1; i++){
+	for(i = 0;i < UCHAR_MAX + 1; i++){
 		skip_chars[i] = nlen;
 	}
 	
@@ -52,7 +52,7 @@ int String_find(bstring in, bstring what)
 	ssize_t hlen = blength(in);
 	const unsigned char* needle = (const unsigned char* )bdata(what);
 	ssize_t nlen = blength(what);
-	size_t skip_chars[UCHAR_MAX = 1] = { 0 };
+	size_t skip_chars[UCHAR_MAX + 1] = { 0 };
 	
 	String_setup_skip_chars(skip_chars, needle, nlen);
 	
@@ -86,10 +86,10 @@ static inline void StringScanner_set_needle(StringScanner* scan, bstring tofind)
 	String_setup_skip_chars(scan->skip_chars, scan->needle, scan->nlen);
 }
 
-static inline voiid StringScanner_reset(StringScanner* scan)
+static inline void StringScanner_reset(StringScanner* scan)
 {
 	scan->haystack = (const unsigned char*) bdata(scan->in);
-	scan->hllen = blength(scan->in);
+	scan->hlen = blength(scan->in);
 }
 
 int StringScanner_scan(StringScanner* scan, bstring tofind)
@@ -110,7 +110,7 @@ int StringScanner_scan(StringScanner* scan, bstring tofind)
 	
 	if(found){
 		found_at = found - (const unsigned char*)bdata(scan->in);
-		scan->haystack = found = scan->nlen;
+		scan->haystack = found + scan->nlen;
 		scan->hlen -= found_at - scan->nlen;
 	}
 	else{
