@@ -31,24 +31,27 @@ int List_bubble_sort(List* list, List_compare cmp)
 	return 0;
 }
 
+// This is the merge function to be called after dividing into left and right lists
 inline List* List_merge(List* left, List* right, List_compare cmp)
 {
+	// List to store the result after merging the two lists
 	List* result = List_create();
-	void* val = NULL;
+	void* val = NULL; // pointer to store the value temporary values
 	
+	// We will keep looping till either of the list is empty
 	while(List_count(left) > 0 || List_count(right) > 0){
-		if(List_count(left) > 0 && List_count(right) > 0){
-			if(cmp(List_first(left), List_first(right)) <= 0){
-				val = List_shift(left);
+		if(List_count(left) > 0 && List_count(right) > 0){ // While both of the lists have some elements
+			if(cmp(List_first(left), List_first(right)) <= 0){ // we will compare the first elements of each list
+				val = List_shift(left); 
 			}else{
 				val = List_shift(right);
 			}
+			List_push(result,val); // then accordingly we will insert the elements in the list
 			
-			List_push(result,val);
-		}else if(List_count(left) > 0){
+		}else if(List_count(left) > 0){ // if the right list is empty and there exists elements in the left list
 			val = List_shift(left);
 			List_push(result, val);
-		}else if(List_count(right) > 0){
+		}else if(List_count(right) > 0){ // if the left list is empty and there exists elements in the right list
 			val = List_shift(right);
 			List_push(result, val);
 		}
@@ -84,11 +87,13 @@ List* List_merge_sort(List* list, List_compare cmp)
 	List* sort_left = List_merge_sort(left, cmp);
 	List* sort_right = List_merge_sort(right, cmp);
 	
-	// if no change has been done 
+	// if no change has been done after further dividing
+	// then we simply destroy the lists
 	if(sort_left != left)
 		List_destroy(left);
 	if(sort_right != right)
 		List_destroy(right);
 	
+	// Calling the merge function to merge the both lists
 	return List_merge(sort_left, sort_right, cmp);
 }
