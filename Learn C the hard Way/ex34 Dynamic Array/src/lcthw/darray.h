@@ -72,14 +72,16 @@ error:
 	return NULL;
 }
 
-// Function to 
+// Function to remove the value at the given index
 static inline void* DArray_remove(DArray* array, int i)
 {
-	void* el = array->contents[i];
+	// Hmm... somehow we are not validating the access for this index ??
+	void* el = array->contents[i]; 
 	array->contents[i] = NULL;
 	return el;
 }
 
+// Don't know why we need this function
 static inline void* DArray_new(DArray* array)
 {
 	check(array->element_size > 0, "Can't use DArray_new on zero sized array");
@@ -88,6 +90,7 @@ error:
 	return NULL;
 }
 
+// Handy function to deallocate memory from the array pointer
 #define DArray_free(E) free((E))
 
 #endif
