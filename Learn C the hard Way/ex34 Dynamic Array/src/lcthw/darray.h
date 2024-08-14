@@ -40,7 +40,7 @@ void* DArray_pop(DArray* array);
 // Function to clear data and then deallocate memory from it
 void DArray_clear_destroy(DArray* array);
 
-// Handy macros for DArray
+// Handy macros for simple DArray functions
 #define DArray_last(A) ((A)->contents[(A)->end - 1])
 #define DArray_first(A) ((A)->contents[0])
 #define DArray_end(A) ((A)->end)
