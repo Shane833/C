@@ -5,6 +5,21 @@ static const int DOT_WIDTH = 20;
 static const int DOT_HEIGHT = 20;
 static const int DOT_VEL = 10; // moves 10 pixels/frame
 
+// Quick handy function to generate collider
+static inline SDL_Rect* generateCollider(int w, int h)
+{
+	SDL_Rect* new = malloc(sizeof(SDL_Rect));
+	check(new != NULL, "Failed to create the collider");
+	
+	new->w = w;
+	new->h = h;
+	
+	return new;
+
+error:
+	return NULL;
+}
+
 // Function Defintions
 Dot* Dot_create()
 {
@@ -16,9 +31,24 @@ Dot* Dot_create()
 	new_dot->x_velocity = 0;
 	new_dot->y_velocity = 0;
 	
-	// Initializing the collider's dimensions
-	new_dot->collider.w = DOT_WIDTH;
-	new_dot->collider.h = DOT_HEIGHT;
+	// Initializing the DArray of colliders
+	new_dot->colliders = DArray_create(sizeof(SDL_Rect), 11);
+	check(new_dot != NULL, "Failed to create the Colliders");
+	
+	// Adding the colliders to the DArray
+	DArray_push(new_dot->colliders, generateCollider(6,1));
+	DArray_push(new_dot->colliders, generateCollider(10,1));
+	DArray_push(new_dot->colliders, generateCollider(14,1));
+	DArray_push(new_dot->colliders, generateCollider(16,2));
+	DArray_push(new_dot->colliders, generateCollider(18,2));
+	DArray_push(new_dot->colliders, generateCollider(20,6));
+	DArray_push(new_dot->colliders, generateCollider(18,2));
+	DArray_push(new_dot->colliders, generateCollider(16,2));
+	DArray_push(new_dot->colliders, generateCollider(14,1));
+	DArray_push(new_dot->colliders, generateCollider(10,1));
+	DArray_push(new_dot->colliders, generateCollider(6,1));
+	
+	Dot_shiftColliders(new_dot);
 	
 	return new_dot;
 error:
@@ -55,26 +85,28 @@ error: // fallthrough
 	return;
 }
 
-void Dot_move(Dot* dot, SDL_Rect* wall)
+void Dot_move(Dot* dot, DArray* otherColliders)
 {
 	check(dot != NULL, "Inalid Dot!");
 	
 	// move the dot to the left or right
 	dot->position.x += dot->x_velocity;
-	dot->collider.x = dot->position.x; // update the collider's position
+	Dot_shiftColliders(dot); // update the collider's position
 	
 	if( (dot->position.x < 0) || (checkCollision(&dot->collider, wall)) ){
+		// move back
 		dot->position.x -= dot->x_velocity;
-		dot->collider.x = dot->position.x; // update the collider's position
+		Dot_shiftColliders(dot); // update the collider's position
 	}
 	
 	// move the do to the up or down
 	dot->position.y += dot->y_velocity;	
-	dot->collider.y = dot->position.y;
+	Dot_shiftColliders(dot);
 	
 	if( (dot->position.y < 0) || (checkCollision(&dot->collider, wall)) ){
+		// move back
 		dot->position.y -= dot->y_velocity;
-		dot->collider.y = dot->position.y;
+		Dot_shiftColliders(dot);
 	}
 	
 error:  // fallthrough
@@ -149,3 +181,21 @@ Note 1: It is fairly obvious this same principle can be extended to any number o
 Note 2: It should also be fairly obvious to count overlaps of just one pixel, change the < and/or the > 
 on that boundary to a <= or a >=.
 */
+
+// New Function Definitions
+
+// Retreives the colliders of the 
+DArray* Dot_getColliders(Dot* dot)
+{
+	
+}
+
+// Function to check the collisions on DArray of colliders
+bool checkMultipleCollisions(DArray* colliders_a, DArray* colliders_b)
+{
+	
+}
+
+// Function to update the colliders as per the movement of the dot
+void Dot_shiftColliders(Dot* dot)
+{}

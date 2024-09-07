@@ -78,7 +78,7 @@ error:
 bool init(){
 	// Customizing function according to me 
 	check(SDL_Init(SDL_INIT_VIDEO) >= 0,"Failed to initialize SDL! SDL_Error : %s\n", SDL_GetError());
-
+	// SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow("Getting an Image on the Screen",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,640,480,SDL_WINDOW_SHOWN);
 	check(window != NULL, "Failed to create the window! SDL_Error: %s", SDL_GetError());
 	

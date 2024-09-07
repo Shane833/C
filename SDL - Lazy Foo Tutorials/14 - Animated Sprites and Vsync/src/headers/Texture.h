@@ -2,7 +2,7 @@
 #define __TEXTURE_H__
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_Image.h>
+#include <SDL2/SDL_image.h>
 #include <dbg.h>
 #include <stdbool.h>
 

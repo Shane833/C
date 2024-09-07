@@ -1,5 +1,6 @@
 CFLAGS=-Wall -g -O2 -Isrc/headers
 LIBS=-lmingw32 -lSDL2main -lSDL2
+LIBSL=-ldl -lSDL2main -lSDL2
 
 SOURCES=$(wildcard src/**/*.c src/*.c)
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
@@ -14,7 +15,7 @@ debug: compile
 compile: $(SOURCES) $(OBJECTS)
 
 link:
-	$(CC) $(OBJECTS) -o $(TARGET) $(LIBS)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LIBSL)
 
 clean:
 	del /q src\*.o
