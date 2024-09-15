@@ -56,7 +56,7 @@ static inline void BSTree_setnode(BSTree* map, BSTreeNode* node, void* key, void
 {
 	int cmp = map->compare(node->key, key);
 	
-	if(cmp == 0){
+	if(cmp <= 0){
 		if(node->left){
 			BSTree_setnode(map, node->left, key, data);
 		} 

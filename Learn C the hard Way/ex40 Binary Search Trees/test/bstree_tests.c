@@ -56,10 +56,12 @@ char* test_get_set()
 	bstring result = BSTree_get(map, &test1);
 	mu_assert(result == &expect1, "Wrong value for test1.");
 	
+	
 	rc = BSTree_set(map, &test2, &expect2);
 	mu_assert(rc == 0, "Failed to set test2");
 	result = BSTree_get(map, &test2);
 	mu_assert(result == &expect2, "Wrong value for test2");
+	
 	
 	rc = BSTree_set(map, &test3, &expect3);
 	mu_assert(rc == 0, "Failed to set test3");
