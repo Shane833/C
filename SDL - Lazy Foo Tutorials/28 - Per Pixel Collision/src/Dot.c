@@ -3,7 +3,7 @@
 // Global variables
 static const int DOT_WIDTH = 20;
 static const int DOT_HEIGHT = 20;
-static const int DOT_VEL = 10; // moves 10 pixels/frame
+static const int DOT_VEL = 1; // reducing the velocity so the effect is more visible
 
 // Quick handy function to generate collider
 static inline SDL_Rect* generateCollider(int w, int h)
@@ -21,13 +21,13 @@ error:
 }
 
 // Function Defintions
-Dot* Dot_create()
+Dot* Dot_create(int x, int y)
 {
 	Dot* new_dot = (Dot*)malloc(sizeof(Dot));
 	check(new_dot != NULL, "Failed to create the dot!");
 	
-	new_dot->position.x = 0;
-	new_dot->position.y = 0;
+	new_dot->position.x = x;
+	new_dot->position.y = y;
 	new_dot->x_velocity = 0;
 	new_dot->y_velocity = 0;
 	
@@ -85,15 +85,15 @@ error: // fallthrough
 	return;
 }
 
-void Dot_move(Dot* dot, DArray* otherColliders)
+void Dot_move(Dot* dot, DArray* otherColliders, int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
 	check(dot != NULL, "Inalid Dot!");
 	
 	// move the dot to the left or right
 	dot->position.x += dot->x_velocity;
 	Dot_shiftColliders(dot); // update the collider's position
-	
-	if( (dot->position.x < 0) || (checkCollision(&dot->collider, wall)) ){
+								  // Using the new collision function
+	if( (dot->position.x < 0) || (dot->position.x + DOT_WIDTH > SCREEN_WIDTH) || (checkMultipleCollisions(dot->colliders, otherColliders)) ){
 		// move back
 		dot->position.x -= dot->x_velocity;
 		Dot_shiftColliders(dot); // update the collider's position
@@ -103,7 +103,7 @@ void Dot_move(Dot* dot, DArray* otherColliders)
 	dot->position.y += dot->y_velocity;	
 	Dot_shiftColliders(dot);
 	
-	if( (dot->position.y < 0) || (checkCollision(&dot->collider, wall)) ){
+	if( (dot->position.y < 0) || (dot->position.y + DOT_HEIGHT > SCREEN_HEIGHT) || (checkMultipleCollisions(dot->colliders, otherColliders)) ){
 		// move back
 		dot->position.y -= dot->y_velocity;
 		Dot_shiftColliders(dot);
@@ -187,15 +187,72 @@ on that boundary to a <= or a >=.
 // Retreives the colliders of the 
 DArray* Dot_getColliders(Dot* dot)
 {
-	
+	return dot->colliders;
 }
 
 // Function to check the collisions on DArray of colliders
 bool checkMultipleCollisions(DArray* colliders_a, DArray* colliders_b)
 {
+	// The sides of the rectangles
+	int leftA, leftB;
+	int rightA, rightB;
+	int topA, topB;
+	int bottomA, bottomB;
 	
+	// Go through the A boxes
+	for(int Abox = 0; Abox < DArray_count(colliders_a); Abox++){
+		// First lets get a reference to the rectangles
+		SDL_Rect* refA = (SDL_Rect*)DArray_get(colliders_a, Abox);
+		// Calculate the sides of rect A
+		leftA = refA->x;
+		rightA = refA->x + refA->w;
+		topA = refA->y;
+		bottomA = refA->y + refA->h;
+		
+		// Go through the B boxes
+		for(int Bbox = 0; Bbox < DArray_count(colliders_b); Bbox++){
+			// Again lets get the reference to the rectangles
+			SDL_Rect* refB = (SDL_Rect*)DArray_get(colliders_b, Bbox);
+			// Calculate the sides of rect B
+			leftB = refB->x;
+			rightB = refB->x + refB->w;
+			topB = refB->y;
+			bottomB = refB->y + refB->h;
+			
+			// if no sides from A are outside of B
+			if( ( (bottomA <= topB) || (topA >= bottomB) || (rightA <= leftB) || (leftA >= rightB) ) == false ){
+				// A collision is detected
+				return true;
+			}
+		}
+	}
+	// if neither set of collision boxes touched
+	return false;
 }
 
 // Function to update the colliders as per the movement of the dot
 void Dot_shiftColliders(Dot* dot)
-{}
+{
+	// The row offset
+	int r = 0;
+	
+	// Go through the dot's collision boxes
+	for(int set = 0; set < DArray_count(dot->colliders); ++set)
+	{
+		
+		// first lets get a reference to the individual
+		SDL_Rect* ref = (SDL_Rect*)DArray_get(dot->colliders, set);
+		
+		// Center the collision box
+		ref->x = dot->position.x + (DOT_WIDTH - ref->w) / 2;
+		
+		// Set the collision box at its row offset
+		ref->y = dot->position.y + r;
+		
+		// Move the row offset down the height of the collision box
+		r += ref->h;
+		
+	}
+}
+
+
