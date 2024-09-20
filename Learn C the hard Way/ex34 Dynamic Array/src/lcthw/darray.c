@@ -3,7 +3,7 @@
 
 // FUNCTION DEFINTIONS
 
-// Creat Function
+// Create Function
 DArray* DArray_create(size_t element_size, size_t initial_max)
 {
 	DArray* array = malloc(sizeof(DArray));

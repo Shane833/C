@@ -76,9 +76,19 @@ error:
 static inline void* DArray_remove(DArray* array, int i)
 {
 	// Hmm... somehow we are not validating the access for this index ??
+	// So lets do that
+	
+	/* Original Code
 	void* el = array->contents[i]; 
 	array->contents[i] = NULL;
 	return el;
+	*/
+	
+	// Modified Version
+	check(i < array->max, "DArray attemp to get past max"); // validating the index
+	void* el = array->contents[i]; // retreiving the required element
+	array->contents[i] = NULL; // replacing element with NULL
+	return el; // returning the element
 }
 
 // Don't know why we need this function
@@ -90,7 +100,7 @@ error:
 	return NULL;
 }
 
-// Handy function to deallocate memory from the array pointer
+// Handy function to deallocate memory from the DArray pointer
 #define DArray_free(E) free((E))
 
 #endif

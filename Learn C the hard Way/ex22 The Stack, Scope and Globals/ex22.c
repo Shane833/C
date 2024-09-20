@@ -1,4 +1,4 @@
-// This is source file which defines variables, functions declared in header file and defines one variables of its own 
+// This is a source file which defines variables, functions declared in header file and defines one variables of its own 
 #include <stdio.h>
 #include "ex22.h" // We include this file to provide a definition to the various variables and functions declared in this header file
 #include "dbg.h"
@@ -17,7 +17,7 @@ int THE_SIZE = 1000;
 /**
 -> 1. Static defined in the file: The static variables if defined globally within a file can only be used in that file only
 								  any function can reference them within that file, however any reference outside of that file
-								  will resutl in an undefined reference.
+								  will result in an undefined reference.
 -> 2. Static defined within a block or a function : The static variable defined within a block or function will be initialized once and will retain their life
 													for the entirity of the program. Unlike local variables they are not defined with each function call but only 
 													retain their previous values for the lifetime of the program.
