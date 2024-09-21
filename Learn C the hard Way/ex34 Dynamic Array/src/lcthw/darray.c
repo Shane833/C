@@ -6,21 +6,22 @@
 // Create Function
 DArray* DArray_create(size_t element_size, size_t initial_max)
 {
-	DArray* array = malloc(sizeof(DArray));
+	DArray* array = malloc(sizeof(DArray)); // Allocating and checking the new DArray pointer
 	check_mem(array);
-	array->max = initial_max;
+	array->max = initial_max; // Setting the initial max and checking if its valid
 	check(array->max > 0, "You must set an initial max > 0");
 	
+	// Allocating the same initial amount as a contiguous memory and checking it
 	array->contents = calloc(initial_max, sizeof(void *)); // What is size of void *, I assume 32bit/4 bytes as is with all the pointers
 	check_mem(array->contents);
 	
-	array->end = 0;
-	array->element_size = element_size;
-	array->expand_rate = DEFAULT_EXPAND_RATE;
+	array->end = 0; // initially the array will be empty hence it will be 0
+	array->element_size = element_size; // setting the element size variable
+	array->expand_rate = DEFAULT_EXPAND_RATE; // setting the default expansion rate
 	
-	return array;
+	return array; // simply return the DArray pointer
 error:
-	DArray_destroy(array);
+	DArray_destroy(array); // In case of failure destroy the DArray and return NULL
 	return NULL;
 }
 
