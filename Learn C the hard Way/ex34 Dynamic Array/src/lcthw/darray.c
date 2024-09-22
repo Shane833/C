@@ -27,11 +27,11 @@ error:
 
 void DArray_clear(DArray* array)
 {
-	int i = 0;
-	if(array->element_size > 0){
-		for(i = 0;i < array->max; i++){
-			if(array->contents[i] != NULL){
-				free(array->contents[i]);
+	int i = 0; // out counter/iterator
+	if(array->element_size > 0){ // I don't know why we check if the element_size is greater than 0
+		for(i = 0;i < array->max; i++){ // simply iterate over the array
+			if(array->contents[i] != NULL){ // if elements exists
+				free(array->contents[i]); // then deallocate memory from them
 			}
 		}
 	}
@@ -39,13 +39,13 @@ void DArray_clear(DArray* array)
 
 static inline int DArray_resize(DArray* array, size_t newsize)
 {
-	array->max = newsize;
-	check(array->max > 0, "The newsize must be greater than 0");
+	array->max = newsize; // we set the new max size (either greater or smaller than existing)
+	check(array->max > 0, "The newsize must be greater than 0"); // check if its valid
 	
-	void* contents = realloc(array->contents, array->max * sizeof(void*));
+	void* contents = realloc(array->contents, array->max * sizeof(void*)); // using realloc function 
 	check_mem(contents); // check contensts and assume realloc don't harm the original on error
 	
-	array->contents = contents;
+	array->contents = contents; // simply providing it the new address of reallocated memory region
 	
 	return 0;
 error:
@@ -54,9 +54,16 @@ error:
 
 int DArray_expand(DArray* array)
 {
-	size_t old_max = array->max;
+	size_t old_max = array->max; // we store the original max size
+	// Then calling the reisze function to actually expand that memory region
 	check(DArray_resize(array, array->max + array->expand_rate) == 0, "Failed to expand array to new size : %d", array->max + array->expand_rate);
+	// memset function allows us to set a memory region on size n with the given bytes in the second parameter
+	// The function defintiion follows as :
+	// void *memset(void *s, int c, size_t n) and returns the pointer to that memory area
 	memset(array->contents + old_max, 0, array->expand_rate + 1);
+	// I don't understand why the size is set at expand_rate + 1, maybe so that it don't go out of bounds ??
+	// or as the size is n the indexes would only go to n-1, therefore the extra 1 at the end
+	// Also why are we setting the new memory region with 0 upto 300 indexes ????
 	
 	return 0;
 error:
@@ -65,31 +72,38 @@ error:
 
 int DArray_contract(DArray* array)
 {
+	// we compute the new size as per the expand rate and the array end
+	// if the end is less than expand rate then we won't need to contract
+	// however if the end is past that and its taking extra space than the initial size
+	// then we should contract and resize it
 	int new_size = array->end < (int)array->expand_rate ? (int)array->expand_rate : array->end;
-	return DArray_resize(array, new_size + 1);
+	return DArray_resize(array, new_size + 1); // again passing the extra 1 for size to index conversion
 }
 
 void DArray_destroy(DArray* array)
 {
-	if(array){
-		if(array->contents) free(array->contents);
-		free(array);
+	if(array){ // If the array pointer is valid
+		if(array->contents){ // if the content array is valid
+			free(array->contents); // deallocate the memory from the contents array
+		} 
+		free(array); // deallocate the array pointer
 	}
 }
 
 void DArray_clear_destroy(DArray* array)
 {
+	// Simply both functions called one after the other
 	DArray_clear(array);
 	DArray_destroy(array);
 }
 
 int DArray_push(DArray* array, void* el)
 {
-	array->contents[array->end] = el;
-	array->end++;
+	array->contents[array->end] = el; // adding the element at the end
+	array->end++; // incrementing the end
 	
-	if(DArray_end(array) >= DArray_max(array)){
-		return DArray_expand(array);
+	if(DArray_end(array) >= DArray_max(array)){ // if we have crossed the max size
+		return DArray_expand(array); // simply expand the whole DArray
 	}
 	else{
 		return 0;
@@ -98,13 +112,15 @@ int DArray_push(DArray* array, void* el)
 
 void* DArray_pop(DArray* array)
 {
-	check(array->end - 1  >= 0, "Attempt to pop from an empty list");
+	check(array->end - 1  >= 0, "Attempt to pop from an empty list"); // validating for an empty list
 	
-	void* el = DArray_remove(array, array->end - 1);
-	array->end--;
+	void* el = DArray_remove(array, array->end - 1); // we store the element
+	array->end--; // decrement the end
 	
-	if(DArray_end(array) > (int)array->expand_rate && DArray_end(array) % (int)array->expand_rate){
-		DArray_contract(array);
+	if(DArray_end(array) > (int)array->expand_rate && DArray_end(array) % (int)array->expand_rate){ 
+		// I understood if the end is greater than the expand rate but why perfectly divisible by it ??
+		
+		DArray_contract(array); // and if the 
 	}
 	
 	return el;
