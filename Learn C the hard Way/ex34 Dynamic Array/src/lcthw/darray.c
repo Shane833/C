@@ -29,6 +29,8 @@ void DArray_clear(DArray* array)
 {
 	int i = 0; // out counter/iterator
 	if(array->element_size > 0){ // I don't know why we check if the element_size is greater than 0
+	// So the reason why we check for size size 0 is that the elements are statically defined instead of dynamic
+	// So if the elements that are statically added don't need to be deallocated 
 		for(i = 0;i < array->max; i++){ // simply iterate over the array
 			if(array->contents[i] != NULL){ // if elements exists
 				free(array->contents[i]); // then deallocate memory from them
