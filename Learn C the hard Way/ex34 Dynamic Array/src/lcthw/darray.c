@@ -123,6 +123,8 @@ void* DArray_pop(DArray* array)
 	
 	if(DArray_end(array) > (int)array->expand_rate && DArray_end(array) % (int)array->expand_rate){ 
 		// I understood if the end is greater than the expand rate but why perfectly divisible by it ??
+// Correction* : It shouldn't be perfectly divisible by the expand rate but still why ??
+// And if we jump to the contract function it is checking if end < expand rate which will always be false and since this block will only run when end > expand rate so why the extra check ??
 		
 		DArray_contract(array); // and if the 
 	}
