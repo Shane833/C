@@ -63,13 +63,13 @@ int DArray_expand(DArray* array)
 	// The function defintiion follows as :
 	// void *memset(void *s, int c, size_t n) and returns the pointer to that memory area
 	memset(array->contents + old_max, 0, array->expand_rate + 1);
-// Then we are initializing the newly added bytes to 0
+	// Then we are initializing the newly added bytes to 0
 	// I don't understand why the size is set at expand_rate + 1, maybe so that it don't go out of bounds ??
 	// or as the size is n the indexes would only go to n-1, therefore the extra 1 at the end
 	// Also why are we setting the new memory region with 0 upto 300 indexes ????
-// Ans 1) See the reason why we are initializing expand rate + 1 is bcz consider this, we have a base address of 1000 and we want to set bytes up to and including 1050 to 0, this means we have 51 mean pry locations not 50 
-// Ans 2) Yes somewhat I think my logic was not exactly right but I was getting there 
-// Ans 3) We are not starting from the base address, see if my base address was 1000 and I have 50 elements then I have nemory filled up to 1050 and say I want to add another 50 using realloc, well doing so would give me 50 garbage values, so we would start with 1050 (base + old size) up to 50 bytes ahead(51 if we include the address 1050 itself) which is basically the size
+	// Ans 1) See the reason why we are initializing expand rate + 1 is bcz consider this, we have a base address of 1000 and we want to set bytes up to and including 1050 to 0, this means we have 51 mean pry locations not 50 
+	// Ans 2) Yes somewhat I think my logic was not exactly right but I was getting there 
+	// Ans 3) We are not starting from the base address, see if my base address was 1000 and I have 50 elements then I have nemory filled up to 1050 and say I want to add another 50 using realloc, well doing so would give me 50 garbage values, so we would start with 1050 (base + old size) up to 50 bytes ahead(51 if we include the address 1050 itself) which is basically the size
 	
 	return 0;
 error:
@@ -82,6 +82,7 @@ int DArray_contract(DArray* array)
 	// if the end is less than expand rate then we won't need to contract
 	// however if the end is past that and its taking extra space than the initial size
 	// then we should contract and resize it
+	// Lets check this feature and if it is correct or not in its implementation
 	int new_size = array->end < (int)array->expand_rate ? (int)array->expand_rate : array->end;
 	return DArray_resize(array, new_size + 1); // again passing the extra 1 for size to index conversion
 }
@@ -125,8 +126,8 @@ void* DArray_pop(DArray* array)
 	
 	if(DArray_end(array) > (int)array->expand_rate && DArray_end(array) % (int)array->expand_rate){ 
 		// I understood if the end is greater than the expand rate but why perfectly divisible by it ??
-// Correction* : It shouldn't be perfectly divisible by the expand rate but still why ??
-// And if we jump to the contract function it is checking if end < expand rate which will always be false and since this block will only run when end > expand rate so why the extra check ??
+		// Correction* : It shouldn't be perfectly divisible by the expand rate but still why ??
+		// And if we jump to the contract function it is checking if end < expand rate which will always be false and since this block will only run when end > expand rate so why the extra check ??
 		
 		DArray_contract(array); // and if the 
 	}

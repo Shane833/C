@@ -91,9 +91,12 @@ static inline void* DArray_remove(DArray* array, int i)
 	return el; // returning the element
 }
 
-// Don't know why we need this function
+// Don't know why we need this function, We don't even use it anywhere in the code
 static inline void* DArray_new(DArray* array)
 {
+	// However what this does is basically returns a pointer to a memory region
+	// of the size of the element size, and if the element size is 0 (i.e. static elements)
+	// we return NULL
 	check(array->element_size > 0, "Can't use DArray_new on zero sized array");
 	return calloc(1, array->element_size);
 error:
