@@ -50,6 +50,11 @@ void DArray_clear_destroy(DArray* array);
 // Defines the default rate at which the array must expand
 #define DEFAULT_EXPAND_RATE 300
 
+static void printDArraySize()
+{
+	printf("I don't know dude\n");
+}
+
 // Function to set value at the given index
 static inline void DArray_set(DArray* array, int i, void* el)
 {
@@ -89,13 +94,20 @@ static inline void* DArray_remove(DArray* array, int i)
 	void* el = array->contents[i]; // retreiving the required element
 	array->contents[i] = NULL; // replacing element with NULL
 	return el; // returning the element
+	
+error:
+	return NULL;
+	
 }
 
 // Don't know why we need this function, We don't even use it anywhere in the code
+// Correction : I understand now why we are using this function
+// It is basically to create a new element which can be added to the darray
 static inline void* DArray_new(DArray* array)
 {
 	// However what this does is basically returns a pointer to a memory region
-	// of the size of the element size, and if the element size is 0 (i.e. static elements)
+	// of the size of the element size, and if the element size is greater than 0, means we are storing
+	// dynamically mapped elements and not just pointers or 32 bit values
 	// we return NULL
 	check(array->element_size > 0, "Can't use DArray_new on zero sized array");
 	return calloc(1, array->element_size);

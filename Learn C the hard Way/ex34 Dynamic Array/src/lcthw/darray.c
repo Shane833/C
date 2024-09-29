@@ -83,7 +83,14 @@ int DArray_contract(DArray* array)
 	// however if the end is past that and its taking extra space than the initial size
 	// then we should contract and resize it
 	// Lets check this feature and if it is correct or not in its implementation
+	
+	// What if I make some changes bcz, this check seems redundant as we already this function is only called when end > expand_rate
+	// No bcz atleast when we call this function manually we must be able to atleast, and since the expand rate is fixed
+	// multiple calls to it won't change the new_size until we don't go over the expand rate
 	int new_size = array->end < (int)array->expand_rate ? (int)array->expand_rate : array->end;
+	printf("New Size : %d, Array End : %d\n", new_size + 1, array->end); 
+	
+	//int new_size = array->end;
 	return DArray_resize(array, new_size + 1); // again passing the extra 1 for size to index conversion
 }
 
@@ -127,9 +134,10 @@ void* DArray_pop(DArray* array)
 	if(DArray_end(array) > (int)array->expand_rate && DArray_end(array) % (int)array->expand_rate){ 
 		// I understood if the end is greater than the expand rate but why perfectly divisible by it ??
 		// Correction* : It shouldn't be perfectly divisible by the expand rate but still why ??
-		// And if we jump to the contract function it is checking if end < expand rate which will always be false and since this block will only run when end > expand rate so why the extra check ??
-		
-		DArray_contract(array); // and if the 
+		// And if we jump to the contract function it is checking if end < expand rate which will 
+		// always be false and since this block will only run when end > expand rate so why the extra check ??
+		// ANSWER : Well this function can be called manually thats why, it was so fucking simple you dumbfuck
+		DArray_contract(array); 
 	}
 	
 	return el;
