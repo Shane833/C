@@ -1,7 +1,7 @@
 #ifndef _radixmap_h
 #define _radixmap_h
 
-#include <stdint.h>
+#include <stdint.h> // Since we will using exact size integers across all platforms
 
 typedef union RMElement{
 	uint64_t raw;
