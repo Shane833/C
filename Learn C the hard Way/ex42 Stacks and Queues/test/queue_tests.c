@@ -7,7 +7,7 @@ char* tests[] = {"test1 data", "test2 data", "test3 data"};
 
 #define NUM_TESTS 3
 
-char* tests_create()
+char* test_create()
 {
 	queue = Queue_create();
 	mu_assert(queue != NULL, "Failed to create queue");
