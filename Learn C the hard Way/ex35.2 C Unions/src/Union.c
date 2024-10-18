@@ -9,7 +9,6 @@
 // different lenses to view the picture.
 // There primary use is to either save space or to convert between different formats
 
-
 // This enumeration will let us define which type of data we will be storing
 typedef enum{
 	TYPE_INT,
