@@ -11,7 +11,11 @@ typedef union Test{
 
 int main(int argc, char* argv[])
 {
-	Test t = {.raw = 300};
+	Test t = {.raw = 129};
+	
+	// 8 bits = 0 - 255 (256 values)
+	// printf("%d\n", 300 % 256);
+	
 	
 	printf("Raw Value : %d\n", t.raw);
 	printf("Key : %d\n", t.data.key);
