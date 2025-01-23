@@ -1,8 +1,10 @@
 #ifndef _radixmap_h
 #define _radixmap_h
 
-#include <stdint.h> // Since we will using exact size integers across all platforms
+#include <stdint.h> // Since we will using exact size integers across all platforms 
 
+// This represents a single element in the radixmap
+// We have a union of 2 things : 1. Raw Data (64 bits) 2. A struct (32 bits key, 32 bits value)
 typedef union RMElement{
 	uint64_t raw;
 	struct{
