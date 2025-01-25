@@ -40,7 +40,7 @@ void RadixMap_destroy(RadixMap* map)
 	}
 }
 
-// Handy macro for retreiving the bytes from idk yet
+// Handy macro for retreiving the values of the bytes
 #define ByteOf(x,y) (((uint8_t*)x)[(y)])
 
 static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint64_t* dest)
@@ -54,6 +54,7 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint
 	
 	// count occurences of every byte value
 	for(sp = source, end = source + max; sp < end; sp++){
+		printf(": %d\n", count[ByteOf(sp, offset)]);
 		count[ByteOf(sp, offset)]++;
 	}
 	
