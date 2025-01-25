@@ -4,34 +4,41 @@
 #include <lcthw/radixmap.h>
 #include <lcthw/dbg.h>
 
+// Function to initialize and create a radixmap
 RadixMap* RadixMap_create(size_t max)
 {
+	// Allocating memory to the whole map
 	RadixMap* map = calloc(1, sizeof(RadixMap));
 	check_mem(map);
 	
+	// Allocating memory to our contents union
 	map->contents = calloc(max + 1, sizeof(RMElement));
 	check_mem(map->contents);
-	
+	// Allocating memory to our temp union
 	map->temp = calloc(max + 1, sizeof(RMElement));
 	check_mem(map->temp);
-	
+	// initiliazing the max as per the user
 	map->max = max;
-	map->end = 0;
+	map->end = 0; // initializing end to 0 well bcz its the index of the first element
 	
-	return map;
+	return map; // simply return the map
 error:
 	return NULL;
 }
 
+// Function to free the dynamic memory from the map
 void RadixMap_destroy(RadixMap* map)
 {
+	// Simply check if the memory exists
 	if(map){
+		// and if it does then simply free it
 		free(map->contents);
 		free(map->temp);
 		free(map);
 	}
 }
 
+// Handy macro for retreiving the bytes from idk yet
 #define ByteOf(x,y) (((uint8_t*)x)[(y)])
 
 static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint64_t* dest)
@@ -56,7 +63,7 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint
 		s += c;
 	}
 	
-	// fil dest with right values in the right place
+	// fill dest with right values in the right place
 	for(sp = source, end = source + max; sp < end; sp++){
 		cp = count + ByteOf(sp, offset);
 		dest[*cp] = *sp;
