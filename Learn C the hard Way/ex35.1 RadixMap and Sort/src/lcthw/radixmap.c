@@ -14,9 +14,11 @@ RadixMap* RadixMap_create(size_t max)
 	// Allocating memory to our contents union
 	map->contents = calloc(max + 1, sizeof(RMElement));
 	check_mem(map->contents);
+	
 	// Allocating memory to our temp union
 	map->temp = calloc(max + 1, sizeof(RMElement));
 	check_mem(map->temp);
+	
 	// initiliazing the max as per the user
 	map->max = max;
 	map->end = 0; // initializing end to 0 well bcz its the index of the first element
