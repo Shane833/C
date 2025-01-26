@@ -93,7 +93,7 @@ void handleEvents()
 
 void update()
 {
-	Dot_move(dot, otherdot->colliders, SCREEN_WIDTH, SCREEN_HEIGHT);
+	Dot_move(dot, NULL, otherdot->collider, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 error: // fallthrough
 	return;
@@ -134,4 +134,3 @@ void close()
 	IMG_Quit();
 	SDL_Quit();
 }
-

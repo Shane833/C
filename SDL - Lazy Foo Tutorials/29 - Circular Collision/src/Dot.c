@@ -5,21 +5,6 @@ static const int DOT_WIDTH = 20;
 static const int DOT_HEIGHT = 20;
 static const int DOT_VEL = 1; // reducing the velocity so the effect is more visible
 
-// Quick handy function to generate collider
-static inline SDL_Rect* generateCollider(int w, int h)
-{
-	SDL_Rect* new = malloc(sizeof(SDL_Rect));
-	check(new != NULL, "Failed to create the collider");
-	
-	new->w = w;
-	new->h = h;
-	
-	return new;
-
-error:
-	return NULL;
-}
-
 // Function Defintions
 Dot* Dot_create(int x, int y)
 {
@@ -31,22 +16,11 @@ Dot* Dot_create(int x, int y)
 	new_dot->x_velocity = 0;
 	new_dot->y_velocity = 0;
 	
-	// Initializing the DArray of colliders
-	new_dot->colliders = DArray_create(sizeof(SDL_Rect), 11);
-	check(new_dot != NULL, "Failed to create the Colliders");
+	// Initializing the circular collider
+	new_dot->collider = (Circle*)malloc(sizeof(Circle));
+	check(new_dot->collider != NULL, "Failed to create the collider!");
+	new_dot->collider->r = DOT_WIDTH / 2;
 	
-	// Adding the colliders to the DArray
-	DArray_push(new_dot->colliders, generateCollider(6,1));
-	DArray_push(new_dot->colliders, generateCollider(10,1));
-	DArray_push(new_dot->colliders, generateCollider(14,1));
-	DArray_push(new_dot->colliders, generateCollider(16,2));
-	DArray_push(new_dot->colliders, generateCollider(18,2));
-	DArray_push(new_dot->colliders, generateCollider(20,6));
-	DArray_push(new_dot->colliders, generateCollider(18,2));
-	DArray_push(new_dot->colliders, generateCollider(16,2));
-	DArray_push(new_dot->colliders, generateCollider(14,1));
-	DArray_push(new_dot->colliders, generateCollider(10,1));
-	DArray_push(new_dot->colliders, generateCollider(6,1));
 	
 	Dot_shiftColliders(new_dot);
 	
@@ -85,7 +59,7 @@ error: // fallthrough
 	return;
 }
 
-void Dot_move(Dot* dot, DArray* otherColliders, int SCREEN_WIDTH, int SCREEN_HEIGHT)
+void Dot_move(Dot* dot, SDL_Rect* square, Circle* circle, int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
 	check(dot != NULL, "Inalid Dot!");
 	
@@ -93,7 +67,8 @@ void Dot_move(Dot* dot, DArray* otherColliders, int SCREEN_WIDTH, int SCREEN_HEI
 	dot->position.x += dot->x_velocity;
 	Dot_shiftColliders(dot); // update the collider's position
 								  // Using the new collision function
-	if( (dot->position.x < 0) || (dot->position.x + DOT_WIDTH > SCREEN_WIDTH) || (checkMultipleCollisions(dot->colliders, otherColliders)) ){
+	// If the dot collided or went too far to the left or right
+	if( (dot->position.x - dot->collider->r < 0) || (dot->position.x + dot->collider->r > SCREEN_WIDTH) || (checkCircleCollision(dot->collider, circle)) || (checkCircleRectCollision(dot->collider, square)) ){
 		// move back
 		dot->position.x -= dot->x_velocity;
 		Dot_shiftColliders(dot); // update the collider's position
@@ -103,7 +78,7 @@ void Dot_move(Dot* dot, DArray* otherColliders, int SCREEN_WIDTH, int SCREEN_HEI
 	dot->position.y += dot->y_velocity;	
 	Dot_shiftColliders(dot);
 	
-	if( (dot->position.y < 0) || (dot->position.y + DOT_HEIGHT > SCREEN_HEIGHT) || (checkMultipleCollisions(dot->colliders, otherColliders)) ){
+	if( (dot->position.y - dot->collider->r < 0) || (dot->position.y + dot->collider->r > SCREEN_HEIGHT) || (checkCircleCollision(dot->collider, circle)) || (checkCircleRectCollision(dot->collider,square)) ){
 		// move back
 		dot->position.y -= dot->y_velocity;
 		Dot_shiftColliders(dot);
@@ -185,49 +160,9 @@ on that boundary to a <= or a >=.
 // New Function Definitions
 
 // Retreives the colliders of the 
-DArray* Dot_getColliders(Dot* dot)
+Circle* Dot_getColliders(Dot* dot)
 {
-	return dot->colliders;
-}
-
-// Function to check the collisions on DArray of colliders
-bool checkMultipleCollisions(DArray* colliders_a, DArray* colliders_b)
-{
-	// The sides of the rectangles
-	int leftA, leftB;
-	int rightA, rightB;
-	int topA, topB;
-	int bottomA, bottomB;
-	
-	// Go through the A boxes
-	for(int Abox = 0; Abox < DArray_count(colliders_a); Abox++){
-		// First lets get a reference to the rectangles
-		SDL_Rect* refA = (SDL_Rect*)DArray_get(colliders_a, Abox);
-		// Calculate the sides of rect A
-		leftA = refA->x;
-		rightA = refA->x + refA->w;
-		topA = refA->y;
-		bottomA = refA->y + refA->h;
-		
-		// Go through the B boxes
-		for(int Bbox = 0; Bbox < DArray_count(colliders_b); Bbox++){
-			// Again lets get the reference to the rectangles
-			SDL_Rect* refB = (SDL_Rect*)DArray_get(colliders_b, Bbox);
-			// Calculate the sides of rect B
-			leftB = refB->x;
-			rightB = refB->x + refB->w;
-			topB = refB->y;
-			bottomB = refB->y + refB->h;
-			
-			// if no sides from A are outside of B
-			if( ( (bottomA <= topB) || (topA >= bottomB) || (rightA <= leftB) || (leftA >= rightB) ) == false ){
-				// A collision is detected
-				return true;
-			}
-		}
-	}
-	// if neither set of collision boxes touched
-	return false;
+	return dot->collider;
 }
 
 // Function to update the colliders as per the movement of the dot
@@ -237,6 +172,7 @@ void Dot_shiftColliders(Dot* dot)
 	int r = 0;
 	
 	// Go through the dot's collision boxes
+	/*
 	for(int set = 0; set < DArray_count(dot->colliders); ++set)
 	{
 		
@@ -253,6 +189,12 @@ void Dot_shiftColliders(Dot* dot)
 		r += ref->h;
 		
 	}
+	*/
 }
 
+// New Function to check collision between two cirlces
 
+bool checkCircleCollision(Circle* a, Circle* b)
+{
+	
+}
