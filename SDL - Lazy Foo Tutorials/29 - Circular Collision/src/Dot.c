@@ -62,6 +62,8 @@ error: // fallthrough
 void Dot_move(Dot* dot, SDL_Rect* square, Circle* circle, int SCREEN_WIDTH, int SCREEN_HEIGHT)
 {
 	check(dot != NULL, "Inalid Dot!");
+	check(square != NULL, "Invalid Rect!");
+	check(circle != NULL, "Invalid circle collider!");
 	
 	// move the dot to the left or right
 	dot->position.x += dot->x_velocity;
@@ -92,7 +94,7 @@ void Dot_render(SDL_Renderer* renderer, Texture* texture, Dot* dot)
 {
 	check(dot != NULL, "Invalid Dot!");
 	
-	Texture_render(renderer, texture, dot->position.x, dot->position.y, NULL);
+	Texture_render(renderer, texture, dot->position.x - dot->collider->r, dot->position.y - dot->collider->r, NULL);
 
 error: // fallthrough
 	return;
@@ -160,7 +162,7 @@ on that boundary to a <= or a >=.
 // New Function Definitions
 
 // Retreives the colliders of the 
-Circle* Dot_getColliders(Dot* dot)
+Circle* Dot_getCollider(Dot* dot)
 {
 	return dot->collider;
 }
@@ -168,33 +170,77 @@ Circle* Dot_getColliders(Dot* dot)
 // Function to update the colliders as per the movement of the dot
 void Dot_shiftColliders(Dot* dot)
 {
-	// The row offset
-	int r = 0;
+	check(dot != NULL, "ERROR : Invalid dot!");
 	
-	// Go through the dot's collision boxes
-	/*
-	for(int set = 0; set < DArray_count(dot->colliders); ++set)
-	{
-		
-		// first lets get a reference to the individual
-		SDL_Rect* ref = (SDL_Rect*)DArray_get(dot->colliders, set);
-		
-		// Center the collision box
-		ref->x = dot->position.x + (DOT_WIDTH - ref->w) / 2;
-		
-		// Set the collision box at its row offset
-		ref->y = dot->position.y + r;
-		
-		// Move the row offset down the height of the collision box
-		r += ref->h;
-		
-	}
-	*/
+	dot->collider->x = dot->position.x;
+	dot->collider->y = dot->position.y;
+	
+error:
+	return;
 }
 
 // New Function to check collision between two cirlces
-
 bool checkCircleCollision(Circle* a, Circle* b)
 {
+	check(a != NULL, "ERROR : Invalid Circle!!!");
+	check(b != NULL, "ERROR : Invalid Circle!!!");
+	// Calculate the total radius squared
+	int totalRadiusSquared = a->r + b->r;
+	totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
 	
+	// If the distance between the centers of the circles is less than the sum of their radii
+	if (distanceSquared(a->x, a->y, b->x, b->y) < (totalRadiusSquared)){
+		// The circles have collided
+		return true;
+	}
+
+error: // fallthrough
+	// If not
+	return false;
+}
+
+// New Function to check collision between a circle and a rectangle
+bool checkCircleRectCollision(Circle* a, SDL_Rect* b)
+{
+	check(a != NULL, "ERROR : Invalid Circle!!!");
+	check(b != NULL, "ERROR : Invalid Rectangle!!!");
+	
+	// Closest point on the collision box (rectangle)
+	int cX, cY;
+	
+	// Find the closest x offset
+	if(a->x < b->x){
+		cX = b->x;
+	} else if (a->x > b->x + b->w){
+		cX = b->x + b->w;
+	}else{
+		cX = a->x;
+	}
+	
+	// Find the closest y offset
+	if (a->y < b->y){
+		cY = b->y;
+	} else if (a->y > b->y + b->h){
+		cY = b->y + b->h;
+	} else{
+		cY = a->y;
+	}
+	
+	// If the closest point is inside the circle
+	if (distanceSquared(a->x, a->y, cX, cY) < a->r * a->r){
+		// This box and cirlce have collided
+		return true;
+	}
+	
+error: // fallthrough
+	// If there is no collision
+	return false;
+}
+
+double distanceSquared(int x1, int y1, int x2, int y2)
+{
+	int deltaX = x2 - x1;
+	int deltaY = y2 - y1;
+	
+	return ((deltaX * deltaX) + (deltaY * deltaY));
 }

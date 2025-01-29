@@ -11,6 +11,9 @@ all: compile link
 debug: CFLAGS += -DNDEBUG
 debug: all
 
+release: LIBS += -mwindows
+release: all
+
 compile: $(SOURCES) $(OBJECTS)
 
 link:

@@ -32,9 +32,9 @@ void Dot_move(Dot* dot, SDL_Rect* square, Circle* circle, int SCREEN_WIDTH, int 
 // new function for checking the collision between circles
 bool checkCircleCollision(Circle* a, Circle* b);
 // new function to check collisions between circle and a rectangle
-bool CheckCircleRectCollision(Circle* a, SDL_Rect* b);
+bool checkCircleRectCollision(Circle* a, SDL_Rect* b);
 // Get the collision boxes of the dot ( Circle now )
-Circle* Dot_getColliders();
+Circle* Dot_getCollider(Dot* dot);
 // New Function to shift the collision boxes of the dot relative to its offset
 void Dot_shiftColliders(Dot* dot);
 // new function to caculate the distance squared between thwo points

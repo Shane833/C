@@ -16,8 +16,9 @@ bool quit = false;
 
 // Texture Variable
 Texture dot_texture;
-Dot* dot;
-Dot* otherdot; 
+Dot* dot = NULL;
+Dot* otherdot = NULL;
+SDL_Rect wall;
 
 int run()
 {
@@ -66,12 +67,17 @@ bool loadMedia()
 	bool r = Texture_loadFromFile(renderer, &dot_texture, "Assets/dot.bmp");
 	check(r != false, "Failed to load the texture!");
 	
-	dot = Dot_create(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	dot = Dot_create(SCREEN_WIDTH / 3, SCREEN_HEIGHT / 3);
 	check(dot != NULL, "Failed to create the dot!");
 	
 	otherdot = Dot_create(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4);
 	check(otherdot != NULL, "Failed to create the otherdot!");
 
+	wall.x = 300;
+	wall.y = 40;
+	wall.w = 40;
+	wall.h = 400;
+	
 	return true;
 error:
 	return false;
@@ -93,10 +99,7 @@ void handleEvents()
 
 void update()
 {
-	Dot_move(dot, NULL, otherdot->collider, SCREEN_WIDTH, SCREEN_HEIGHT);
-	
-error: // fallthrough
-	return;
+	Dot_move(dot, &wall, Dot_getCollider(otherdot), SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 void render()
@@ -106,11 +109,11 @@ void render()
 	
 	// render the wall
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderDrawRect(renderer, &wall);
 	
 	// Render the dot
 	Dot_render(renderer, &dot_texture, otherdot);
 	Dot_render(renderer, &dot_texture, dot);
-	
 	
 	SDL_RenderPresent(renderer); // Display the frame to the screen
 }
