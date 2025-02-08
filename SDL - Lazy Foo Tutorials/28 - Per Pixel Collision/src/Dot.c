@@ -184,7 +184,7 @@ on that boundary to a <= or a >=.
 
 // New Function Definitions
 
-// Retreives the colliders of the 
+// Retreives the colliders of the dot
 DArray* Dot_getColliders(Dot* dot)
 {
 	return dot->colliders;
