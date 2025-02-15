@@ -1,7 +1,7 @@
 #include <Game.h>
 #include <Texture.h>
 
-#define TOTAL_FRAMES 4
+#define TOTAL_FRAMES 6
 
 // Some globals
 // Usual Global Variables
@@ -64,10 +64,10 @@ error:
 
 bool loadMedia()
 {
-	bool r = Texture_loadFromFile(renderer, &sprite_sheet, "Assets/foo.png");
+	bool r = Texture_loadFromFile(renderer, &sprite_sheet, "Assets/walk.png");
 	check(r == true, "Failed to load the front texture");
 	
-	/*
+	
 	sheet[0].x = 0;
 	sheet[0].y = 0;
 	sheet[0].w = 48;
@@ -97,9 +97,9 @@ bool loadMedia()
 	sheet[5].y = 0;
 	sheet[5].w = 48;
 	sheet[5].h = 48;
-	*/
 	
 	
+	/*
    //Set sprite clips
 	sheet[ 0 ].x =   0;
 	sheet[ 0 ].y =   0;
@@ -120,8 +120,8 @@ bool loadMedia()
 	sheet[ 3 ].y =   0;
 	sheet[ 3 ].w =  64;
 	sheet[ 3 ].h = 205;
+	*/
 	
-
 	return true;
 	error:
 		return false;
