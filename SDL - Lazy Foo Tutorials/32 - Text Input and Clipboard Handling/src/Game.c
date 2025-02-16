@@ -14,6 +14,7 @@ bool quit = false;
 
 // Texture Variable
 Texture input_text_texture;
+Texture prompt_text_texture;
 // Text Color
 SDL_Color text_color = {0,0,0,255};
 // Input text string
@@ -76,6 +77,7 @@ bool loadMedia()
 	check(font != NULL, "Failed to load the Font!, TTF_ERROR : %s", TTF_GetError());
 	
 	Texture_loadFromRenderedText(renderer, &input_text_texture, font, bdata(input_text), text_color);
+	Texture_loadFromRenderedText(renderer, &prompt_text_texture, font, "Enter Text:", text_color);
 	
 	// Enable text input
 	SDL_StartTextInput();
@@ -122,9 +124,14 @@ void handleEvents()
 		// Special text input event
 		else if (e.type == SDL_TEXTINPUT){
 			// Not copying or pasting just typing data
-			if(!((SDL_GetModState() & KMOD_CRTL) && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V'))){
+			if(!((SDL_GetModState() & KMOD_CTRL) && (e.text.text[0] == 'c' || e.text.text[0] == 'C' || e.text.text[0] == 'v' || e.text.text[0] == 'V'))){
 				// Then we will simply append the character onto the string
-				bconchar(input_text, e.text.text); // don't know if its a character or not check it 
+				// don't know if e.text.text is a character or not check it 
+				// I found out its not a single character but a whole string (char*)
+				// So lets convert it from a c string to bstr
+				const_bstring temp = bfromcstr(e.text.text);
+				bconcat(input_text, temp);
+				bdestroy(temp);
 				render_text = true;
 			}
 		}
@@ -134,19 +141,43 @@ void handleEvents()
 
 void update()
 {
-
+	// Render the text if needed
+	if(render_text){
+		// If text is not empty
+		if(blength(input_text) != 0){
+			// Create new text from the string
+			Texture_loadFromRenderedText(renderer, &input_text_texture, font, bdata(input_text), text_color);
+		}
+		// and if the text is empty
+		else{
+			// Render Space Texture / Empty
+			Texture_loadFromRenderedText(renderer, &input_text_texture, font, " ", text_color);
+		}
+	}
 }
 
 void render()
 {
+	// Clear screen
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer); // Clears the current frame
+	
+	// Render text textures
+	Texture_render(renderer, &prompt_text_texture, (SCREEN_WIDTH - Texture_getWidth(&prompt_text_texture)) / 2, 0, NULL);
+	Texture_render(renderer, &input_text_texture, (SCREEN_WIDTH - Texture_getWidth(&input_text_texture)) / 2, Texture_getHeight(&prompt_text_texture), NULL);
+
 	
 	SDL_RenderPresent(renderer); // Display the frame to the screen
 }
 
 void close()
 {
+	// Disable Text Input
+	SDL_StopTextInput();
+	
+	// destroy the string
+	bdestroy(input_text);
+	
 	
 	// Close our window and the renderer
 	SDL_DestroyWindow(window);
