@@ -20,7 +20,7 @@ typedef struct RadixMap{
 	size_t end;
 	uint32_t counter;
 	RMElement* contents;
-	RMElement* temp;
+	RMElement* temp; // This is used for 
 }RadixMap;
 
 // Function to create and initialize a RadixMap based on the initial max size

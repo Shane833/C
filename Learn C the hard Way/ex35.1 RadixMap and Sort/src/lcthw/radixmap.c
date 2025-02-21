@@ -45,17 +45,26 @@ void RadixMap_destroy(RadixMap* map)
 
 static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint64_t* dest)
 {
+	// This array will hold the count/occurences of all the values of bytes i.e. from 0-255
+	// i.e. we count which bytes contains a specific value from 0-255
 	uint64_t count[256] = { 0 };
-	uint64_t* cp = NULL;
-	uint64_t* sp = NULL;
-	uint64_t* end = NULL;
+	
+	uint64_t* cp = NULL; // This is the count pointer, pointing to the count array
+	uint64_t* sp = NULL; // This is the source pointer, pointing to the source 
+	uint64_t* end = NULL; // End pointer to keep us in bounds
 	uint64_t s = 0;
 	uint64_t c = 0;
 	
 	// count occurences of every byte value
 	for(sp = source, end = source + max; sp < end; sp++){
-		printf(": %d\n", count[ByteOf(sp, offset)]);
-		count[ByteOf(sp, offset)]++;
+		count[ByteOf(sp, offset)]++; // frequency of Byte = sp[offset]
+		// Equivalent to:
+		// uint64_t j = ByteOf(sp, offset); 
+		// count[j] = count[j] + 1;
+	}
+	
+	for(int i = 0;i < 256;i++){
+		printf("%dth byte : %ld\n", i, count[i]);
 	}
 	
 	// transform count into index by summing
@@ -79,8 +88,10 @@ void RadixMap_sort(RadixMap* map)
 	uint64_t* source = &map->contents[0].raw;
 	uint64_t* temp = &map->temp[0].raw;
 	
-	radix_sort(0, map->end, source, temp);
+	// Sorting the Keys (Byte 1 and 2)(index 0 and 1)
+	radix_sort(0, map->end, source, temp); 
 	radix_sort(1, map->end, temp, source);
+	// Sorting the Values (Byte 3 and 4)(index 2 and 3)
 	radix_sort(2, map->end, source, temp);
 	radix_sort(3, map->end, temp, source);
 }
