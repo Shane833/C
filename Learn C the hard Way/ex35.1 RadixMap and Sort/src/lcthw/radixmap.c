@@ -63,6 +63,7 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint
 		// count[j] = count[j] + 1;
 	}
 	
+	// for debug purposes
 	for(int i = 0;i < 256;i++){
 		printf("%dth byte : %ld\n", i, count[i]);
 	}
