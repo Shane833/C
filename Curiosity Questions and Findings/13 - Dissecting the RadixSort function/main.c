@@ -29,17 +29,28 @@ int radix_sort(int max, uint8_t* src, uint8_t* dest)
 		s += c;
 	}
 	
+	for(int i = 0; i < 256;i++){
+		printf("%d : %d\n", i-1, count[i]);
+	}
+	
 	// Map the indices to their respective positions
 	for(sp = src, end = src + max; sp < end; sp++){
-		cp = count + *sp;
-		dest[*cp] = *sp;
-		++(*cp);
+		cp = count + *sp; // We point to the index in the count array where the index of the *sp is situated
+		dest[*cp] = *sp; // and we place the *sp at the index in the destination array
+		++(*cp); // then we increment the value so if the there are multiple same values they are situated right next to each other
 	}
 }
 
 int main(int argc, char* argv[])
 {
+	uint8_t arr[6] = {5,9,7,3,6,2};
+	uint8_t dest[6] = { 0 };
 	
+	radix_sort(6,arr,dest);
+	
+	for(int i = 0; i < 6;i++){
+		printf("%d ", dest[i]);
+	}
 	
 	return 0;
 }
