@@ -77,6 +77,9 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint
 	}
 	
 	// fill dest with right values in the right place
+	// We simply obtain the count of the value at address (base_count + sp(basically our element))
+	// Which provides us the index at which the value of sp is to be stored in the destination array
+	// Then we increment the value at cp by 1 to handle the case if there are multiple values
 	for(sp = source, end = source + max; sp < end; sp++){
 		cp = count + ByteOf(sp, offset);
 		dest[*cp] = *sp;

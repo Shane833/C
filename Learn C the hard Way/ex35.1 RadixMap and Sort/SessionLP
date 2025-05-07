@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NotepadPlus>
+    <Session activeView="0">
+        <mainView activeIndex="2">
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1" startPos="0" endPos="0" selMode="0" offset="0" wrapCount="0" lang="C++" encoding="-1" userReadOnly="no" filename="E:\Shane\C\GitHub\C\Learn C the hard Way\ex35.1 RadixMap and Sort\src\lcthw\dbg.h" backupFilePath="" originalFileLastModifTimestamp="1180149291" originalFileLastModifTimestampHigh="31106325" tabColourId="-1" RTL="no" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="512" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="3" xOffset="0" scrollWidth="1805" startPos="368" endPos="368" selMode="0" offset="0" wrapCount="1" lang="C++" encoding="-1" userReadOnly="no" filename="E:\Shane\C\GitHub\C\Learn C the hard Way\ex35.1 RadixMap and Sort\src\lcthw\radixmap.h" backupFilePath="" originalFileLastModifTimestamp="505954416" originalFileLastModifTimestampHigh="31163893" tabColourId="-1" RTL="no" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="512" mapWrapIndentMode="-1" mapIsWrap="no" />
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1468" startPos="444" endPos="444" selMode="0" offset="0" wrapCount="1" lang="C" encoding="-1" userReadOnly="no" filename="E:\Shane\C\GitHub\C\Learn C the hard Way\ex35.1 RadixMap and Sort\src\lcthw\radixmap.c" backupFilePath="" originalFileLastModifTimestamp="592716939" originalFileLastModifTimestampHigh="31178573" tabColourId="-1" RTL="no" mapFirstVisibleDisplayLine="-1" mapFirstVisibleDocLine="-1" mapLastVisibleDocLine="-1" mapNbLine="-1" mapHigherPos="-1" mapWidth="-1" mapHeight="-1" mapKByteInDoc="512" mapWrapIndentMode="-1" mapIsWrap="no" />
+        </mainView>
+        <subView activeIndex="0" />
+    </Session>
+</NotepadPlus>
