@@ -11,7 +11,7 @@ int radix_sort(int max, uint8_t* src, uint8_t* dest)
 	uint8_t* sp = NULL; // src pointer pointing to the source
 	uint8_t* end = NULL; // keeps us in bounds keeping us from accessing foreign memory
 	uint8_t s = 0; // for obtaining the cumulative sum
-	uint8_t c = 0; // temporary variable
+	uint8_t c = 0; // temporary variable used while accumulating the sum
 	
 	// src is supposedly an array so we will go through it
 	// and find which value of byte occurs how many times like a histogram
@@ -21,7 +21,7 @@ int radix_sort(int max, uint8_t* src, uint8_t* dest)
 	
 	// we have to obtain a cumulative sum of the values
 	// This piece of code
-	// sets count[0] = 0
+	// sets count[0] = 0 (which is the default)
 	// and count[i+1] = count[i] + count[i - 1]
 	for(s = 0, cp = count, end = count + 265; cp < end; cp++){
 		c = *cp; 
@@ -38,7 +38,7 @@ int radix_sort(int max, uint8_t* src, uint8_t* dest)
 		cp = count + *sp; // We point to the index in the count array where the index of the *sp is situated
 		dest[*cp] = *sp; // and we place the *sp at the index in the destination array
 		++(*cp); // then we increment the value so if the there are multiple same values they are situated right next to each other
-	}
+	}			// Defining the in-order nature of the algorithm
 }
 
 int main(int argc, char* argv[])
