@@ -92,16 +92,20 @@ void RadixMap_sort(RadixMap* map)
 	uint64_t* source = &map->contents[0].raw;
 	uint64_t* temp = &map->temp[0].raw;
 	
-	// Sorting the Keys (Byte 1 and 2)(index 0 and 1)
+	// Sorting the Keys
+	// Since we are sorting one byte at a time and there are 4 bytes (32bits) in total
+	// Hence we offset the bytes by 4 indices and sort them individually
+	// We go back and forth between changing the src and dest arrays
 	radix_sort(0, map->end, source, temp); 
 	radix_sort(1, map->end, temp, source);
-	// Sorting the Values (Byte 3 and 4)(index 2 and 3)
 	radix_sort(2, map->end, source, temp);
 	radix_sort(3, map->end, temp, source);
+	// and at the end we have sorted all of the keys based on the 4 bytes
 }
 
 RMElement* RadixMap_find(RadixMap* map, uint32_t to_find)
 {
+	// Simple binary search algorithm
 	int low = 0;
 	int high = map->end - 1;
 	RMElement* data = map->contents;
@@ -126,11 +130,16 @@ RMElement* RadixMap_find(RadixMap* map, uint32_t to_find)
 
 int RadixMap_add(RadixMap* map, uint32_t key, uint32_t value)
 {
+	// We put a condition that the values in the key must always
+	// be less than and not equal to UINT32_MAX and if it ain't
+	// then that key is not considered valid
 	check(key < UINT32_MAX, "Key can't be equal to UINT32_MAX.");
 	
 	RMElement element = {.data = {.key = key, .value = value} };
 	check(map->end + 1 < map->max, "RadixMap is full");
 	
+	// we add the element to the end of the map then
+	// we increment end and resort the order of the elements
 	map->contents[map->end++] = element;
 	
 	RadixMap_sort(map);
@@ -145,6 +154,10 @@ int RadixMap_delete(RadixMap* map, RMElement* el)
 	check(map->end > 0, "There is nothing to delete");
 	check(el != NULL, "Can't delete a NULL element");
 	
+	// We set the key of that element to max value of uint32_t 
+	// When sorted this will push the element to the end of the map
+	// and since we can only add keys less than UINT32_MAX it will
+	// act as if it has been deleted
 	el->data.key = UINT32_MAX;
 	
 	if(map->end > 1){
