@@ -6,8 +6,8 @@ static int make_random(RadixMap* map)
 {
 	size_t i = 0;
 	for(i = 0; i < map->max - 1; i++){
-		uint32_t key = (uint32_t) (rand() | (rand() << 16));
-		check(RadixMap_add(map, key, i) == 0, "Failed to add key %u", key); 
+		uint32_t key = (uint32_t) (rand() | (rand() << 16)); // shifts the bits by 16 digits and OR the result with another rand call 
+		check(RadixMap_add(map, key, i) == 0, "Failed to add key %u", key); // Then we add these keys in the map
 	}
 	
 	return i;
@@ -25,6 +25,8 @@ static int check_order(RadixMap* map)
 		d1 = map->contents[i];
 		d2 = map->contents[i + 1];
 		
+		// Since they are arranged in ascending order the preceding key should
+		// always be larger the succeding key
 		if(d1.data.key > d2.data.key){
 			debug("FAIL: i=%u, key: %u, value: %u, equals max? %d\n", i, d1.data.key, d1.data.value, d2.data.key == UINT32_MAX);
 			return 0;
@@ -40,10 +42,11 @@ static int test_search(RadixMap* map)
 	RMElement* d = NULL;
 	RMElement* found = NULL;
 	
-	for(i = map->end /2; i < map->end; i++){
+	for(i = map->end /2; i < map->end; i++){ // We start at the middle of the map and move our way to the end
 		d = &map->contents[i];
 		found = RadixMap_find(map, d->data.key);
 		check(found != NULL, "Didn't find %u at %u:", d->data.key, i);
+		// We check if the element we have found are the same 
 		check(found->data.key == d->data.key, "Got the wrong result: %d:%u looking for %u at %u", found, found->data.key, d->data.key, i);
 	}
 	
@@ -55,25 +58,32 @@ error:
 //test for big number of elements
 static char* test_operations()
 {
-	size_t N = 5;
+	size_t N = 100;
 	
+	// Creates a map of size 100
 	RadixMap* map = RadixMap_create(N);
 	mu_assert(map != NULL, "Failed to make the map");
-	mu_assert(make_random(map), "Didn't make a random fake radix map");
+	mu_assert(make_random(map), "Didn't make a random fake radix map"); // add elements
 	
+	// Then we sort the map
 	RadixMap_sort(map);
+	// check if the 
 	mu_assert(check_order(map), "Failed to properly sort the RadixMap");
 	
+	// Test the search and order functionality
 	mu_assert(test_search(map), "Failed the search test");
 	mu_assert(check_order(map), "RadixMap didn't stay sorted after search");
 	
+	// In addition we are also checking the delete functionality
 	while(map->end > 0){
 		RMElement* el = RadixMap_find(map, map->contents[map->end / 2].data.key);
 		mu_assert(el != NULL, "Should get a result");
 		
+		// storing the old size
 		size_t old_end = map->end;
 		
 		mu_assert(RadixMap_delete(map,el) == 0, "Didn't delete it");
+		// checking the new size
 		mu_assert(old_end - 1 == map->end, "Wrong size after delete");
 		
 		//test that the end is now the old value, but uint32 max so it trails off
@@ -88,7 +98,7 @@ static char* test_operations()
 char* all_tests()
 {
 	mu_suite_start();
-	srand(time(NULL));
+	srand(time(NULL)); // we seed the rand function with the current time
 	
 	mu_run_test(test_operations);
 	

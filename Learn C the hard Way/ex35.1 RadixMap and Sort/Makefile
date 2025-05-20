@@ -17,7 +17,7 @@ dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
 dev: all
 
 $(TARGET): CFLAGS += -fPIC
-$(TARGET): buildw $(OBJECTS)
+$(TARGET): build $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
 $(SO_TARGET): $(TARGET) $(OBJECTS)
