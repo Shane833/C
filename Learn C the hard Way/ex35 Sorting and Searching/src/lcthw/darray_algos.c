@@ -38,11 +38,11 @@ static void divide(DArray* array, int low, int high, DArray_compare cmp) // help
 {
 	if(low >= high) return; // base case
 	
-	int mid = low + (high - low) / 2;
+	int mid = low + (high - low) / 2; // we calculate the mid point
 	
-	divide(array, low, mid,(DArray_compare) cmp);
-	divide(array, mid + 1, high,(DArray_compare) cmp);
-	merge(array, low, mid, high,(DArray_compare) cmp); 	
+	divide(array, low, mid,(DArray_compare) cmp); // then divide the left half
+	divide(array, mid + 1, high,(DArray_compare) cmp); // and then the right half
+	merge(array, low, mid, high,(DArray_compare) cmp); // and merge the data after sorting
 }
 
 // Utility MergeSort function : merge
@@ -112,9 +112,9 @@ static void quicksort(DArray* array, int low, int high, DArray_compare cmp)
 {
 	if(low >= high) return;
 	
-	int pivot = partition(array, low, high, cmp);
-	quicksort(array, low, pivot - 1, cmp);
-	quicksort(array, pivot + 1 , high, cmp);
+	int pivot = partition(array, low, high, cmp); // first we find the partition
+	quicksort(array, low, pivot - 1, cmp); // then we sort to the left of the pivot
+	quicksort(array, pivot + 1 , high, cmp); // and to the right of the pivot
 }
 
 int DArray_heapsort(DArray* array, DArray_compare cmp)

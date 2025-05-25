@@ -63,11 +63,10 @@ static char* test_operations()
 	// Creates a map of size 100
 	RadixMap* map = RadixMap_create(N);
 	mu_assert(map != NULL, "Failed to make the map");
-	mu_assert(make_random(map), "Didn't make a random fake radix map"); // add elements
+	mu_assert(make_random(map), "Didn't make a random fake radix map"); // add elements and sort them automatically
 	
-	// Then we sort the map
-	RadixMap_sort(map);
-	// check if the 
+	
+	// check if the order of the map is maintained
 	mu_assert(check_order(map), "Failed to properly sort the RadixMap");
 	
 	// Test the search and order functionality
@@ -92,7 +91,24 @@ static char* test_operations()
 				
 	RadixMap_destroy(map);
 	
-	return NULL;
+	return NULL; 
+}
+
+static char* test_find_min(){
+	// Lets create a new map
+	RadixMap* map = RadixMap_create(10);
+	mu_assert(map != NULL, "ERROR : Failed to create RadixMap!");
+	
+	for(int i = 1;i < 10; i = i + 2){
+		RadixMap_add(map, i, 2);
+	}
+	
+	int min_pos = RadixMap_find_min(map, 6);
+	mu_assert(min_pos == 2, "ERROR : Wrong position of the min pos");
+	
+	RadixMap_destroy(map); // deallocate the map
+	
+	return NULL; // don't forget this else it will throw random values
 }
 
 char* all_tests()
@@ -101,6 +117,7 @@ char* all_tests()
 	srand(time(NULL)); // we seed the rand function with the current time
 	
 	mu_run_test(test_operations);
+	mu_run_test(test_find_min);
 	
 	return NULL;
 }

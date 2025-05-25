@@ -2,6 +2,7 @@
 #define _radixmap_h
 
 #include <stdint.h> // Since we will using exact size integers across all platforms 
+#include <stdbool.h>
 
 // This represents a single element in the radixmap
 // We have a union of 2 things : 1. Raw Data (64 bits) 2. A struct (32 bits key, 32 bits value)
@@ -27,8 +28,6 @@ typedef struct RadixMap{
 RadixMap* RadixMap_create(size_t max);
 // Function to destroy and free data from the map
 void RadixMap_destroy(RadixMap* map);
-// The heart of the map, i.e. Radix Sort Algorithm function itself
-void RadixMap_sort(RadixMap* map);
 // Function to find an element within the map based on a unique key
 RMElement* RadixMap_find(RadixMap* map, uint32_t key);
 // Function to add the elements in the map with unique keys and integer values

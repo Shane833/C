@@ -82,8 +82,38 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint
 	}
 }
 
-void RadixMap_sort(RadixMap* map)
-{
+// This function will find the position of the element such that it is just smaller than
+// the element we wish to add to the map
+uint32_t RadixMap_find_min(RadixMap* map, uint32_t key_to_add)
+{	
+	int low = 0;
+	int high = map->end - 1; // since end stores the value just past the last element
+	RMElement* data = map->contents;
+	
+	while(low <= high){ // check the base case
+		
+		// calculate middle and get the middle corresponding to it
+		int middle = low + (high - low) / 2;
+		uint32_t key = data[middle].data.key;
+		
+		if(key < key_to_add){
+			low = middle + 1;
+		}
+		else if(key > key_to_add){
+			high = middle - 1;
+		}
+	}
+	
+	return high < 0 ? 0 : high; // since this will contain the position of the key smaller than 
+								// the one we wish to add
+	// Also I have to handle a case where if we wish to add an element which is smaller
+	// than the element at 0th index then high would become less than 0, which is invalid
+	// hence if so is the case, we simply return 0
+}
+
+// The heart of the map, i.e. Radix Sort Algorithm function itself
+static void RadixMap_sort(RadixMap* map)
+{	
 	uint64_t* source = &map->contents[0].raw;
 	uint64_t* temp = &map->temp[0].raw;
 	
@@ -130,8 +160,19 @@ int RadixMap_add(RadixMap* map, uint32_t key, uint32_t value)
 	// then that key is not considered valid
 	check(key < UINT32_MAX, "Key can't be equal to UINT32_MAX.");
 	
+	// Even though the element we declare here is static
+	// however since we know that we cannot refer to the local 
+	// variables outside of the function then how can we add
+	// this element into an entity such as map whose scope exists
+	// outside of the function ??
 	RMElement element = {.data = {.key = key, .value = value} };
 	check(map->end + 1 < map->max, "RadixMap is full");
+	
+	// ANSWER: even if the element is static in nature within the function
+	// we are not concerned with actually adding the element itself but the value
+	// that it holds, as the memory for the element is already allocated within the map
+	// we can simply overwrite the struct RMElement at the new position with the statically
+	// declared element, this is equivalent to map->contents[map->end++].data = {.key = key, .value = value};
 	
 	// we add the element to the end of the map then
 	// we increment end and resort the order of the elements

@@ -17,7 +17,7 @@ dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
 dev: all
 
 $(TARGET): CFLAGS += -fPIC
-$(TARGET): build $(OBJECTS)
+$(TARGET): buildw $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
 $(SO_TARGET): $(TARGET) $(OBJECTS)
@@ -51,7 +51,7 @@ cleanw:
 	del /q src\*.o
 	del /q src\lcthw\*.o
 	del /q test\*.exe
-	rmdir /q build
+	rmdir /q/s build
 	rmdir /q bin
 
 # The Install

@@ -1,5 +1,5 @@
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -DNDEBUG $(OPTFLAGS)
-LIBS=-ldl -lbsd $(OPTLIBS)
+LIBS=-ldl $(OPTLIBS)
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/**/*.c src/*.c)
@@ -17,12 +17,16 @@ dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
 dev: all
 
 $(TARGET): CFLAGS += -fPIC
-$(TARGET): build $(OBJECTS)
+$(TARGET): buildw $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
 $(SO_TARGET): $(TARGET) $(OBJECTS)
 	$(CC) -shared -o $@ $(OBJECTS)
 
+buildw:
+	mkdir build
+	mkdir bin
+	
 # -p flag check if the directory already exists then throws no error
 build:
 	@mkdir -p build
@@ -47,7 +51,8 @@ cleanw:
 	del /q src\*.o
 	del /q src\lcthw\*.o
 	del /q test\*.exe
-	del /q build\*.*
+	rmdir /q/s build
+	rmdir /q bin
 
 # The Install
 install: all
