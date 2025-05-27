@@ -48,7 +48,6 @@ clean:
 	rm -rm `find . -name "*.dSYM" - print`
 
 cleanw:
-	del /q src\*.o
 	del /q src\lcthw\*.o
 	del /q test\*.exe
 	rmdir /q/s build

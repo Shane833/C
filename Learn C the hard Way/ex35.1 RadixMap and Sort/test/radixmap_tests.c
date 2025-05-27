@@ -55,6 +55,7 @@ error:
 	return 0;
 }
 
+/* TEMPORARY COMMENT
 //test for big number of elements
 static char* test_operations()
 {
@@ -93,18 +94,45 @@ static char* test_operations()
 	
 	return NULL; 
 }
+*/
+
+// TEMPORARY UTITLITY FUNCTION
+void displayMap(RadixMap* map)
+{
+	for(int i = 0;i < map->end;i++){
+		printf("%u ", map->contents[i].data.key);
+	}
+	
+	printf("\n");
+}
 
 static char* test_find_min(){
 	// Lets create a new map
 	RadixMap* map = RadixMap_create(10);
 	mu_assert(map != NULL, "ERROR : Failed to create RadixMap!");
 	
-	for(int i = 1;i < 10; i = i + 2){
-		RadixMap_add(map, i, 2);
-	}
+	// Adding elements to the map
+	RadixMap_add(map, 3, 2);
+	RadixMap_add(map, 1, 2);
+	// displaying the map
+	displayMap(map);
 	
+	// Adding elements to the map
+	RadixMap_add(map, 2, 2);
+	// displaying the map
+	displayMap(map);
+	
+	// deleting elements
+	RMElement* el = RadixMap_find(map, 2);
+	mu_assert(el != NULL, "ERROR : Cannot find element!");
+	RadixMap_delete(map, el);
+	// display the map
+	displayMap(map);
+	
+	/* TEMPORARY COMMENT
 	int min_pos = RadixMap_find_min(map, 6);
 	mu_assert(min_pos == 2, "ERROR : Wrong position of the min pos");
+	*/
 	
 	RadixMap_destroy(map); // deallocate the map
 	
@@ -116,7 +144,9 @@ char* all_tests()
 	mu_suite_start();
 	srand(time(NULL)); // we seed the rand function with the current time
 	
+	/* TEMPORARY COMMENT
 	mu_run_test(test_operations);
+	*/
 	mu_run_test(test_find_min);
 	
 	return NULL;

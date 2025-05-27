@@ -84,7 +84,11 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t* source, uint
 
 // This function will find the position of the element such that it is just smaller than
 // the element we wish to add to the map
-uint32_t RadixMap_find_min(RadixMap* map, uint32_t key_to_add)
+// NOTE : Also this function won't be called unless you add something
+// therefore we don't need to worry about checking if the map is emtpy
+// as the first time this function get called is when an element gets added
+// so by default the map would not be empty
+uint32_t RadixMap_find_min(RadixMap* map, uint32_t key)
 {	
 	int low = 0;
 	int high = map->end - 1; // since end stores the value just past the last element
@@ -94,13 +98,24 @@ uint32_t RadixMap_find_min(RadixMap* map, uint32_t key_to_add)
 		
 		// calculate middle and get the middle corresponding to it
 		int middle = low + (high - low) / 2;
-		uint32_t key = data[middle].data.key;
+		uint32_t temp_key = data[middle].data.key;
 		
-		if(key < key_to_add){
+		if(temp_key < key){
 			low = middle + 1;
 		}
-		else if(key > key_to_add){
+		else if(temp_key > key){
 			high = middle - 1;
+		}
+		else{ 
+			// This means that the keys are equal
+			// not including this condition seems to start an infinite loop
+			// We simply return the index indicating the middle itself
+			// This can occur in two cases:
+			// 1. There is only a single element in the map
+			// 2. You are adding an element with a key that already exists in the map
+			// 3. You are trying to delete an element and pass the same key and if the element exists
+			// we simply return its index
+			return middle;
 		}
 	}
 	
@@ -112,10 +127,11 @@ uint32_t RadixMap_find_min(RadixMap* map, uint32_t key_to_add)
 }
 
 // The heart of the map, i.e. Radix Sort Algorithm function itself
-static void RadixMap_sort(RadixMap* map)
+static void RadixMap_sort(RadixMap* map, const uint32_t index)
 {	
-	uint64_t* source = &map->contents[0].raw;
-	uint64_t* temp = &map->temp[0].raw;
+	// index represents the index from where the algorithm should start sorting
+	uint64_t* source = &map->contents[index].raw;
+	uint64_t* temp = &map->temp[index].raw;
 	
 	// Sorting the Keys
 	// Since we are sorting one byte at a time and there are 4 bytes (32bits) in total
@@ -178,8 +194,12 @@ int RadixMap_add(RadixMap* map, uint32_t key, uint32_t value)
 	// we increment end and resort the order of the elements
 	map->contents[map->end++] = element;
 	
-	RadixMap_sort(map);
+	// First we compute the index of the element with a key just smaller
+	// than the element we want to add
+	const uint32_t index = RadixMap_find_min(map, key); 
 	
+	RadixMap_sort(map, index);
+
 	return 0;
 error:
 	return -1;
@@ -194,11 +214,17 @@ int RadixMap_delete(RadixMap* map, RMElement* el)
 	// When sorted this will push the element to the end of the map
 	// and since we can only add keys less than UINT32_MAX it will
 	// act as if it has been deleted
-	el->data.key = UINT32_MAX;
 	
+	// Update : Since we are optimizing the radix sort
+	// When we delete an element we will find its current index
+	// then update the corresponding key and pass the index to radix sort
+	
+	const uint32_t index = RadixMap_find_min(map, el->data.key); 
+	el->data.key = UINT32_MAX;
+	printf("Index : %u, End : %d\n", index, map->end);
 	if(map->end > 1){
 		// don't bother resorting a map of 1 length
-		RadixMap_sort(map);
+		RadixMap_sort(map, index); // since we have set the e
 	}
 	
 	map->end--;
