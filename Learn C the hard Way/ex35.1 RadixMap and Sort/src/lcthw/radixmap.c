@@ -115,7 +115,7 @@ uint32_t RadixMap_find_min(RadixMap* map, uint32_t key)
 			// 2. You are adding an element with a key that already exists in the map
 			// 3. You are trying to delete an element and pass the same key and if the element exists
 			// we simply return its index
-			return middle;
+			return middle;// <= 0 ? 0 : middle - 1;
 		}
 	}
 	
@@ -176,11 +176,16 @@ int RadixMap_add(RadixMap* map, uint32_t key, uint32_t value)
 	// then that key is not considered valid
 	check(key < UINT32_MAX, "Key can't be equal to UINT32_MAX.");
 	
+	// Before adding the key into the map we must check if it already exists
+	RMElement* exists = RadixMap_find(map, key);
+	check(exists == NULL, "ERROR : Key already exists!");
+	
 	// Even though the element we declare here is static
 	// however since we know that we cannot refer to the local 
 	// variables outside of the function then how can we add
 	// this element into an entity such as map whose scope exists
 	// outside of the function ??
+	
 	RMElement element = {.data = {.key = key, .value = value} };
 	check(map->end + 1 < map->max, "RadixMap is full");
 	
@@ -194,10 +199,11 @@ int RadixMap_add(RadixMap* map, uint32_t key, uint32_t value)
 	// we increment end and resort the order of the elements
 	map->contents[map->end++] = element;
 	
+	
 	// First we compute the index of the element with a key just smaller
 	// than the element we want to add
 	const uint32_t index = RadixMap_find_min(map, key); 
-	
+	log_info("Index : %d", index);
 	RadixMap_sort(map, index);
 
 	return 0;
@@ -221,7 +227,7 @@ int RadixMap_delete(RadixMap* map, RMElement* el)
 	
 	const uint32_t index = RadixMap_find_min(map, el->data.key); 
 	el->data.key = UINT32_MAX;
-	printf("Index : %u, End : %d\n", index, map->end);
+
 	if(map->end > 1){
 		// don't bother resorting a map of 1 length
 		RadixMap_sort(map, index); // since we have set the e

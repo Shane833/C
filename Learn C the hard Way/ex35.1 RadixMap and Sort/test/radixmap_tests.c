@@ -99,7 +99,7 @@ static char* test_operations()
 // TEMPORARY UTITLITY FUNCTION
 void displayMap(RadixMap* map)
 {
-	for(int i = 0;i < map->end;i++){
+	for(int i = 0;i < map->max;i++){
 		printf("%u ", map->contents[i].data.key);
 	}
 	
@@ -112,22 +112,25 @@ static char* test_find_min(){
 	mu_assert(map != NULL, "ERROR : Failed to create RadixMap!");
 	
 	// Adding elements to the map
-	RadixMap_add(map, 3, 2);
-	RadixMap_add(map, 1, 2);
-	// displaying the map
+	mu_assert(RadixMap_add(map, 3, 2) == 0, "ERROR : Key Already Exists!");
+	mu_assert(RadixMap_add(map, 1, 2) == 0, "ERROR : Key Already Exists!");
 	displayMap(map);
 	
 	// Adding elements to the map
-	RadixMap_add(map, 2, 2);
-	// displaying the map
+	mu_assert(RadixMap_add(map, 4, 2) == 0, "ERROR : Key Already Exists!");
 	displayMap(map);
 	
+	mu_assert(RadixMap_add(map, 2, 2) == 0, "ERROR : Key Already Exists!");
+	displayMap(map);
+	
+	/*
 	// deleting elements
 	RMElement* el = RadixMap_find(map, 2);
 	mu_assert(el != NULL, "ERROR : Cannot find element!");
 	RadixMap_delete(map, el);
 	// display the map
 	displayMap(map);
+	*/
 	
 	/* TEMPORARY COMMENT
 	int min_pos = RadixMap_find_min(map, 6);
