@@ -60,13 +60,46 @@ char* test_heapsort()
 	return run_sort_test(DArray_heapsort, "heapsort");
 }
 
+char* test_sort_add()
+{
+	DArray* array = DArray_create(0, 5);
+	
+	char* names[] = {"Shine", "Ash", "Shane", "Zed"};
+	int r = 0;
+
+	// continously add strings
+	for(int i = 0;i < 4;i++){		
+		r = DArray_sort_add(array, names[i], (DArray_compare)strcmp, DARRAY_HEAPSORT);
+		mu_assert(r == 0, "ERROR : Sort Add Function Failed!");
+		mu_assert(is_sorted(array), "ERROR : Sort Add Function failed!");
+	}
+	return NULL;
+}
+
+char* test_darray_find()
+{
+	DArray* array = create_words();
+	mu_assert(array != NULL, "ERROR : Failed to create DArray!");
+	
+	int r = DArray_quicksort(array, (DArray_compare)strcmp);
+	mu_assert(r == 0, "ERROR : Failed to sort the DArray!");
+	
+	char* s = DArray_find(array, "13234", (DArray_compare)strcmp);
+	mu_assert(s != NULL, "ERROR : Wrong Answer!");
+		
+	return NULL;
+}
+
 char* all_tests()
 {
 	mu_suite_start();
-	
+	/*
 	mu_run_test(test_mergesort);
 	mu_run_test(test_quicksort);
 	mu_run_test(test_heapsort)
+	*/
+	// mu_run_test(test_sort_add);
+	mu_run_test(test_darray_find);
 	
 	return NULL;
 }

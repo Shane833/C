@@ -13,13 +13,6 @@ int DArray_mergesort(DArray* array, DArray_compare cmp)
 	return mergesort(array, DArray_count(array), cmp);
 }
 
-// DARRAY QUICKSORT
-int DArray_quicksort(DArray* array, DArray_compare cmp)
-{
-	quicksort(array, 0, DArray_count(array) - 1, cmp);
-	return 0;
-}
-
 // Main Mergesort function
 static int mergesort(DArray* array, size_t size, DArray_compare cmp)
 {
@@ -88,6 +81,13 @@ error: // Fallthrough
 	return;
 }
 
+// DARRAY QUICKSORT
+int DArray_quicksort(DArray* array, DArray_compare cmp)
+{
+	quicksort(array, 0, DArray_count(array) - 1, cmp);
+	return 0;
+}
+
 // quicksort utility function : partition
 static int partition(DArray* array, int low, int high, DArray_compare cmp)
 {	
@@ -137,5 +137,61 @@ int DArray_heapsort(DArray* array, DArray_compare cmp)
 	return 0;
 error:
 	return -1;
+}
+
+// Function to add and sort the data
+int DArray_sort_add(DArray* array, void* el, DArray_compare cmp, int DArray_sort_algo)
+{
+	check(array != NULL, "ERROR : Invalid DArray!");
+	
+	// first add the element
+	check(DArray_push(array, el) == 0, "ERROR : Failed to add the element!");
+	
+	// Now depending on the type of sorting algo provided sort the array
+	switch(DArray_sort_algo){
+		case DARRAY_QUICKSORT:
+			check(DArray_quicksort(array, cmp) == 0, "ERROR : Failed to sort the DArray!");
+			break;
+		case DARRAY_HEAPSORT:
+			check(DArray_heapsort(array, cmp) == 0, "ERROR : Failed to sort the DArray!");
+			break;
+		case DARRAY_MERGESORT:
+			check(DArray_mergesort(array, cmp) == 0, "ERROR : Failed to sort the DArray!");
+			break;
+		default: // wrong type is provided, default to quicksort
+			check(DArray_quicksort(array, cmp) == 0, "ERROR : Failed to sort the DArray!");
+	}
+	
+	return 0;
+error:
+	return -1;
+}
+
+void* DArray_find(DArray* array, void* el, DArray_compare cmp)
+{
+	check(array != NULL, "ERROR : Invalid DArray!");
+	
+	/* can't check if el is NULL as it may be 0 in case of integers and it will throw an error */
+	
+	int low = 0;
+	int high = DArray_count(array) - 1;
+	
+	while(low <= high){
+		int middle = low + (high - low) / 2;
+		void* temp = DArray_get(array, middle);
+		
+		if(cmp(temp, el) > 0){
+			high = middle - 1;
+		}
+		else if(cmp(temp, el) < 0){
+			low = middle + 1;
+		}
+		else{
+			return temp;
+		}
+	}
+
+error:
+	return NULL;
 }
 

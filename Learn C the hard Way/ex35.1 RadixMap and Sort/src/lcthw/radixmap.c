@@ -115,11 +115,11 @@ uint32_t RadixMap_find_min(RadixMap* map, uint32_t key)
 			// 2. You are adding an element with a key that already exists in the map
 			// 3. You are trying to delete an element and pass the same key and if the element exists
 			// we simply return its index
-			return middle;// <= 0 ? 0 : middle - 1;
+			return middle <= 0 ? 0 : middle - 1;
 		}
 	}
 	
-	return high < 0 ? 0 : high; // since this will contain the position of the key smaller than 
+	return high <= 0 ? 0 : high - 1; // since this will contain the position of the key smaller than 
 								// the one we wish to add
 	// Also I have to handle a case where if we wish to add an element which is smaller
 	// than the element at 0th index then high would become less than 0, which is invalid
@@ -137,10 +137,10 @@ static void RadixMap_sort(RadixMap* map, const uint32_t index)
 	// Since we are sorting one byte at a time and there are 4 bytes (32bits) in total
 	// Hence we offset the bytes by 4 indices and sort them individually
 	// We go back and forth between changing the src and dest arrays
-	radix_sort(0, map->end, source, temp); 
-	radix_sort(1, map->end, temp, source);
-	radix_sort(2, map->end, source, temp);
-	radix_sort(3, map->end, temp, source);
+	radix_sort(0, map->end - index, source, temp); 
+	radix_sort(1, map->end - index, temp, source);
+	radix_sort(2, map->end - index, source, temp);
+	radix_sort(3, map->end - index, temp, source);
 	// and at the end we have sorted all of the keys based on the 4 bytes
 }
 
@@ -203,7 +203,6 @@ int RadixMap_add(RadixMap* map, uint32_t key, uint32_t value)
 	// First we compute the index of the element with a key just smaller
 	// than the element we want to add
 	const uint32_t index = RadixMap_find_min(map, key); 
-	log_info("Index : %d", index);
 	RadixMap_sort(map, index);
 
 	return 0;

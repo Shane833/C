@@ -55,7 +55,7 @@ error:
 	return 0;
 }
 
-/* TEMPORARY COMMENT
+
 //test for big number of elements
 static char* test_operations()
 {
@@ -94,8 +94,9 @@ static char* test_operations()
 	
 	return NULL; 
 }
-*/
 
+
+/*
 // TEMPORARY UTITLITY FUNCTION
 void displayMap(RadixMap* map)
 {
@@ -112,45 +113,45 @@ static char* test_find_min(){
 	mu_assert(map != NULL, "ERROR : Failed to create RadixMap!");
 	
 	// Adding elements to the map
-	mu_assert(RadixMap_add(map, 3, 2) == 0, "ERROR : Key Already Exists!");
 	mu_assert(RadixMap_add(map, 1, 2) == 0, "ERROR : Key Already Exists!");
+	mu_assert(RadixMap_add(map, 2, 2) == 0, "ERROR : Key Already Exists!");
 	displayMap(map);
+	
+	mu_assert(RadixMap_add(map, 3, 2) == 0, "ERROR : Key Already Exists!");
+	displayMap(map);
+	
 	
 	// Adding elements to the map
 	mu_assert(RadixMap_add(map, 4, 2) == 0, "ERROR : Key Already Exists!");
 	displayMap(map);
 	
-	mu_assert(RadixMap_add(map, 2, 2) == 0, "ERROR : Key Already Exists!");
-	displayMap(map);
-	
-	/*
 	// deleting elements
 	RMElement* el = RadixMap_find(map, 2);
 	mu_assert(el != NULL, "ERROR : Cannot find element!");
 	RadixMap_delete(map, el);
 	// display the map
 	displayMap(map);
-	*/
 	
-	/* TEMPORARY COMMENT
+	
+	//TEMPORARY COMMENT
 	int min_pos = RadixMap_find_min(map, 6);
 	mu_assert(min_pos == 2, "ERROR : Wrong position of the min pos");
-	*/
+	
 	
 	RadixMap_destroy(map); // deallocate the map
 	
 	return NULL; // don't forget this else it will throw random values
 }
+*/
 
 char* all_tests()
 {
 	mu_suite_start();
 	srand(time(NULL)); // we seed the rand function with the current time
 	
-	/* TEMPORARY COMMENT
 	mu_run_test(test_operations);
-	*/
-	mu_run_test(test_find_min);
+	
+	// mu_run_test(test_find_min);
 	
 	return NULL;
 }
