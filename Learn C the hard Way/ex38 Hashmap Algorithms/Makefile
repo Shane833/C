@@ -17,7 +17,7 @@ dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
 dev: all
 
 $(TARGET): CFLAGS += -fPIC
-$(TARGET): build $(OBJECTS)
+$(TARGET): buildw $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
 $(SO_TARGET): $(TARGET) $(OBJECTS)
@@ -27,6 +27,10 @@ $(SO_TARGET): $(TARGET) $(OBJECTS)
 build:
 	@mkdir -p build
 	@mkdir -p bin
+
+buildw:
+	mkdir build
+	mkdir bin
 
 # The Unit Tests
 # Changing the CFLAGS += $(TARGET) to the $(OBJECTS) seems to do the job
@@ -43,11 +47,13 @@ clean:
 	find . -name "*.gc*" -exec rm {} \;
 	rm -rm `find . -name "*.dSYM" - print`
 
+# /q suggest quiet mode and /s means delete everything including subdirectories
 cleanw:
 	del /q src\*.o
 	del /q src\lcthw\*.o
 	del /q test\*.exe
-	del /q build\*.*
+	rmdir /q bin
+	rmdir /q/s build
 
 # The Install
 install: all

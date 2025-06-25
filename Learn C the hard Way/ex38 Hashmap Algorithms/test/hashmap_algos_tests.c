@@ -22,7 +22,7 @@ char* test_fnv1a()
 	return NULL;
 }
 
-/*
+
 char* test_adler32()
 {
 	uint32_t hash = Hashmap_adler32_hash(&test1);
@@ -36,7 +36,7 @@ char* test_adler32()
 	
 	return NULL;
 }
-*/
+
 
 char* test_djb()
 {
@@ -52,7 +52,7 @@ char* test_djb()
 	return NULL;
 }
 
-/*
+
 #define BUCKETS 100
 #define BUFFER_LEN 20
 #define NUM_KEYS BUCKETS * 1000
@@ -62,8 +62,12 @@ enum {ALGO_FNV1A, ALGO_ADLER32, ALGO_DJB};
 int gen_keys(DArray* keys, int num_keys)
 {
 	int i = 0;
-	FILE* urand = fopen("/dev/urandom", "r");
-	check(urand != NULL, "Failed to open /dev/urandom");
+	#ifdef UNIX
+		urand = fopen("/dev/urandom", "r");
+		
+		check(urand != NULL, "Failed to open /dev/urandom");
+	
+	
 	
 	struct bStream* stream = bsopen((bNread) fread, urand);
 	check(stream != NULL, "Failed to open /dev/urandom");
@@ -130,15 +134,15 @@ char* test_distribution()
 	
 	return NULL;
 }
-*/
+
 
 char* all_tests()
 {
 	mu_suite_start();
 	mu_run_test(test_fnv1a);
-	//mu_run_test(test_adler32);
+	mu_run_test(test_adler32);
 	mu_run_test(test_djb);
-	//mu_run_test(test_distribution);
+	mu_run_test(test_distribution);
 	
 	return NULL;
 }

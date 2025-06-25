@@ -20,7 +20,7 @@ uint32_t Hashmap_fnv1a_hash(void* data)
 
 const int MOD_ADLER = 65521;
 
-uint32_t Hashmap_adler_32(void* data)
+uint32_t Hashmap_adler32_hash(void* data)
 {
 	bstring s = (bstring) data;
 	uint32_t a = 1, b = 0;
