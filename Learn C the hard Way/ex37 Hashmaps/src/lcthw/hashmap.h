@@ -3,10 +3,11 @@
 
 #include <stdint.h>
 #include <lcthw/darray.h>
+#include <lcthw/darray_algos.h>
 
 #define DEFAULT_NUMBER_OF_BUCKETS 100 // Macro defining the default size of the Hashmap Keys
 
-typedef int (*Hashmap_compare) (void* a, void* b); // Pointer to Function for comparing Keys 
+typedef int (*Hashmap_compare) (const void* a, const void* b); // Pointer to Function for comparing Keys 
 typedef uint32_t (*Hashmap_hash) (void* key); // Pointer to a Function for generating the hash from a key		
 											  // Returns an unsigned 32 bit integer hash value
 
@@ -27,6 +28,7 @@ typedef struct HashmapNode{
 }HashmapNode;
 
 // This is a function for traversing the Node and displaying all the data associated with it
+// This is a user-defined function which tells how to display the data within the node
 typedef int (*Hashmap_traverse_cb) (HashmapNode* node);
 
 // Function to create a Hashmap and you have to provide a compare and hash generating function
@@ -47,5 +49,12 @@ int Hashmap_traverse(Hashmap* map, Hashmap_traverse_cb traverse_cb);
 
 // Function to remove a key value pair from the map
 void* Hashmap_delete(Hashmap* map, void* key);
+
+// Improvements
+// 1. Sort each of the bucket so that we can use binary search to find the element, this would increase
+// insertion time but decreases the searching time since currently it used linear search to find the keys
+// include the darray_algos header file and use the required functions
+/* Improvement 1 - Done */
+
 
 #endif

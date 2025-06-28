@@ -5,9 +5,19 @@
 #include <lcthw/bstrlib.h>
 
 // Default compare function which compare the bstrings
-static int default_compare(void* a, void* b)
+static int default_compare(const void * a, const void * b)
 {
 	return bstrcmp((bstring) a, (bstring) b);
+}
+
+// Default compare function for nodes which internally compare the bstrings
+static int default_node_compare(const HashmapNode * a, const HashmapNode * b)
+{
+	if(default_compare(a->key, b->key) == 0 && a->hash == b->hash){
+		return 0;
+	}else{
+		return default_compare(a->key,b->key);
+	}
 }
 
 // Bob Jenkins Hash Algorithm
@@ -110,6 +120,8 @@ error:
 // as well creating a new bucket corresponding to specific hash value
 static inline DArray* Hashmap_find_bucket(Hashmap* map, void* key, int create, uint32_t* hash_out)
 {
+	check(map != NULL, "ERROR : Invalid map!");
+
 	uint32_t hash = map->hash(key); // Here we take the key and generate a u32 bit hash
 	int bucket_n = hash % DEFAULT_NUMBER_OF_BUCKETS; // It generate an index to the DArray within the buckets DArray
 													 // We are simple limiting the index to [0, Default no. of buckets - 1]
@@ -118,6 +130,8 @@ static inline DArray* Hashmap_find_bucket(Hashmap* map, void* key, int create, u
 	check(bucket_n >= 0, "Invalid bucket found: %d, bucket_n");
 	// store it for the return so the caller can use it
 	*hash_out = hash; // Then we store this generated hash into pointer provided
+					  // also make sure than the types of both the values is same
+					  // else compiler will throw an error as they would have different memory layouts
 	
 	// Now we find the bucket correspoding to the calculated index
 	DArray* bucket = DArray_get(map->buckets, bucket_n);
@@ -138,6 +152,8 @@ error:
 // This function helps to add a Node with Key-Value Pair
 int Hashmap_set(Hashmap* map, void* key, void* data)
 {
+	check(map != NULL, "ERROR : Invalid Map!");
+
 	uint32_t hash = 0; // This will store the generated hash from the key
 	DArray* bucket = Hashmap_find_bucket(map, key, 1, &hash); // Then we find/create a bucket corresponding to the hash
 	check(bucket, "Error can't create bucket.");
@@ -146,7 +162,12 @@ int Hashmap_set(Hashmap* map, void* key, void* data)
 	HashmapNode* node = Hashmap_node_create(hash, key, data);
 	check_mem(node);
 	// and finally push that value into the bucket
-	DArray_push(bucket, node);
+	/* 
+		Original Code 
+		DArray_push(bucket, node);
+	*/
+	// Improvement - Addes by sorting the data
+	DArray_sort_add(bucket, node, (DArray_compare)default_node_compare, DARRAY_HEAPSORT);
 	
 	return 0;
 error:
@@ -158,16 +179,28 @@ static inline int Hashmap_get_node(Hashmap* map, uint32_t hash, DArray* bucket, 
 	// This assumes that all the Keys are unique
 	// Here we traverse the DArray which is provided and compare the keys and hash values
 	// and simply return the index to that element in the DArray at the end and -1 on failure
-	int i = 0;
-	for(i = 0;i < DArray_end(bucket); i++){
-		debug("TRY : %d", i);
-		HashmapNode* node = DArray_get(bucket, i);
-		if(node->hash == hash && map->compare(node->key, key) == 0){
-			return i;
-		}
-	}
 	
-	return -1;
+	/*
+		//Original Code
+		int i = 0;
+		for(i = 0;i < DArray_end(bucket); i++){
+			debug("TRY : %d", i);
+			HashmapNode* node = DArray_get(bucket, i);
+			if(node->hash == hash && map->compare(node->key, key) == 0){
+				return i;
+			}
+		}
+	
+
+	*/
+	// Updated 
+	// Ideas : How about I create new node with the same has and key values
+	// and then search it within the array
+	HashmapNode node = {key, NULL, hash};
+	// Then we pass this element into DArray_find function
+	int r = DArray_find(bucket, &node, (DArray_compare)default_node_compare);
+	
+	return r;
 }
 
 void* Hashmap_get(Hashmap* map, void* key)
@@ -189,23 +222,29 @@ error:
 
 int Hashmap_traverse(Hashmap* map, Hashmap_traverse_cb traverse_cb)
 {
+	check(map != NULL, "ERROR : Invalid Map!");
+
 	int i = 0;
 	int j = 0;
 	int rc = 0 ;
-	
+	// We enter the buckets
 	for(i = 0; i < DArray_count(map->buckets); i++){
 		DArray* bucket = DArray_get(map->buckets, i);
+		// Check if the bucket is valid, i.e. if it contains any data
 		if(bucket){
 			for(j = 0; j < DArray_count(bucket); j++){
-				HashmapNode* node = DArray_get(bucket, j);
+				HashmapNode* node = DArray_get(bucket, j); // fetches the node and traverses it
+				check(node != NULL, "ERROR : Invalid Node"); // check for valid node
 				rc = traverse_cb(node);
 				if(rc != 0)
-					return rc;
+					return rc; // any value other than 0 is considered an error
 			}
 		}
 	}
 	
 	return 0;
+error:
+	return 1;
 }
 
 // Function to remove a Node from the map

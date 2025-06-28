@@ -4,9 +4,9 @@
 #include <lcthw/bstrlib.h>
 
 Hashmap* map = NULL;
-static int traverse_called = 0;
+static int traverse_called = 0; 
 struct tagbstring test1 = bsStatic("test data 1");
-struct tagbstring test2 = bsStatic("test data 2");
+struct tagbstring test2 = bsStatic("test data 2"); 
 struct tagbstring test3 = bsStatic("test data 3");
 struct tagbstring expect1 = bsStatic("THE VALUE 1");
 struct tagbstring expect2 = bsStatic("THE VALUE 2");
@@ -47,9 +47,11 @@ char* test_destroy()
 
 char* test_get_set()
 {
+	// since bstring is actually pointer to a tagbstring
+	// If we provide their address it is equivalent to passing a bstring
 	int rc = Hashmap_set(map, &test1, &expect1);
 	mu_assert(rc == 0, "Failed to set &test1");
-	bstring result = Hashmap_get(map, &test1);
+	bstring result = Hashmap_get(map, &test1); // returns the void*, i.e. the address
 	mu_assert(result == &expect1, "Wrong value for test1");
 	
 	rc = Hashmap_set(map, &test2, &expect2);
