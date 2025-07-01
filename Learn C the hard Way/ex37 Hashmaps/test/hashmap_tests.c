@@ -33,7 +33,11 @@ static int traverse_fail_cb(HashmapNode* node)
 
 char* test_create()
 {
+	/* Original Code
 	map = Hashmap_create(NULL, NULL);
+	*/
+	// Impovement, Lets the user decide the no. of buckets
+	map = Hashmap_create(NULL, NULL, 10);
 	mu_assert(map != NULL, "Failed to create map.");
 	
 	return NULL;

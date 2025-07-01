@@ -44,7 +44,7 @@ static uint32_t default_hash(void* a)
 }
 
 // Function to create a Hashmap
-Hashmap* Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
+Hashmap* Hashmap_create(Hashmap_compare compare, Hashmap_hash hash, size_t buckets)
 {
 	Hashmap* map = calloc(1, sizeof(Hashmap));
 	check_mem(map);
@@ -52,9 +52,15 @@ Hashmap* Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
 	// If the values for the compare and hash is not provided we stick with the default functions
 	map->compare = compare == NULL ? default_compare : compare; // good of setting defaults
 	map->hash = hash == NULL ? default_hash : hash;
+	
+	/* Original Code
 	// Then here we allocate a fixed no. of elements in the DArray buckets
 	// These elements in turn will be pointers to other DArrays
 	map->buckets = DArray_create(sizeof(DArray*), DEFAULT_NUMBER_OF_BUCKETS);
+	*/
+	// Improvement, letting the user decide the buckets in the hashmap
+	map->buckets = DArray_create(sizeof(DArray*), buckets);
+
 	// Now we have set the end of the DArray = max of the DArray
 	// This is done as the no. of elements we have to do deal with are fixed
 	// and since we won't be dynamically adding any new keys we won't have to 
@@ -123,11 +129,16 @@ static inline DArray* Hashmap_find_bucket(Hashmap* map, void* key, int create, u
 	check(map != NULL, "ERROR : Invalid map!");
 
 	uint32_t hash = map->hash(key); // Here we take the key and generate a u32 bit hash
+	/* Original Code
 	int bucket_n = hash % DEFAULT_NUMBER_OF_BUCKETS; // It generate an index to the DArray within the buckets DArray
 													 // We are simple limiting the index to [0, Default no. of buckets - 1]
 													 // In this case 0 to 99
 													 // This will ensure that all the key-value pairs reside within these buckets only
 	check(bucket_n >= 0, "Invalid bucket found: %d, bucket_n");
+	*/
+	// Improvement : Hashing with the new size of the buckets
+	int bucket_n = hash % DArray_count(map->buckets);
+
 	// store it for the return so the caller can use it
 	*hash_out = hash; // Then we store this generated hash into pointer provided
 					  // also make sure than the types of both the values is same
@@ -139,7 +150,7 @@ static inline DArray* Hashmap_find_bucket(Hashmap* map, void* key, int create, u
 	if(!bucket && create){ // If the buckets does not exists and the create flag in on then we create
 						   // a new DArray and add it at the generated index
 		// new bucket, set it up
-		bucket = DArray_create(sizeof(void*), DEFAULT_NUMBER_OF_BUCKETS);
+		bucket = DArray_create(sizeof(void*), DArray_count(map->buckets));
 		check_mem(bucket);
 		DArray_set(map->buckets, bucket_n, bucket);
 	}

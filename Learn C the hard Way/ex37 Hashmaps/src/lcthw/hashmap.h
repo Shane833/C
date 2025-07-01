@@ -17,6 +17,12 @@ typedef struct Hashmap{
 	DArray* buckets; 
 	Hashmap_compare compare; // Pointer to a function for comparing keys
 	Hashmap_hash hash; // Pointer to a function for generating the hash
+	// Improvement : For Dynamic Growth
+	// We will maintain 2 more variables
+	// 1. size, to know the no. of currently added elements
+	// 2. load factor, to decide the condition for resizing elements
+	size_t size; // updated at every entry
+	double load_factor; 
 }Hashmap;
 
 // This is our single Node which is a pair of keys and values
@@ -31,9 +37,13 @@ typedef struct HashmapNode{
 // This is a user-defined function which tells how to display the data within the node
 typedef int (*Hashmap_traverse_cb) (HashmapNode* node);
 
+/* Original Code
 // Function to create a Hashmap and you have to provide a compare and hash generating function
 // for the specific datatype that you wish to use as a key
 Hashmap* Hashmap_create(Hashmap_compare, Hashmap_hash);
+*/
+// Improvement : Lets the user specificically decide the size of the buckets
+Hashmap* Hashmap_create(Hashmap_compare, Hashmap_hash, size_t buckets);
 
 // Destroys the data in the hashmap
 void Hashmap_destroy(Hashmap* map);
@@ -51,10 +61,23 @@ int Hashmap_traverse(Hashmap* map, Hashmap_traverse_cb traverse_cb);
 void* Hashmap_delete(Hashmap* map, void* key);
 
 // Improvements
+
 // 1. Sort each of the bucket so that we can use binary search to find the element, this would increase
 // insertion time but decreases the searching time since currently it used linear search to find the keys
 // include the darray_algos header file and use the required functions
 /* Improvement 1 - Done */
+ 
+// 2. To dynamically size the number of buckets or let the caller specify the number of buckets
+// for each hashmap created
+/* Some points regarding dynamically sizing the hashmap:
+ > When you resize a hashmap you have to also update their positions of elements 
+   based on the new size of the buckets and this process is called Re-Hashing.
+ > the average number of entries in a bucket (which is the total number of entries 
+   divided by the number of buckets) should give a good estimate on when the HashMap 
+   should be resized, and the size of individual buckets doesn't need to be checked.
+*/
+/* Improvement 2.1 - Done */ // Lets the user decide the default no. of buckets
+
 
 
 #endif
