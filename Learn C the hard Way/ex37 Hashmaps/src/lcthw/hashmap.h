@@ -14,22 +14,23 @@ typedef uint32_t (*Hashmap_hash) (void* key); // Pointer to a Function for gener
 // This is our Hashmap which contains pointer to compare function and pointer to hash generating function
 // and a Dynamic Array called bucket for storing the Nodes corresponding to a specific hash
 typedef struct Hashmap{
-	DArray* buckets; 
+	DArray * buckets; 
 	Hashmap_compare compare; // Pointer to a function for comparing keys
 	Hashmap_hash hash; // Pointer to a function for generating the hash
 	// Improvement : For Dynamic Growth
 	// We will maintain 2 more variables
-	// 1. size, to know the no. of currently added elements
+	// 1. entries, to know the no. of currently added elements
 	// 2. load factor, to decide the condition for resizing elements
-	size_t size; // updated at every entry
-	double load_factor; 
+	size_t bucket_size; // or called capacity in someplaces
+	size_t entries; // current no. of elements in the map, updated at every add / delete function call
+	double load_factor; // helps us determine a threshold for resizing
 }Hashmap;
 
 // This is our single Node which is a pair of keys and values
 // and also stores a unique has code within it
 typedef struct HashmapNode{
-	void* key;
-	void* data;
+	void * key;
+	void * data;
 	uint32_t hash;
 }HashmapNode;
 
@@ -37,13 +38,16 @@ typedef struct HashmapNode{
 // This is a user-defined function which tells how to display the data within the node
 typedef int (*Hashmap_traverse_cb) (HashmapNode* node);
 
-/* Original Code
+// Original Function
 // Function to create a Hashmap and you have to provide a compare and hash generating function
 // for the specific datatype that you wish to use as a key
-Hashmap* Hashmap_create(Hashmap_compare, Hashmap_hash);
-*/
-// Improvement : Lets the user specificically decide the size of the buckets
-Hashmap* Hashmap_create(Hashmap_compare, Hashmap_hash, size_t buckets);
+Hashmap * Hashmap_create(Hashmap_compare, Hashmap_hash); // Default Implementation
+
+// Improvement 2.1 : Lets the user specificically decide the size of the buckets (non-resizable)
+Hashmap * Hashmap_createStatic(Hashmap_compare, Hashmap_hash, size_t);
+
+// Improvement 2.2 : Lets the user define an initial capacity / bucket size and a load factor
+Hashmap * Hashmap_createDynamic(Hashmap_compare, Hashmap_hash, size_t, double);
 
 // Destroys the data in the hashmap
 void Hashmap_destroy(Hashmap* map);
@@ -52,13 +56,16 @@ void Hashmap_destroy(Hashmap* map);
 int Hashmap_set(Hashmap* map, void* key, void* data);
 
 // Function to get the value for a corresponding key from the hashmap
-void* Hashmap_get(Hashmap* map, void* key);
+void * Hashmap_get(Hashmap* map, void* key);
+
+// Function to get the size of the hashmap
+size_t Hashmap_getSize(Hashmap * map);
 
 // Function to traverse the hashmap and you have to provide how each of the node gets traversed
 int Hashmap_traverse(Hashmap* map, Hashmap_traverse_cb traverse_cb);
 
 // Function to remove a key value pair from the map
-void* Hashmap_delete(Hashmap* map, void* key);
+void * Hashmap_delete(Hashmap* map, void* key);
 
 // Improvements
 
@@ -75,6 +82,8 @@ void* Hashmap_delete(Hashmap* map, void* key);
  > the average number of entries in a bucket (which is the total number of entries 
    divided by the number of buckets) should give a good estimate on when the HashMap 
    should be resized, and the size of individual buckets doesn't need to be checked.
+ > To consider a threshold, and if the threshold reaches a certain value then we know
+   that its time to resize the map.
 */
 /* Improvement 2.1 - Done */ // Lets the user decide the default no. of buckets
 

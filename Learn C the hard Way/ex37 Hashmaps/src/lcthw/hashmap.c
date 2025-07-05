@@ -43,8 +43,9 @@ static uint32_t default_hash(void* a)
 	return hash;
 }
 
+//Original Function
 // Function to create a Hashmap
-Hashmap* Hashmap_create(Hashmap_compare compare, Hashmap_hash hash, size_t buckets)
+Hashmap* Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
 {
 	Hashmap* map = calloc(1, sizeof(Hashmap));
 	check_mem(map);
@@ -53,13 +54,81 @@ Hashmap* Hashmap_create(Hashmap_compare compare, Hashmap_hash hash, size_t bucke
 	map->compare = compare == NULL ? default_compare : compare; // good of setting defaults
 	map->hash = hash == NULL ? default_hash : hash;
 	
-	/* Original Code
+	// Initializing the additional variable (Part of Improvement)
+	map->bucket_size = 0;
+	map->load_factor = 0.0;
+	map->entries = 0;
+
 	// Then here we allocate a fixed no. of elements in the DArray buckets
 	// These elements in turn will be pointers to other DArrays
 	map->buckets = DArray_create(sizeof(DArray*), DEFAULT_NUMBER_OF_BUCKETS);
-	*/
-	// Improvement, letting the user decide the buckets in the hashmap
-	map->buckets = DArray_create(sizeof(DArray*), buckets);
+
+	// Now we have set the end of the DArray = max of the DArray
+	// This is done as the no. of elements we have to do deal with are fixed
+	// and since we won't be dynamically adding any new keys we won't have to 
+	// check if the DArray is expading or not as we will not be pushing any new keys
+	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
+	check_mem(map->buckets);
+
+	return map;
+error:
+	if(map){
+		Hashmap_destroy(map);
+	}
+	return NULL;
+}
+
+// Function to create a static Hashmap with user-defined bucket size
+Hashmap* Hashmap_createStatic(Hashmap_compare compare, Hashmap_hash hash, size_t bucket_size)
+{
+	Hashmap* map = calloc(1, sizeof(Hashmap));
+	check_mem(map);
+	
+	// If the values for the compare and hash is not provided we stick with the default functions
+	map->compare = compare == NULL ? default_compare : compare; // good of setting defaults
+	map->hash = hash == NULL ? default_hash : hash;
+	
+	// check if the bucket_size value is valid
+	check(bucket_size > 0, "ERROR : Invalid Bucket Size!");
+	map->bucket_size = bucket_size;
+
+	// Improvement 2.1 : letting the user decide the buckets in the hashmap
+	map->buckets = DArray_create(sizeof(DArray*), map->bucket_size);
+
+	// Now we have set the end of the DArray = max of the DArray
+	// This is done as the no. of elements we have to do deal with are fixed
+	// and since we won't be dynamically adding any new keys we won't have to 
+	// check if the DArray is expading or not as we will not be pushing any new keys
+	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
+	check_mem(map->buckets);
+
+	return map;
+error:
+	if(map){
+		Hashmap_destroy(map);
+	}
+	return NULL;
+}
+
+Hashmap* Hashmap_createDynamic(Hashmap_compare compare, Hashmap_hash hash, size_t bucket_size, double load_factor)
+{
+	Hashmap* map = calloc(1, sizeof(Hashmap));
+	check_mem(map);
+	
+	// If the values for the compare and hash is not provided we stick with the default functions
+	map->compare = compare == NULL ? default_compare : compare; // good of setting defaults
+	map->hash = hash == NULL ? default_hash : hash;
+	
+	// check if the load factor is valid
+	check(load_factor > 0.0, "ERROR : Invalid Load Factor!");
+	map->load_factor = load_factor;
+
+	// check if the bucket_size value is valid
+	check(bucket_size > 0, "ERROR : Invalid Bucket Size!");
+	map->bucket_size = bucket_size;
+
+	// Improvement 2.1 : letting the user decide the buckets in the hashmap
+	map->buckets = DArray_create(sizeof(DArray*), map->bucket_size);
 
 	// Now we have set the end of the DArray = max of the DArray
 	// This is done as the no. of elements we have to do deal with are fixed
@@ -129,15 +198,18 @@ static inline DArray* Hashmap_find_bucket(Hashmap* map, void* key, int create, u
 	check(map != NULL, "ERROR : Invalid map!");
 
 	uint32_t hash = map->hash(key); // Here we take the key and generate a u32 bit hash
-	/* Original Code
+	/*Original Code
 	int bucket_n = hash % DEFAULT_NUMBER_OF_BUCKETS; // It generate an index to the DArray within the buckets DArray
 													 // We are simple limiting the index to [0, Default no. of buckets - 1]
 													 // In this case 0 to 99
 													 // This will ensure that all the key-value pairs reside within these buckets only
-	check(bucket_n >= 0, "Invalid bucket found: %d, bucket_n");
-	*/
+	check(bucket_n >= 0, "Invalid bucket found: %d", bucket_n);
 	// Improvement : Hashing with the new size of the buckets
-	int bucket_n = hash % DArray_count(map->buckets);
+	*/
+
+	// Improvement : Based on if size is given or not we will hash differently
+	int bucket_n = map->bucket_size == 0 ? hash % DEFAULT_NUMBER_OF_BUCKETS : hash % map->bucket_size;
+	check(bucket_n >= 0, "Invalid bucket found : %d", bucket_n);
 
 	// store it for the return so the caller can use it
 	*hash_out = hash; // Then we store this generated hash into pointer provided
@@ -158,6 +230,20 @@ static inline DArray* Hashmap_find_bucket(Hashmap* map, void* key, int create, u
 	return bucket; // Now we simply return the pointer to the DArray
 error:
 	return NULL;
+}
+
+// Part of Improvement 2.2
+static inline double Hashmap_getThreshold(Hashmap * map)
+{
+	return map->bucket_size * map->load_factor; // Lets us decide when to resize
+}
+
+// Part of Improvement 2.2
+// Function to resize the hashamp
+static void Hashmap_resize(Hashmap * map)
+{
+	// Revision 1 : We want to double the size and rehash the value in the new array
+	
 }
 
 // This function helps to add a Node with Key-Value Pair

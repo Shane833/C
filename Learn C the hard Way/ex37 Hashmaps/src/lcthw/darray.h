@@ -50,11 +50,6 @@ void DArray_clear_destroy(DArray* array);
 // Defines the default rate at which the array must expand
 #define DEFAULT_EXPAND_RATE 300
 
-static void printDArraySize()
-{
-	printf("I don't know dude\n");
-}
-
 // Function to set value at the given index
 static inline void DArray_set(DArray* array, int i, void* el)
 {

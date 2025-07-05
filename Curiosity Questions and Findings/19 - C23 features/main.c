@@ -50,5 +50,13 @@ int main()
     // However you cannot declare a function with the auto keyword like C++
     // hence auto add(int x, int y){} is invalid 
 
+    // new constexpr keyword has been added
+    // it only works for variables/objects not for functions
+    // Here using constexpr we can check if the value being used
+    // to define the constexpr is truly constant or not, i.e. it
+    // sometimes a const variable may be defined using a non-const value
+    constexpr int size = 10;
+    int arr[size] = { 0 }; // element of 10 ints with all value 0
+
 	return 0;
 }

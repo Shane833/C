@@ -37,7 +37,7 @@ char* test_create()
 	map = Hashmap_create(NULL, NULL);
 	*/
 	// Impovement, Lets the user decide the no. of buckets
-	map = Hashmap_create(NULL, NULL, 10);
+	map = Hashmap_createStatic(NULL, NULL, 10);
 	mu_assert(map != NULL, "Failed to create map.");
 	
 	return NULL;
