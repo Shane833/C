@@ -87,6 +87,13 @@ void * Hashmap_delete(Hashmap* map, void* key);
 */
 /* Improvement 2.1 - Done */ // Lets the user decide the default no. of buckets
 
+// don't define functions in your header if you don't want multiple definitions
+// rather just define them static inline or just static so they are local to the Translation Units
+static inline size_t Hashmap_getThreshold(Hashmap * map)
+{
+	return (size_t)(map->bucket_size * map->load_factor);
+}
+
 
 
 #endif
