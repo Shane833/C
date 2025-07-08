@@ -23,6 +23,12 @@ static int default_node_compare(const HashmapNode * a, const HashmapNode * b)
 // Forward Declaration 
 static inline int Hashmap_get_node(Hashmap* map, uint32_t hash, DArray* bucket, void* key);
 
+// Function to get the Threshold
+static inline size_t Hashmap_getThreshold(Hashmap * map)
+{
+	return (size_t)(map->bucket_size * map->load_factor);
+}
+
 // Bob Jenkins Hash Algorithm
 // Default Hash Function which takes in a bstring value
 // and generates an unsigned 32bit integer hash
@@ -132,13 +138,14 @@ Hashmap * Hashmap_createDynamic(Hashmap_compare compare, Hashmap_hash hash, size
 
 	// Improvement 2.1 : letting the user decide the buckets in the hashmap
 	map->buckets = DArray_create(sizeof(DArray*), map->bucket_size);
+	check_mem(map->buckets);
 
 	// Now we have set the end of the DArray = max of the DArray
 	// This is done as the no. of elements we have to do deal with are fixed
 	// and since we won't be dynamically adding any new keys we won't have to 
 	// check if the DArray is expading or not as we will not be pushing any new keys
 	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
-	check_mem(map->buckets);
+	
 
 	return map;
 error:
@@ -243,13 +250,13 @@ static inline double Hashmap_getThreshold(Hashmap * map)
 }
 */
 
-static bool Hashmap_rehash(Hashmap * map, DArray * old_buckets)
+static bool Hashmap_rehash(Hashmap * map, DArray * new_buckets)
 {
 	// Just use the existing
-	for(int i = 0;i < DArray_count(old_buckets); i++){ // Looping through the buckets
+	for(int i = 0;i < DArray_count(map->buckets); i++){ // Looping through the buckets
 		// Get the pointer to the underlying bucket
-		DArray * bucket = DArray_get(old_buckets, i);
-
+		DArray * bucket = DArray_get(map->buckets, i);
+		
 		if(bucket){ // if the bucket exists
 
 			for(int i = 0;i < DArray_count(bucket);i++){ // Go through individual bucket
@@ -257,18 +264,18 @@ static bool Hashmap_rehash(Hashmap * map, DArray * old_buckets)
 				HashmapNode * node = DArray_get(bucket, i);
 				// I want to add this node into the new bucket
 				// Rehashing the value from previous buckets to new buckets
-				int bucket_n = node->hash % map->bucket_size;
+				int bucket_n = node->hash % (map->bucket_size * 2);
 				check(bucket_n >= 0, "Invalid bucket found : %d", bucket_n);
 
 				// Now we check if that bucket exists in the map
-				DArray* new_bucket = DArray_get(map->buckets, bucket_n);
+				DArray* new_bucket = DArray_get(new_buckets, bucket_n);
 				
 				if(!new_bucket){ // If the buckets does not exists
 									   // a new DArray and add it at the generated index
 					// new bucket, set it up
-					new_bucket = DArray_create(sizeof(void*), DArray_count(map->buckets));
-					check_mem(new_bucket);
-					DArray_set(map->buckets, bucket_n, new_bucket);
+					new_bucket = DArray_create(sizeof(void*), DArray_count(map->buckets)); // I keep the size of the individual bucket small or half the current size of bucekts
+					check_mem(new_bucket);												   // Since really we will be having 2-3 keys per bucket if the hash function is good.
+					DArray_set(new_buckets, bucket_n, new_bucket);
 				}
 
 				// Improvement - Addes by sorting the data
@@ -280,8 +287,9 @@ static bool Hashmap_rehash(Hashmap * map, DArray * old_buckets)
 			bucket = NULL;
 		}
 	}
-	
-	DArray_destroy(old_buckets);
+
+	// Deallocate memory from the existing buckets
+	DArray_destroy(map->buckets);
 
 	return true;
 error:
@@ -293,52 +301,34 @@ error:
 static bool Hashmap_resize(Hashmap * map)
 {
 	// Revision 1 : We want to double the size and rehash the value in the new array
+	
 
-	// First check if the size has exceeded the threshold
-	// change ' <= ' to ' >= ' , bcz I want the resize to happen only when our assertion
-	// that map size greater than or equal to the threshold
-	// In any other case I don't want to resize i.e. it will jump to error label
-	check_debug(Hashmap_getSize(map) >= Hashmap_getThreshold(map),"INFO : Resizing the map!");
+	// Now first create a new DArray of double the size
+	DArray * new_buckets = DArray_create(sizeof(DArray*), 2 * map->bucket_size); // doubling the size
+	check(new_buckets != NULL, "ERROR : Failed to create new buckets!");
+	// making it behave more like a regular array
+	new_buckets->end = new_buckets->max;
 
-	// First I will get the pointer to the existing buckets
-	DArray * old_buckets = map->buckets;
-	map->buckets = NULL;
-
-	// Now allocate new memory to the hashmap
-	map->buckets = DArray_create(sizeof(DArray*), 2 * map->bucket_size); // doubling the size
-	check_mem(map->buckets);
+	// Rehash the values
+	bool r = Hashmap_rehash(map, new_buckets);
+	check_debug(r == true, "ERROR : Failed to rehash the map!");
+	
+	// Update the pointer to the new buckets
+	map->buckets = new_buckets;
 
 	// Update the map bucket size
 	map->bucket_size *= 2;
 
-	// Rehash the values
-	bool r = Hashmap_rehash(map, old_buckets);
-	check_debug(r == false, "")
 
-
-
+	return true;
 error:
-	return;
-}
-
-// Part of Improvment 2.2
-size_t Hashmap_getSize(Hashmap * map)
-{
-	// Function can be called by user so check 
-	check(map != NULL, "ERROR : Invalid map!");
-
-	return map->entries;
-error:
-	return 0;
+	return false;
 }
 
 // This function helps to add a Node with Key-Value Pair
 int Hashmap_set(Hashmap* map, void* key, void* data)
 {
 	check(map != NULL, "ERROR : Invalid Map!");
-
-	// call the function for resizing and it will automatically check the conditions for resizing
-	Hashmap_resize(map);
 
 	uint32_t hash = 0; // This will store the generated hash from the key
 	DArray* bucket = Hashmap_find_bucket(map, key, 1, &hash); // Then we find/create a bucket corresponding to the hash
@@ -354,6 +344,16 @@ int Hashmap_set(Hashmap* map, void* key, void* data)
 		// Now we simply create a Node with the given key-value and store the generated hash
 		node = Hashmap_node_create(hash, key, data);
 		check_mem(node);
+
+		// First check if the size is equal to threshold
+		if(Hashmap_getSize(map) == Hashmap_getThreshold(map)){
+			// call the function for resizing
+			check(Hashmap_resize(map) == true, "ERROR : Failed to resize the map!");
+
+			// Now I have to find the bucket again when the map gets resized
+			bucket = Hashmap_find_bucket(map, key, 1, &hash); // Then we find/create a bucket corresponding to the hash
+			check(bucket, "Error can't create bucket.");
+		}
 
 		// Improvement - Addes by sorting the data
 		DArray_sort_add(bucket, node, (DArray_compare)default_node_compare, DARRAY_HEAPSORT);
@@ -428,6 +428,17 @@ void* Hashmap_get(Hashmap* map, void* key)
 	return node->data;
 error:
 	return NULL;
+}
+
+// Part of Improvment 2.2
+size_t Hashmap_getSize(Hashmap * map)
+{
+	// Function can be called by user so check 
+	check(map != NULL, "ERROR : Invalid map!");
+
+	return map->entries;
+error:
+	return 0;
 }
 
 int Hashmap_traverse(Hashmap* map, Hashmap_traverse_cb traverse_cb)

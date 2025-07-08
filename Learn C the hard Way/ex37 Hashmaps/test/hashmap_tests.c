@@ -8,6 +8,7 @@ static int traverse_called = 0;
 struct tagbstring test1 = bsStatic("test data 1");
 struct tagbstring test2 = bsStatic("test data 2"); 
 struct tagbstring test3 = bsStatic("test data 3");
+struct tagbstring test4 = bsStatic("test data 4");
 struct tagbstring expect1 = bsStatic("THE VALUE 1");
 struct tagbstring expect2 = bsStatic("THE VALUE 2");
 struct tagbstring expect3 = bsStatic("THE VALUE 3");
@@ -39,7 +40,7 @@ char* test_create()
 	map = Hashmap_create(NULL, NULL);
 	*/
 	// Impovement, Lets the user decide the no. of buckets
-	map = Hashmap_createDynamic(NULL, NULL, 16, 0.75);
+	map = Hashmap_createDynamic(NULL, NULL, 5, 0.75);
 	mu_assert(map != NULL, "Failed to create map.");
 	
 	return NULL;
@@ -51,13 +52,15 @@ char* test_destroy()
 	return NULL;
 }
 
+/* Hashmap_getThreshold() function has been made static to hashmap.c so can't be called outside 
 char * test_threshold()	
 {
 	size_t threshold = Hashmap_getThreshold(map);
-	mu_assert(threshold == 12, "ERROR : Wrong threshold computed!");
+	mu_assert(threshold == 3, "ERROR : Wrong threshold computed!");
 
 	return NULL;
 }
+*/
 
 char* test_get_set()
 {
@@ -83,22 +86,38 @@ char* test_get_set()
 
 char* test_overwrite()
 {
-	int rc = Hashmap_set(map, &test1, &expect4);
+	int rc = Hashmap_set(map, &test1, &expect1);
 	mu_assert(rc == 0, "Failed to set &test1");
 	bstring result = Hashmap_get(map, &test1); // returns the void*, i.e. the address
-	mu_assert(result == &expect4, "Wrong value for test1");
-
+	mu_assert(result == &expect1, "Wrong value for test1");
+	
 	rc = Hashmap_getSize(map);
 	mu_assert(rc == 3, "Wrong value for map size");
 
 	return NULL;
 }
 
+char * test_resize()
+{
+	int rc = Hashmap_set(map, &test4, &expect4);
+	mu_assert(rc == 0, "Failed to set &test1");
+
+	mu_assert(Hashmap_getSize(map) == 4, "Wrong size due to resizing!");
+	
+	bstring result = Hashmap_get(map, &test4); // returns the void*, i.e. the address
+	mu_assert(result == &expect4, "Wrong value for test1");
+	
+
+	return NULL;
+}
+
+
+
 char* test_traverse()
 {
 	int rc = Hashmap_traverse(map, traverse_good_cb);
 	mu_assert(rc == 0, "Failed to traverse");
-	mu_assert(traverse_called == 3, "Wrong count traverse");
+	mu_assert(traverse_called == 4, "Wrong count traverse");
 	
 	traverse_called = 0;
 	rc = Hashmap_traverse(map, traverse_fail_cb);
@@ -112,23 +131,30 @@ char* test_delete()
 {
 	bstring deleted = (bstring) Hashmap_delete(map, &test1);
 	mu_assert(deleted != NULL, "Got NULL on delete");
-	mu_assert(deleted == &expect4, "should get test1");
-	mu_assert(2 == Hashmap_getSize(map), "Wrong size on deletion");
+	mu_assert(deleted == &expect1, "should get test1");
+	mu_assert(3 == Hashmap_getSize(map), "Wrong size on deletion");
 	bstring result = Hashmap_get(map, &test1);
 	mu_assert(result == NULL, "Should delete");
 	
 	deleted = (bstring) Hashmap_delete(map, &test2);
 	mu_assert(deleted != NULL, "Got NULL on delete");
 	mu_assert(deleted == &expect2, "should get test2");
-	mu_assert(1 == Hashmap_getSize(map), "Wrong size on deletion");
+	mu_assert(2 == Hashmap_getSize(map), "Wrong size on deletion");
 	result = Hashmap_get(map, &test2);
 	mu_assert(result == NULL, "should delete");
 	
 	deleted = (bstring) Hashmap_delete(map, &test3);
 	mu_assert(deleted != NULL, "Got NULL on delete");
 	mu_assert(deleted == &expect3, "should get test3");
-	mu_assert(0 == Hashmap_getSize(map), "Wrong size on deletion");
+	mu_assert(1 == Hashmap_getSize(map), "Wrong size on deletion");
 	result = Hashmap_get(map, &test3);
+	mu_assert(result == NULL, "should delete");
+
+	deleted = (bstring) Hashmap_delete(map, &test4);
+	mu_assert(deleted != NULL, "Got NULL on delete");
+	mu_assert(deleted == &expect4, "should get test3");
+	mu_assert(0 == Hashmap_getSize(map), "Wrong size on deletion");
+	result = Hashmap_get(map, &test4);
 	mu_assert(result == NULL, "should delete");
 		
 	return NULL;
@@ -138,9 +164,10 @@ char* all_tests()
 {
 	mu_suite_start();
 	mu_run_test(test_create);
-	mu_run_test(test_threshold)
+  //mu_run_test(test_threshold)
 	mu_run_test(test_get_set);
 	mu_run_test(test_overwrite);
+	mu_run_test(test_resize);
 	mu_run_test(test_traverse);
 	mu_run_test(test_delete);
 	mu_run_test(test_destroy);

@@ -89,11 +89,14 @@ void * Hashmap_delete(Hashmap* map, void* key);
 
 // don't define functions in your header if you don't want multiple definitions
 // rather just define them static inline or just static so they are local to the Translation Units
+/*
 static inline size_t Hashmap_getThreshold(Hashmap * map)
 {
 	return (size_t)(map->bucket_size * map->load_factor);
 }
+*/
 
+/* Improvement 2.2 - Done */ // Now the map gets resized automatically after the entries exceed the threshold
 
 
 #endif
