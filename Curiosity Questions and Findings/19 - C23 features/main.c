@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stddef.h>
 // #include <threads.h> optional feature don't think its here anymore
+#include <stdlib.h> // NOT HERE YET! defines the new memalignment() function to determine the byte alignment of a pointer 
+#include <string.h> // added the new strdup() and strndup() function to the standard
+#if __has_include("dbg.h") // checks the availability of the header before trying to include it
+	#include "dbg.h"
+#endif
 
 typedef struct S S;
 
@@ -56,7 +61,13 @@ int main()
     // to define the constexpr is truly constant or not, i.e. it
     // sometimes a const variable may be defined using a non-const value
     constexpr int size = 10;
-    int arr[size] = { 0 }; // element of 10 ints with all value 0
+    int arr[size] = {}; // element of 10 ints with all value 0 now can be done with just {}
+
+    char * str1 = "Hi";
+    char * str2 = strdup(str1); // creates a duplicate of str1 and the memory for it allocated wit malloc
+    puts(str2);
+
+    free(str2);
 
 	return 0;
 }

@@ -180,9 +180,10 @@ void Hashmap_destroy(Hashmap* map)
 		}
 		// Then destroy the main buckets DArray
 		DArray_destroy(map->buckets);
-	}
-	// and finally deallocate memory from the map
-	free(map);
+
+		// and finally deallocate memory from the map
+		free(map);
+	}	
 }
 
 // Function to create a Hashmap Node
