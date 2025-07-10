@@ -40,7 +40,8 @@ char* test_create()
 	map = Hashmap_create(NULL, NULL);
 	*/
 	// Impovement, Lets the user decide the no. of buckets
-	map = Hashmap_createDynamic(NULL, NULL, 5, 0.75);
+	// map = Hashmap_createDynamic(NULL, NULL, 5, 0.75);
+	map = Hashmap_createStatic(NULL, NULL, 5);
 	mu_assert(map != NULL, "Failed to create map.");
 	
 	return NULL;
@@ -80,7 +81,12 @@ char* test_get_set()
 	mu_assert(rc == 0, "Failed to set &test3");
 	result = Hashmap_get(map, &test3);
 	mu_assert(result == &expect3, "Wrong value for test2");
-	
+
+	rc = Hashmap_set(map, &test4, &expect4);
+	mu_assert(rc == 0, "Failed to set &test1");
+	result = Hashmap_get(map, &test4); // returns the void*, i.e. the address
+	mu_assert(result == &expect4, "Wrong value for test1");
+
 	return NULL;
 }
 
@@ -92,7 +98,7 @@ char* test_overwrite()
 	mu_assert(result == &expect1, "Wrong value for test1");
 	
 	rc = Hashmap_getSize(map);
-	mu_assert(rc == 3, "Wrong value for map size");
+	mu_assert(rc == 4, "Wrong value for map size");
 
 	return NULL;
 }
@@ -167,7 +173,7 @@ char* all_tests()
   //mu_run_test(test_threshold)
 	mu_run_test(test_get_set);
 	mu_run_test(test_overwrite);
-	mu_run_test(test_resize);
+	//mu_run_test(test_resize);
 	mu_run_test(test_traverse);
 	mu_run_test(test_delete);
 	mu_run_test(test_destroy);

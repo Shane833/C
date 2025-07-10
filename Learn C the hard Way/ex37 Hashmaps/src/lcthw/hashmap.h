@@ -98,5 +98,6 @@ static inline size_t Hashmap_getThreshold(Hashmap * map)
 
 /* Improvement 2.2 - Done */ // Now the map gets resized automatically after the entries exceed the threshold
 
+// 3. Use a better default hash: Some options are : murmur3, 
 
 #endif
