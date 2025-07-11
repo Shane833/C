@@ -3,6 +3,7 @@
 #include <lcthw/hashmap.h>
 #include <lcthw/dbg.h>
 #include <lcthw/bstrlib.h>
+#include <stdbool.h>
 
 // Default compare function which compare the bstrings
 static int default_compare(const void * a, const void * b)
