@@ -2,7 +2,9 @@
 #define MURMUR3_H
 
 #include <stdint.h>
+#include <dbg.h>
 
-uint32_t murmur32(void * key, size_t len);
+// Copy of murmur3_x86_32 function
+uint32_t murmur3_32(const void * key, size_t len);
 
 #endif

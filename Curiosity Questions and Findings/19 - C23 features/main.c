@@ -69,5 +69,7 @@ int main()
 
     free(str2);
 
+    int x = 10'000; //  You can separate digits by the ' character
+
 	return 0;
 }
