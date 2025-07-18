@@ -4,6 +4,7 @@
 #include <lcthw/dbg.h>
 #include <lcthw/bstrlib.h>
 #include <stdbool.h>
+#include <lcthw/murmur3.h>
 
 // Default compare function which compare the bstrings
 static int default_compare(const void * a, const void * b)
@@ -33,6 +34,7 @@ static inline size_t Hashmap_getThreshold(Hashmap * map)
 // Bob Jenkins Hash Algorithm
 // Default Hash Function which takes in a bstring value
 // and generates an unsigned 32bit integer hash
+/* Original Code
 static uint32_t default_hash(void* a)
 {
 	size_t len = blength((bstring) a);
@@ -51,6 +53,16 @@ static uint32_t default_hash(void* a)
 	hash += (hash << 15);
 	
 	return hash;
+}
+*/
+
+// New default hash uses murmur3_32 hash function
+static uint32_t default_hash(void * a, uint32_t seed)
+{
+	size_t len = blength((bstring)a);
+	char * key = bdata((bstring)a);
+
+	return murmur3_32(key, len, seed);
 }
 
 //Original Function
@@ -79,6 +91,9 @@ Hashmap * Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
 	// check if the DArray is expading or not as we will not be pushing any new keys
 	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
 	check_mem(map->buckets);
+
+	// Part of Improvement 4
+	map->seed = (uint32_t)rand();
 
 	return map;
 error:
@@ -111,6 +126,9 @@ Hashmap * Hashmap_createStatic(Hashmap_compare compare, Hashmap_hash hash, size_
 	// check if the DArray is expading or not as we will not be pushing any new keys
 	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
 	check_mem(map->buckets);
+
+	// Part of Improvement 4
+	map->seed = (uint32_t)rand();
 
 	return map;
 error:
@@ -147,6 +165,8 @@ Hashmap * Hashmap_createDynamic(Hashmap_compare compare, Hashmap_hash hash, size
 	// check if the DArray is expading or not as we will not be pushing any new keys
 	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
 	
+	// Part of Improvement 4
+	map->seed = (uint32_t)rand();
 
 	return map;
 error:
@@ -208,8 +228,10 @@ error:
 static inline DArray* Hashmap_find_bucket(Hashmap* map, void* key, int create, uint32_t* hash_out)
 {
 	check(map != NULL, "ERROR : Invalid map!");
+	check(hash_out != NULL, "ERROR : Invalid hash out provided!");
 
-	uint32_t hash = map->hash(key); // Here we take the key and generate a u32 bit hash
+	// Improvement 4 : Now the hash function takes in an additional seed
+	uint32_t hash = map->hash(key, map->seed); // Here we take the key and generate a u32 bit hash
 	/*Original Code
 	int bucket_n = hash % DEFAULT_NUMBER_OF_BUCKETS; // It generate an index to the DArray within the buckets DArray
 													 // We are simple limiting the index to [0, Default no. of buckets - 1]
@@ -348,7 +370,9 @@ int Hashmap_set(Hashmap* map, void* key, void* data)
 		check_mem(node);
 
 		// First check if the size is equal to threshold
-		if(Hashmap_getSize(map) == Hashmap_getThreshold(map)){
+		// if load_factor is 0, means we don't want to resize
+		// which will be true for static and default create functions
+		if( (map->load_factor) && (Hashmap_getSize(map) == Hashmap_getThreshold(map)) ){
 			// call the function for resizing
 			check(Hashmap_resize(map) == true, "ERROR : Failed to resize the map!");
 

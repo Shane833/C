@@ -40,8 +40,9 @@ char* test_create()
 	map = Hashmap_create(NULL, NULL);
 	*/
 	// Impovement, Lets the user decide the no. of buckets
-	// map = Hashmap_createDynamic(NULL, NULL, 5, 0.75);
-	map = Hashmap_createStatic(NULL, NULL, 5);
+	map = Hashmap_createDynamic(NULL, NULL, 5, 0.75);
+	//map = Hashmap_createStatic(NULL, NULL, 5);
+	//map = Hashmap_create(NULL, NULL);
 	mu_assert(map != NULL, "Failed to create map.");
 	
 	return NULL;
@@ -166,15 +167,28 @@ char* test_delete()
 	return NULL;
 }
 
+// Displaying the size of each bucket within the buckets
+char * test_display_bucket(){
+	for(int i = 0;i < DArray_count(map->buckets);i++){
+		DArray * bucket = DArray_get(map->buckets, i);
+		if(bucket){
+			log_info("Bucket '%d' Size : %d", i, DArray_count(bucket));
+		}
+	}
+
+	return NULL;
+}
+
 char* all_tests()
 {
 	mu_suite_start();
 	mu_run_test(test_create);
-  //mu_run_test(test_threshold)
+    //mu_run_test(test_threshold)
 	mu_run_test(test_get_set);
 	mu_run_test(test_overwrite);
-	//mu_run_test(test_resize);
+	mu_run_test(test_resize);
 	mu_run_test(test_traverse);
+	mu_run_test(test_display_bucket);
 	mu_run_test(test_delete);
 	mu_run_test(test_destroy);
 	
