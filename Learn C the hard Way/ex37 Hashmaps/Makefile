@@ -46,7 +46,7 @@ clean:
 # /q suggest quiet mode and /s means delete everything including subdirectories
 cleanw:
 	del /q src\lcthw\*.o
-	del /q test\$(TESTS).exe
+	del /q test\*.exe
 	rmdir /q/s build
 
 # The Install

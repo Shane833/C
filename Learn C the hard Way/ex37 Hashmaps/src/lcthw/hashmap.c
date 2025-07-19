@@ -92,6 +92,8 @@ Hashmap * Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
 	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
 	check_mem(map->buckets);
 
+	// Part of improvement 4, it will seed it with everytime we create a new hashmap
+	srand(time(NULL));
 	// Part of Improvement 4
 	map->seed = (uint32_t)rand();
 
@@ -127,6 +129,8 @@ Hashmap * Hashmap_createStatic(Hashmap_compare compare, Hashmap_hash hash, size_
 	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
 	check_mem(map->buckets);
 
+	// Part of improvement 4, it will seed it with everytime we create a new hashmap
+	srand(time(NULL));
 	// Part of Improvement 4
 	map->seed = (uint32_t)rand();
 
@@ -142,7 +146,7 @@ Hashmap * Hashmap_createDynamic(Hashmap_compare compare, Hashmap_hash hash, size
 {
 	Hashmap* map = calloc(1, sizeof(Hashmap));
 	check_mem(map);
-	
+
 	// If the values for the compare and hash is not provided we stick with the default functions
 	map->compare = compare == NULL ? default_compare : compare; // good of setting defaults
 	map->hash = hash == NULL ? default_hash : hash;
@@ -165,6 +169,8 @@ Hashmap * Hashmap_createDynamic(Hashmap_compare compare, Hashmap_hash hash, size
 	// check if the DArray is expading or not as we will not be pushing any new keys
 	map->buckets->end = map->buckets->max; // fake out expanding it // BUT HOW?
 	
+	// Part of improvement 4, it will seed it with everytime we create a new hashmap
+	srand(time(NULL));
 	// Part of Improvement 4
 	map->seed = (uint32_t)rand();
 

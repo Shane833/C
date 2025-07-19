@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <lcthw/darray.h>
 #include <lcthw/darray_algos.h>
+#include <time.h>
 
 #define DEFAULT_NUMBER_OF_BUCKETS 100 // Macro defining the default size of the Hashmap Keys
 
