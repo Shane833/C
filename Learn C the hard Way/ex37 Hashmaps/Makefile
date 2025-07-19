@@ -29,8 +29,8 @@ build:
 	@mkdir -p bin
 
 buildw:
-	mkdir build
-	mkdir bin
+	-mkdir build
+	-mkdir bin
 
 # The Unit Tests
 # Changing the CFLAGS += $(TARGET) to the $(OBJECTS) seems to do the job
@@ -49,7 +49,6 @@ clean:
 
 # /q suggest quiet mode and /s means delete everything including subdirectories
 cleanw:
-	del /q src\*.o
 	del /q src\lcthw\*.o
 	del /q test\*.exe
 	rmdir /q bin
