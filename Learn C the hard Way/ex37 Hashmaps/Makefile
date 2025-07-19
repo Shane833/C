@@ -26,11 +26,9 @@ $(SO_TARGET): $(TARGET) $(OBJECTS)
 # -p flag check if the directory already exists then throws no error
 build:
 	@mkdir -p build
-	@mkdir -p bin
 
 buildw:
 	-mkdir build
-	-mkdir bin
 
 # The Unit Tests
 # Changing the CFLAGS += $(TARGET) to the $(OBJECTS) seems to do the job
@@ -44,14 +42,11 @@ tests: $(TESTS)
 clean:
 	rm -rf build $(OBJECTS) $(TESTS)
 	rm -f tests/tests.log
-	find . -name "*.gc*" -exec rm {} \;
-	rm -rm `find . -name "*.dSYM" - print`
 
 # /q suggest quiet mode and /s means delete everything including subdirectories
 cleanw:
 	del /q src\lcthw\*.o
-	del /q test\*.exe
-	rmdir /q bin
+	del /q test\$(TESTS).exe
 	rmdir /q/s build
 
 # The Install
