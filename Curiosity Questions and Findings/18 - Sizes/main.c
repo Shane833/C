@@ -15,6 +15,6 @@ int main()
 	printf("sizeof combine : %d\n",sizeof(struct combine)); // Expected : 10
 	// However it won't be 10, since it pads the data accordingly as per the size
 	// of a word (which is usually 4bytes) and hence we obtain a size of 12
-
+	printf("%lu\n", sizeof(long double)); // This is 12 Bytes
 	return 0;
 }
