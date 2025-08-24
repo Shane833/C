@@ -10,13 +10,13 @@ struct tagbstring test3 = bsStatic("test data 3");
 
 char* test_fnv1a()
 {
-	uint32_t hash = Hashmap_fnv1a_hash(&test1);
+	uint32_t hash = Hashmap_fnv1a_hash(&test1, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_fnv1a_hash(&test2);
+	hash = Hashmap_fnv1a_hash(&test2, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_fnv1a_hash(&test3);
+	hash = Hashmap_fnv1a_hash(&test3, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
 	return NULL;
@@ -25,13 +25,13 @@ char* test_fnv1a()
 
 char* test_adler32()
 {
-	uint32_t hash = Hashmap_adler32_hash(&test1);
+	uint32_t hash = Hashmap_adler32_hash(&test1, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_adler32_hash(&test2);
+	hash = Hashmap_adler32_hash(&test2, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_adler32_hash(&test3);
+	hash = Hashmap_adler32_hash(&test3, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
 	return NULL;
@@ -40,17 +40,18 @@ char* test_adler32()
 
 char* test_djb()
 {
-	uint32_t hash = Hashmap_djb_hash(&test1);
+	uint32_t hash = Hashmap_djb_hash(&test1, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_djb_hash(&test2);
+	hash = Hashmap_djb_hash(&test2, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_djb_hash(&test3);
+	hash = Hashmap_djb_hash(&test3, NULL);
 	mu_assert(hash != 0, "Bad hash");
 	
 	return NULL;
 }
+
 
 
 #define BUCKETS 100
@@ -61,31 +62,46 @@ enum {ALGO_FNV1A, ALGO_ADLER32, ALGO_DJB};
 
 int gen_keys(DArray* keys, int num_keys)
 {
-	int i = 0;
-	#ifdef UNIX
+	#ifdef __linux__
+		int i = 0;
+
 		urand = fopen("/dev/urandom", "r");
-		
 		check(urand != NULL, "Failed to open /dev/urandom");
-	
-	
-	
-	struct bStream* stream = bsopen((bNread) fread, urand);
-	check(stream != NULL, "Failed to open /dev/urandom");
-	
-	bstring key = bfromcstr("");
-	int rc = 0;
-	
-	// FNV1A Histogram
-	for(i = 0;i < num_keys; i++){
-		rc = bsread(key, stream, BUFFER_LEN);
-		check(rc >= 0, "Failed to read from /dev/urandom");
 		
-		DArray_push(keys, bstrcpy(key));
-	}
-	
-	bsclose(stream);
-	fclose(urand);
-	
+		struct bStream* stream = bsopen((bNread) fread, urand);
+		check(stream != NULL, "Failed to open /dev/urandom");
+		
+		bstring key = bfromcstr("");
+		int rc = 0;
+		
+
+		// FNV1A Histogram
+		for(i = 0;i < num_keys; i++){
+			rc = bsread(key, stream, BUFFER_LEN);
+			check(rc >= 0, "Failed to read from /dev/urandom");
+			
+			DArray_push(keys, key);
+		}
+		
+		bsclose(stream);
+		fclose(urand);
+
+	#elif _WIN32
+
+		for(int i = 0;i < num_keys;i++){
+			// Generating a 64-bit no.
+			uint64_t raw_key = (uint64_t)( (uint64_t)rand() | ((uint64_t)rand()) << 48);
+			char buff[20];
+			snprintf(buff, sizeof(buff), "%llu", raw_key);
+			// Now to convert this into a bstring
+			bstring key = bfromcstr(buff);
+			check(key != NULL, "ERROR : Failed to create the bstring!");
+			// Now push it onto the DArray
+			DArray_push(keys, key);
+		}
+
+	#endif
+
 	return 0;
 error:
 	return -1;
@@ -107,7 +123,7 @@ void fill_distribution(int* stats, DArray* keys,  Hashmap_hash hash_func)
 	uint32_t hash = 0;
 	
 	for(i = 0; i < DArray_count(keys); i++){
-		hash = hash_func(DArray_get(keys, i));
+		hash = hash_func(DArray_get(keys, i), NULL);
 		stats[hash % BUCKETS] += 1;
 	}
 }
@@ -124,14 +140,19 @@ char* test_distribution()
 	fill_distribution(stats[ALGO_ADLER32], keys, Hashmap_adler32_hash);
 	fill_distribution(stats[ALGO_DJB], keys, Hashmap_djb_hash);
 	
+
 	fprintf(stderr, "FNV\tA32\tDJB\n");
 	
 	for(i = 0;i < BUCKETS; i++){
 		fprintf(stderr, "%d\t%d\t%d\n", stats[ALGO_FNV1A][i], stats[ALGO_ADLER32][i], stats[ALGO_DJB][i]);
 	}
-	
+	/* Use only when doing analysis using pandas in python to copy the output into a CSV file.
+	fprintf(stderr, "FNV,A32,DJB\n");
+	for(i = 0;i < BUCKETS; i++){
+		fprintf(stderr, "%d,%d,%d\n", stats[ALGO_FNV1A][i], stats[ALGO_ADLER32][i], stats[ALGO_DJB][i]);
+	}
 	destroy_keys(keys);
-	
+	*/
 	return NULL;
 }
 
@@ -143,7 +164,7 @@ char* all_tests()
 	mu_run_test(test_adler32);
 	mu_run_test(test_djb);
 	mu_run_test(test_distribution);
-	
+
 	return NULL;
 }
 
