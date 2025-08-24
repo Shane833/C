@@ -140,19 +140,23 @@ char* test_distribution()
 	fill_distribution(stats[ALGO_ADLER32], keys, Hashmap_adler32_hash);
 	fill_distribution(stats[ALGO_DJB], keys, Hashmap_djb_hash);
 	
+	// Improvement: We will write the data line by line into the file along side printing it
+	FILE * test_csv = fopen("test/test.csv"	,"w");
+	mu_assert(test_csv != NULL, "ERROR : Failed to create/open the e csv file");
 
 	fprintf(stderr, "FNV\tA32\tDJB\n");
-	
+	fprintf(test_csv, "FNV,A32,DJB\n");
+
 	for(i = 0;i < BUCKETS; i++){
 		fprintf(stderr, "%d\t%d\t%d\n", stats[ALGO_FNV1A][i], stats[ALGO_ADLER32][i], stats[ALGO_DJB][i]);
+		fprintf(test_csv, "%d,%d,%d\n", stats[ALGO_FNV1A][i], stats[ALGO_ADLER32][i], stats[ALGO_DJB][i]);
 	}
-	/* Use only when doing analysis using pandas in python to copy the output into a CSV file.
-	fprintf(stderr, "FNV,A32,DJB\n");
-	for(i = 0;i < BUCKETS; i++){
-		fprintf(stderr, "%d,%d,%d\n", stats[ALGO_FNV1A][i], stats[ALGO_ADLER32][i], stats[ALGO_DJB][i]);
-	}
+
+	// close the file
+	fclose(test_csv);
+	
 	destroy_keys(keys);
-	*/
+	
 	return NULL;
 }
 

@@ -36,6 +36,7 @@ buildw:
 tests: CFLAGS += $(OBJECTS) 
 tests: $(TESTS)
 	./$(TESTS)
+	python ./test/test.py
 	sh ./tests/runtests.sh
 
 # The Cleaner
