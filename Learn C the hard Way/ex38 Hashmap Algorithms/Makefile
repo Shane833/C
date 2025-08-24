@@ -1,4 +1,4 @@
-CFLAGS=-g -O2 -Wall -Wextra -Isrc -DNDEBUG $(OPTFLAGS)
+CFLAGS=-g -O2 -Wall -Wextra -Isrc -DNDEBUG -std=c23 $(OPTFLAGS) 
 LIBS=-ldl -lbsd $(OPTLIBS)
 PREFIX?=/usr/local
 
@@ -13,7 +13,7 @@ SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 
 # The Target Build
 all: $(TARGET) $(SO_TARGET) tests
-dev: CFLAGS=-ggdb3 -Og -Wall -Wextra -Isrc -DNDEBUG $(OPTFLAGS)
+dev: CFLAGS=-ggdb3 -Og -Wall -Wextra -Isrc -DNDEBUG -std=c23 $(OPTFLAGS)
 dev: all
 
 $(TARGET): CFLAGS += -fPIC 
@@ -38,6 +38,7 @@ tests: $(TESTS)
 	./$(TESTS)
 	python ./test/test.py
 	sh ./tests/runtests.sh
+# Installed python-is-python3 on linux for this to work as it works for python3 by default
 
 # The Cleaner
 clean:
