@@ -10,13 +10,13 @@ struct tagbstring test3 = bsStatic("test data 3");
 
 char* test_fnv1a()
 {
-	uint32_t hash = Hashmap_fnv1a_hash(&test1, NULL);
+	uint32_t hash = Hashmap_fnv1a_hash(&test1, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_fnv1a_hash(&test2, NULL);
+	hash = Hashmap_fnv1a_hash(&test2, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_fnv1a_hash(&test3, NULL);
+	hash = Hashmap_fnv1a_hash(&test3, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
 	return NULL;
@@ -25,13 +25,13 @@ char* test_fnv1a()
 
 char* test_adler32()
 {
-	uint32_t hash = Hashmap_adler32_hash(&test1, NULL);
+	uint32_t hash = Hashmap_adler32_hash(&test1, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_adler32_hash(&test2, NULL);
+	hash = Hashmap_adler32_hash(&test2, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_adler32_hash(&test3, NULL);
+	hash = Hashmap_adler32_hash(&test3, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
 	return NULL;
@@ -40,13 +40,13 @@ char* test_adler32()
 
 char* test_djb()
 {
-	uint32_t hash = Hashmap_djb_hash(&test1, NULL);
+	uint32_t hash = Hashmap_djb_hash(&test1, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_djb_hash(&test2, NULL);
+	hash = Hashmap_djb_hash(&test2, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
-	hash = Hashmap_djb_hash(&test3, NULL);
+	hash = Hashmap_djb_hash(&test3, 0);
 	mu_assert(hash != 0, "Bad hash");
 	
 	return NULL;
@@ -123,7 +123,7 @@ void fill_distribution(int* stats, DArray* keys,  Hashmap_hash hash_func)
 	uint32_t hash = 0;
 	
 	for(i = 0; i < DArray_count(keys); i++){
-		hash = hash_func(DArray_get(keys, i), NULL);
+		hash = hash_func(DArray_get(keys, i), 0);
 		stats[hash % BUCKETS] += 1;
 	}
 }
@@ -161,13 +161,49 @@ char* test_distribution()
 }
 
 
+char* compare_hash()
+{
+	uint32_t hash1 = Hashmap_fnv1a_hash(&test1, 0);
+	uint32_t hash2 = Hashmap_fnv1a_hash_gen(bdata(&test1), blength(&test1), 0);
+	mu_assert(hash1 == hash2, "ERROR : Wrong value of hash!");
+
+	hash1 = Hashmap_adler32_hash(&test1, 0);
+	hash2 = Hashmap_adler32_hash_gen(bdata(&test1), blength(&test1), 0);
+	mu_assert(hash1 == hash2, "ERROR : Wrong value of hash!");
+
+    hash1 = Hashmap_djb_hash(&test1, 0);
+    hash2 = Hashmap_djb_hash_gen(bdata(&test1), blength(&test1), 0);
+	mu_assert(hash1 == hash2, "ERROR : Wrong value of hash!");
+	return NULL;
+}
+
+char* hash_for_primitives()
+{
+	// Trying to pass int
+	int a = 20;
+	uint32_t hash = Hashmap_fnv1a_hash_gen(&a, sizeof(a), 0);
+
+	// However you can't do => hash_func(20, sizeof(20),0)
+	// bcz 20 is a constant and does not have a memory address as its a  part of text
+
+	log_info("Value of hash : %u",hash);
+
+	// However mostly you can get the work done with a string
+	// as you can write any primitive value (int, char, float) in a string
+}
+
 char* all_tests()
 {
 	mu_suite_start();
+	/*
 	mu_run_test(test_fnv1a);
 	mu_run_test(test_adler32);
 	mu_run_test(test_djb);
 	mu_run_test(test_distribution);
+	*/
+
+	mu_run_test(compare_hash);
+	//mu_run_test(hash_for_primitives);
 
 	return NULL;
 }

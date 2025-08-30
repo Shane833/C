@@ -10,7 +10,7 @@
 #define DEFAULT_NUMBER_OF_BUCKETS 100 // Macro defining the default size of the Hashmap Keys
 
 typedef int (*Hashmap_compare) (const void* a, const void* b); // Pointer to Function for comparing Keys 
-typedef uint32_t (*Hashmap_hash) (void* key, uint32_t * seed); // Pointer to a Function for generating the hash from a key		
+typedef uint32_t (*Hashmap_hash) (void* key, uint32_t seed); // Pointer to a Function for generating the hash from a key		
 											  // Returns an unsigned 32 bit integer hash value
 
 // This is our Hashmap which contains pointer to compare function and pointer to hash generating function

@@ -57,10 +57,12 @@ static uint32_t default_hash(void* a)
 */
 
 // New default hash uses murmur3_32 hash function
-static uint32_t default_hash(void * a, uint32_t * seed)
+static uint32_t default_hash(void * a ,uint32_t seed)
 {
+	char * key = bdata((bstring)a);
+	size_t len = blength((bstring)a);
 
-	return Hashmap_murmur3_hash(a, seed);
+	return Hashmap_murmur3_32_hash(key, len, seed);
 }
 
 //Original Function
@@ -235,7 +237,7 @@ static inline DArray* Hashmap_find_bucket(Hashmap* map, void* key, int create, u
 	check(hash_out != NULL, "ERROR : Invalid hash out provided!");
 
 	// Improvement 4 : Now the hash function takes in an additional seed
-	uint32_t hash = map->hash(key, &(map->seed)); // Here we take the key and generate a u32 bit hash
+	uint32_t hash = map->hash(key, map->seed); // Here we take the key and generate a u32 bit hash
 	/*Original Code
 	int bucket_n = hash % DEFAULT_NUMBER_OF_BUCKETS; // It generate an index to the DArray within the buckets DArray
 													 // We are simple limiting the index to [0, Default no. of buckets - 1]

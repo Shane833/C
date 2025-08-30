@@ -4,7 +4,7 @@
 constexpr uint32_t FNV_PRIME = 16777619;
 constexpr uint32_t FNV_OFFSET_BASIS = 2166136261;
 
-uint32_t Hashmap_fnv1a_hash(void* data, uint32_t * seed)
+uint32_t Hashmap_fnv1a_hash(void* data, uint32_t  seed)
 {
 	bstring s = (bstring) data;
 	uint32_t hash = FNV_OFFSET_BASIS;
@@ -18,9 +18,24 @@ uint32_t Hashmap_fnv1a_hash(void* data, uint32_t * seed)
 	return hash;
 }
 
+uint32_t Hashmap_fnv1a_hash_gen(const void * key, size_t len, uint32_t seed)
+{
+	const uint8_t * data = (const uint8_t *)key; 
+
+	uint32_t hash = FNV_OFFSET_BASIS;
+	int i = 0;
+	
+	for(i = 0; i < len; i++){
+		hash ^= data[i];
+		hash *= FNV_PRIME;
+	}
+	
+	return hash;
+}
+
 constexpr int MOD_ADLER = 65521;
 
-uint32_t Hashmap_adler32_hash(void* data, uint32_t * seed)
+uint32_t Hashmap_adler32_hash(void* data, uint32_t seed)
 {
 	bstring s = (bstring) data;
 	uint32_t a = 1, b = 0;
@@ -34,7 +49,21 @@ uint32_t Hashmap_adler32_hash(void* data, uint32_t * seed)
 	return (b << 16) | a;
 }
 
-uint32_t Hashmap_djb_hash(void* data, uint32_t * seed)
+uint32_t Hashmap_adler32_hash_gen(const void * key, size_t len, uint32_t seed)
+{
+	const uint8_t * data = (const uint8_t * )key;
+	uint32_t a = 1, b = 0;
+	int i = 0;
+	
+	for(i = 0; i < len; i++){
+		a = (a + data[i]) % MOD_ADLER;
+		b = (b + a) % MOD_ADLER;
+	}
+	
+	return (b << 16) | a;
+}
+
+uint32_t Hashmap_djb_hash(void* data, uint32_t seed)
 {
 	bstring s = (bstring) data;
 	uint32_t hash = 5381;
@@ -42,6 +71,19 @@ uint32_t Hashmap_djb_hash(void* data, uint32_t * seed)
 	
 	for(i = 0;i < blength(s); i++){
 		hash = ((hash << 5) + hash) + bchare(s, i, 0);
+	}
+	
+	return hash;
+}
+
+uint32_t Hashmap_djb_hash_gen(const void * key, size_t len, uint32_t seed)
+{
+	const uint8_t * data = (const uint8_t *)key;
+	uint32_t hash = 5381;
+	int i = 0;
+	
+	for(i = 0;i < len; i++){
+		hash = ((hash << 5) + hash) + data[i];
 	}
 	
 	return hash;
@@ -81,8 +123,8 @@ static inline uint32_t fmix32 ( uint32_t h )
   return h;
 }
 
-// Utility function 
-static uint32_t murmur3_32(const void * key, size_t len, uint32_t * seed)
+
+uint32_t Hashmap_murmur3_32_hash(const void * key, size_t len, uint32_t seed)
 {
 	// Point to the data in byte fashion
 	const uint8_t * data = (const uint8_t *)key;
@@ -94,7 +136,7 @@ static uint32_t murmur3_32(const void * key, size_t len, uint32_t * seed)
 
 	// This will contain our computed hash at the end
 	// Update : If seed is provided use it else use 0 as the seed
-	uint32_t h1 = seed == NULL ? 0 : *seed; // Starts with a seed (I'm using 0 by default)
+	uint32_t h1 = seed == 0 ? 0 : seed; // Starts with a seed (I'm using 0 by default)
 
 	// Constants to be used later
 	const uint32_t c1 = 0xcc9e2d51;
@@ -146,10 +188,12 @@ static uint32_t murmur3_32(const void * key, size_t len, uint32_t * seed)
 	return h1;
 }
 
-uint32_t Hashmap_murmur3_hash(void * data, uint32_t * seed)
+/*
+uint32_t Hashmap_murmur3_hash(void * data, uint32_t seed)
 {
 	char * key = bdata((bstring)data);
 	size_t len = blength((bstring)data);
 
 	return murmur3_32(key, len, seed);
 }
+*/
