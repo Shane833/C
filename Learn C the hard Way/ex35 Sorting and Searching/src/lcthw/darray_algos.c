@@ -63,7 +63,7 @@ static void merge(DArray* array, int low, int mid, int high, DArray_compare cmp)
 	
 	// Now compare and push the data back into the array
 	while(List_count(left) > 0 && List_count(right) > 0){ // There was a bug I had to put '&&' instead of '||' bcz then one of the list would become invalid
-		if(cmp(List_first(left), List_last(right)) < 0){ // The cmp function must return -ve if a<b, 0 if a==b and +ve if a > b
+		if(cmp(List_first(left), List_first(right)) < 0){ // The cmp function must return -ve if a<b, 0 if a==b and +ve if a > b
 			DArray_set(array, i++, List_shift(left));
 		}
 		else{
