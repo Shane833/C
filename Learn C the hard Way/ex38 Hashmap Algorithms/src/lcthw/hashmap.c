@@ -112,7 +112,7 @@ Hashmap * Hashmap_createStatic(Hashmap_compare compare, Hashmap_hash hash, size_
 	check_mem(map);
 	
 	// If the values for the compare and hash is not provided we stick with the default functions
-	map->compare = compare == NULL ? default_compare : compare; // good of setting defaults
+	map->compare = compare == NULL ? default_compare : compare; // good way of setting defaults
 	map->hash = hash == NULL ? default_hash : hash;
 	
 	// check if the bucket_size value is valid
@@ -415,23 +415,37 @@ static inline int Hashmap_get_node(Hashmap* map, uint32_t hash, DArray* bucket, 
 {
 	check(map != NULL, "ERROR : Invalid map!");
 	check(bucket != NULL, "ERROR : Invalid bucket!");
+
+	// Ok so after implementing the hashing algorithms and
+	// dynamic resizing of the hashmap I realized that the buckets
+	// usually contains at max 2-3 elements and using binary search
+	// to search for 2-3 elements is not really efficient.
+	// However, If we keep the buckets size fixed and store a lot of elements
+	// say 30-40 per bucket then using binary search would be beneficial HOWEVER we also 
+	// have one problem while deleting the nodes we don't really resort them so again 
+	// If we apply binary search we would be doing so on unsorted data.
+	// So, in my opinion using linear searching would be just as good without all of the overhead
+	// of continuous sorting and for searching the data.
+
+
+
 	// This assumes that all the Keys are unique
 	// Here we traverse the DArray which is provided and compare the keys and hash values
 	// and simply return the index to that element in the DArray at the end and -1 on failure
 	
-	/*
-		//Original Code
-		int i = 0;
-		for(i = 0;i < DArray_end(bucket); i++){
-			debug("TRY : %d", i);
-			HashmapNode* node = DArray_get(bucket, i);
-			if(node->hash == hash && map->compare(node->key, key) == 0){
-				return i;
-			}
+	
+	//Original Code
+	int i = 0;
+	for(i = 0;i < DArray_end(bucket); i++){
+		debug("TRY : %d", i);
+		HashmapNode* node = DArray_get(bucket, i);
+		if(node->hash == hash && map->compare(node->key, key) == 0){
+			return i;
 		}
+	}
 	
 
-	*/
+	/* Commenting this part out and sticking with the original
 	// Updated 
 	// Ideas : How about I create new node with the same has and key values
 	// and then search it within the array
@@ -440,6 +454,7 @@ static inline int Hashmap_get_node(Hashmap* map, uint32_t hash, DArray* bucket, 
 	int r = DArray_find(bucket, &node, (DArray_compare)default_node_compare);
 	
 	return r;
+	*/
 
 error:
 	return -1;
