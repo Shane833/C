@@ -332,7 +332,6 @@ static bool Hashmap_resize(Hashmap * map)
 {
 	// Revision 1 : We want to double the size and rehash the value in the new array
 	
-
 	// Now first create a new DArray of double the size
 	DArray * new_buckets = DArray_create(sizeof(DArray*), 2 * map->bucket_size); // doubling the size
 	check(new_buckets != NULL, "ERROR : Failed to create new buckets!");
@@ -387,7 +386,7 @@ int Hashmap_set(Hashmap* map, void* key, void* data)
 			check(bucket, "Error can't create bucket.");
 		}
 
-		// Improvement - Addes by sorting the data
+		// Improvement - Adds by sorting the data
 		DArray_sort_add(bucket, node, (DArray_compare)default_node_compare, DARRAY_HEAPSORT);
 		// Update the entries
 		map->entries++; // this doesn't take into 
