@@ -1,4 +1,4 @@
-CFLAGS=-g -O2 -Wall -Wextra -Isrc -DNDEBUG -std=c23 $(OPTFLAGS) 
+CFLAGS=-g -O2 -Wall -Wextra -Isrc -DNDEBUG -std=c2x $(OPTFLAGS) # update -std=c23 don't work on linux
 LIBS=-ldl -lbsd $(OPTLIBS)
 PREFIX?=/usr/local
 

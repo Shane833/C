@@ -65,4 +65,6 @@ void PQueue_ClearDestroy(PQueue* q);
 
 #define PQueue_Free(E) (free(E))
 
+// TODO: Creating from a static array should use heapify 
+
 #endif
