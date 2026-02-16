@@ -16,7 +16,7 @@ typedef uint32_t (*Hashmap_hash) (void* key, uint32_t seed); // Pointer to a Fun
 // This is our Hashmap which contains pointer to compare function and pointer to hash generating function
 // and a Dynamic Array called bucket for storing the Nodes corresponding to a specific hash
 typedef struct Hashmap{
-	DArray * buckets; 
+	DArray *buckets; 
 	Hashmap_compare compare; // Pointer to a function for comparing keys
 	Hashmap_hash hash; // Pointer to a function for generating the hash
 	// Improvement : For Dynamic Growth
@@ -32,8 +32,8 @@ typedef struct Hashmap{
 // This is our single Node which is a pair of keys and values
 // and also stores a unique has code within it
 typedef struct HashmapNode{
-	void * key;
-	void * data;
+	void *key;
+	void *data;
 	uint32_t hash;
 }HashmapNode;
 

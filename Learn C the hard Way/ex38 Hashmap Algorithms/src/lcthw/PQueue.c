@@ -8,6 +8,17 @@ static void BubbleUp(PQueue* q, int element_index);
 static void BubbleDown(PQueue* q, int element_index);
 static void PQ_Swap(PQueue* q, const int a_index, const int b_index);
 
+// Additional Function - Defining this function here bcz its just being used 
+// for one specific task and shouldn't really be available for the outside user
+static inline void* PQueue_Get(PQueue* q, int index)
+{
+	check(index <= q->end, "Invalid Index!")
+	
+	return q->array[index];
+error:
+	return NULL;
+}
+
 // Function Definitions
 PQueue* PQueue_Create(size_t size, PQueue_Compare cmp)
 {

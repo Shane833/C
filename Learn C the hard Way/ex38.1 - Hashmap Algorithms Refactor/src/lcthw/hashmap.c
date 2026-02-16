@@ -142,6 +142,7 @@ error:
 	return NULL;
 }
 
+// Creates a dynamic hashmap which grows as per the given load factor
 Hashmap * Hashmap_createDynamic(Hashmap_compare compare, Hashmap_hash hash, size_t bucket_size, double load_factor)
 {
 	Hashmap* map = calloc(1, sizeof(Hashmap));
@@ -191,7 +192,7 @@ void Hashmap_destroy(Hashmap* map)
 	if(map){
 		// then vaildity of the content
 		if(map->buckets){
-			// Now we loop through all the (0-99) buckets
+			// Now we loop through all the buckets
 			for(i = 0;i < DArray_count(map->buckets); i++){
 				DArray* bucket = DArray_get(map->buckets, i);
 				// If the bucket exists
@@ -331,6 +332,8 @@ error:
 static bool Hashmap_resize(Hashmap * map)
 {
 	// Revision 1 : We want to double the size and rehash the value in the new array
+
+	// QUESTION : Why didn't I just use a realloc call on the existing arrays and then rehash it with the new size
 	
 	// Now first create a new DArray of double the size
 	DArray * new_buckets = DArray_create(sizeof(DArray*), 2 * map->bucket_size); // doubling the size

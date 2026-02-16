@@ -9,13 +9,13 @@ PQueue_CreateFromStaticArray	PQueue.c	/^PQueue* PQueue_CreateFromStaticArray(voi
 PQueue_Dequeue	PQueue.c	/^void* PQueue_Dequeue(PQueue* q)$/;"	f	typeref:typename:void *
 PQueue_Destroy	PQueue.c	/^void PQueue_Destroy(PQueue* q)$/;"	f	typeref:typename:void
 PQueue_Enqueue	PQueue.c	/^void PQueue_Enqueue(PQueue* q, void* element)$/;"	f	typeref:typename:void
+PQueue_Get	PQueue.c	/^static inline void* PQueue_Get(PQueue* q, int index)$/;"	f	typeref:typename:void *	file:
 Parent	PQueue.c	/^static int Parent(PQueue* q, int child_index)$/;"	f	typeref:typename:int	file:
 RightChild	PQueue.c	/^static int RightChild(PQueue* q, int parent_index)$/;"	f	typeref:typename:int	file:
 PQueue	PQueue.h	/^typedef struct PQueue{$/;"	s
 PQueue	PQueue.h	/^}PQueue;$/;"	t	typeref:struct:PQueue
 PQueue_Compare	PQueue.h	/^typedef int (*PQueue_Compare) (const void*, const void* b);$/;"	t	typeref:typename:int (*)(const void *,const void * b)
 PQueue_Free	PQueue.h	/^#define PQueue_Free(/;"	d
-PQueue_Get	PQueue.h	/^static inline void* PQueue_Get(PQueue* q, int index)$/;"	f	typeref:typename:void *
 PQueue_Size	PQueue.h	/^#define PQueue_Size(/;"	d
 __PQUEUE_H__	PQueue.h	/^#define __PQUEUE_H__$/;"	d
 array	PQueue.h	/^	void** array;$/;"	m	struct:PQueue	typeref:typename:void **
@@ -172,11 +172,11 @@ bNgetc	bstrlib.h	/^typedef int (*bNgetc) (void *parm);$/;"	t	typeref:typename:in
 bNread	bstrlib.h	/^typedef size_t (* bNread) (void *buff, size_t elsize, size_t nelem, void *parm);$/;"	t	typeref:typename:size_t (*)(void * buff,size_t elsize,size_t nelem,void * parm)
 bassignStatic	bstrlib.h	/^#define bassignStatic(/;"	d
 bcatStatic	bstrlib.h	/^#define bcatStatic(/;"	d
-bchar	bstrlib.h	/^#define bchar(/;"	d
+bchar	bstrlib.h	/^#define bchar(b, p)         bchare/;"	d
 bchare	bstrlib.h	/^#define bchare(/;"	d
-bdata	bstrlib.h	/^#define bdata(/;"	d
+bdata	bstrlib.h	/^#define bdata(b)            (bdatao/;"	d
 bdatae	bstrlib.h	/^#define bdatae(/;"	d
-bdataofs	bstrlib.h	/^#define bdataofs(/;"	d
+bdataofs	bstrlib.h	/^#define bdataofs(b, o)      (bdataofse/;"	d
 bdataofse	bstrlib.h	/^#define bdataofse(/;"	d
 bfromStatic	bstrlib.h	/^#define bfromStatic(/;"	d
 binsertStatic	bstrlib.h	/^#define binsertStatic(/;"	d
@@ -186,17 +186,17 @@ bisstemeqStatic	bstrlib.h	/^#define bisstemeqStatic(/;"	d
 bisstemeqcaselessStatic	bstrlib.h	/^#define bisstemeqcaselessStatic(/;"	d
 biswriteprotected	bstrlib.h	/^#define biswriteprotected(/;"	d
 bjoinStatic	bstrlib.h	/^#define bjoinStatic(/;"	d
-blength	bstrlib.h	/^#define blength(/;"	d
+blength	bstrlib.h	/^#define blength(b)          (blengthe/;"	d
 blengthe	bstrlib.h	/^#define blengthe(/;"	d
 blk2tbstr	bstrlib.h	/^#define blk2tbstr(/;"	d
 bmid2tbstr	bstrlib.h	/^#define bmid2tbstr(/;"	d
-bsStatic	bstrlib.h	/^# define bsStatic(/;"	d
+bsStatic	bstrlib.h	/^# define bsStatic(q)        bsStaticM/;"	d
 bsStaticBlkParms	bstrlib.h	/^#define bsStaticBlkParms(/;"	d
 bsStaticMlen	bstrlib.h	/^#define bsStaticMlen(/;"	d
 bstrList	bstrlib.h	/^struct bstrList {$/;"	s
-bstrchr	bstrlib.h	/^#define bstrchr(/;"	d
+bstrchr	bstrlib.h	/^#define bstrchr(b,c) bstrchrp/;"	d
 bstring	bstrlib.h	/^typedef struct tagbstring * bstring;$/;"	t	typeref:struct:tagbstring *
-bstrrchr	bstrlib.h	/^#define bstrrchr(/;"	d
+bstrrchr	bstrlib.h	/^#define bstrrchr(b,c) bstrrchrp/;"	d
 btfromblk	bstrlib.h	/^#define btfromblk(/;"	d
 btfromblkltrimws	bstrlib.h	/^#define btfromblkltrimws(/;"	d
 btfromblkrtrimws	bstrlib.h	/^#define btfromblkrtrimws(/;"	d
@@ -259,12 +259,13 @@ DARRAY_QUICKSORT	darray_algos.h	/^#define DARRAY_QUICKSORT /;"	d
 DArray_compare	darray_algos.h	/^typedef int (*DArray_compare) (const void* a, const void* b);$/;"	t	typeref:typename:int (*)(const void * a,const void * b)
 DArray_swap	darray_algos.h	/^static inline void DArray_swap(DArray* array, unsigned int i, unsigned int j)$/;"	f	typeref:typename:void
 darray_algos_h	darray_algos.h	/^#define darray_algos_h$/;"	d
-__dbg_h__	dbg.h	/^#define __dbg_h__ /;"	d
+__dbg_h__	dbg.h	/^#define __dbg_h__ \/\/ It says if not defined __dbg_h__ /;"	d
 check	dbg.h	/^#define check(/;"	d
 check_debug	dbg.h	/^#define check_debug(/;"	d
 check_mem	dbg.h	/^#define check_mem(/;"	d
 clean_errno	dbg.h	/^#define clean_errno(/;"	d
 debug	dbg.h	/^#define debug(/;"	d
+debug	dbg.h	/^#define debug(M, ...) \/\/ Here in case of NDEBUG the debug /;"	d
 log_err	dbg.h	/^#define log_err(/;"	d
 log_info	dbg.h	/^#define log_info(/;"	d
 log_warn	dbg.h	/^#define log_warn(/;"	d
@@ -297,13 +298,13 @@ Hashmap_hash	hashmap.h	/^typedef uint32_t (*Hashmap_hash) (void* key, uint32_t s
 Hashmap_traverse_cb	hashmap.h	/^typedef int (*Hashmap_traverse_cb) (HashmapNode* node);$/;"	t	typeref:typename:int (*)(HashmapNode * node)
 _lcthw_Hashmap_h	hashmap.h	/^#define _lcthw_Hashmap_h$/;"	d
 bucket_size	hashmap.h	/^	size_t bucket_size; \/\/ or called capacity in someplaces$/;"	m	struct:Hashmap	typeref:typename:size_t
-buckets	hashmap.h	/^	DArray * buckets; $/;"	m	struct:Hashmap	typeref:typename:DArray *
+buckets	hashmap.h	/^	DArray *buckets; $/;"	m	struct:Hashmap	typeref:typename:DArray *
 compare	hashmap.h	/^	Hashmap_compare compare; \/\/ Pointer to a function for comparing keys$/;"	m	struct:Hashmap	typeref:typename:Hashmap_compare
-data	hashmap.h	/^	void * data;$/;"	m	struct:HashmapNode	typeref:typename:void *
+data	hashmap.h	/^	void *data;$/;"	m	struct:HashmapNode	typeref:typename:void *
 entries	hashmap.h	/^	size_t entries; \/\/ current no. of elements in the map, updated at every add \/ delete functio/;"	m	struct:Hashmap	typeref:typename:size_t
 hash	hashmap.h	/^	Hashmap_hash hash; \/\/ Pointer to a function for generating the hash$/;"	m	struct:Hashmap	typeref:typename:Hashmap_hash
 hash	hashmap.h	/^	uint32_t hash;$/;"	m	struct:HashmapNode	typeref:typename:uint32_t
-key	hashmap.h	/^	void * key;$/;"	m	struct:HashmapNode	typeref:typename:void *
+key	hashmap.h	/^	void *key;$/;"	m	struct:HashmapNode	typeref:typename:void *
 load_factor	hashmap.h	/^	double load_factor; \/\/ helps us determine a threshold for resizing$/;"	m	struct:Hashmap	typeref:typename:double
 seed	hashmap.h	/^	uint32_t seed; \/\/ This will be initialized once and then used for the lifetime of the program$/;"	m	struct:Hashmap	typeref:typename:uint32_t
 FNV_OFFSET_BASIS	hashmap_algos.c	/^constexpr uint32_t FNV_OFFSET_BASIS = 2166136261;$/;"	v	typeref:typename:constexpr uint32_t

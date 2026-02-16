@@ -47,16 +47,6 @@ PQueue* PQueue_CreateFromArray(void** array, size_t size, PQueue_Compare cmp);
 // have any pointers and therefore we store the addresses of each of the elements
 PQueue* PQueue_CreateFromStaticArray(void** array, size_t size, PQueue_Compare cmp); 
 
-// Additional Function
-static inline void* PQueue_Get(PQueue* q, int index)
-{
-	check(index <= q->end, "Invalid Index!")
-	
-	return q->array[index];
-error:
-	return NULL;
-}
-
 #define PQueue_Size(A) (A != NULL ? (A)->end + 1 : -1)
 
 void PQueue_Destroy(PQueue* q);
