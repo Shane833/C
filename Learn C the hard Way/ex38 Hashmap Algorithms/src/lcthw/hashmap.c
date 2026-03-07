@@ -310,7 +310,10 @@ static bool Hashmap_rehash(Hashmap * map, DArray * new_buckets)
 				}
 
 				// Improvement - Addes by sorting the data
-				DArray_sort_add(new_bucket, node, (DArray_compare)default_node_compare, DARRAY_HEAPSORT);
+				//DArray_sort_add(new_bucket, node, (DArray_compare)default_node_compare, DARRAY_HEAPSORT);
+                
+                // Using the default method since its too overkill for maintating 2-3 items in bucket and storing them in sorted manner
+                DArray_push(new_bucket, node);
 			}
 
 			// Deallocate memory from that bucket
@@ -390,7 +393,9 @@ int Hashmap_set(Hashmap* map, void* key, void* data)
 		}
 
 		// Improvement - Adds by sorting the data
-		DArray_sort_add(bucket, node, (DArray_compare)default_node_compare, DARRAY_HEAPSORT);
+		//DArray_sort_add(bucket, node, (DArray_compare)default_node_compare, DARRAY_HEAPSORT);
+        // Storing in simple linear fashion
+        DArray_push(bucket, node);
 		// Update the entries
 		map->entries++; // this doesn't take into 
 	}
@@ -424,7 +429,7 @@ static inline int Hashmap_get_node(Hashmap* map, uint32_t hash, DArray* bucket, 
 	// to search for 2-3 elements is not really efficient.
 	// However, If we keep the buckets size fixed and store a lot of elements
 	// say 30-40 per bucket then using binary search would be beneficial HOWEVER we also 
-	// have one problem while deleting the nodes we don't really resort them so again 
+	// have one problem while deleting the nodes we don't really re-sort them so again 
 	// If we apply binary search we would be doing so on unsorted data.
 	// So, in my opinion using linear searching would be just as good without all of the overhead
 	// of continuous sorting and for searching the data.

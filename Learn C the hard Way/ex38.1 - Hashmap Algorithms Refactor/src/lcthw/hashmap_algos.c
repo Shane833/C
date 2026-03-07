@@ -70,7 +70,8 @@ uint32_t Hashmap_djb_hash(void* data, uint32_t seed)
 	int i = 0;
 	
 	for(i = 0;i < blength(s); i++){
-		hash = ((hash << 5) + hash) + bchare(s, i, 0);
+		hash = ((hash << 5) + hash) + bchare(s, i, 0); /* hash * 33 + c */
+
 	}
 	
 	return hash;
@@ -83,7 +84,7 @@ uint32_t Hashmap_djb_hash_gen(const void * key, size_t len, uint32_t seed)
 	int i = 0;
 	
 	for(i = 0;i < len; i++){
-		hash = ((hash << 5) + hash) + data[i];
+		hash = ((hash << 5) + hash) + data[i]; /* hash * 33 + c */
 	}
 	
 	return hash;
