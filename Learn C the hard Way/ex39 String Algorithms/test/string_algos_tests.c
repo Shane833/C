@@ -18,7 +18,7 @@ char* test_find_and_scan()
 	int scan_i = StringScanner_scan(scan, &ALPHA);
 	mu_assert(scan_i > 0, "Failed to find 'ALPHA' with scan");
 	mu_assert(scan_i == find_i, "Find and scan don't match");
-	/*
+
 	scan_i = StringScanner_scan(scan, &ALPHA);
 	mu_assert(scan_i > find_i, "should find another ALPHA after the first");
 	
@@ -26,7 +26,6 @@ char* test_find_and_scan()
 	mu_assert(scan_i > find_i, "should find another ALPHA after the first");
 	
 	mu_assert(StringScanner_scan(scan, &ALPHA) == -1, "shouldn't find it");
-    */
 
 	StringScanner_destroy(scan);
 	
@@ -43,12 +42,12 @@ char* test_binstr_performance()
 	
 	do{
 		for(i = 0; i < 1000; i++){
-			found_at = binstr(&IN_STR, 0, &ALPHA);
+			found_at = binstr(&IN_STR, 0, &ALPHA); // This only returns the first occurence everytime
 			mu_assert(found_at != BSTR_ERR, "Failed to find!");
 			find_count++;
 		}
 		elapsed = time(NULL) - start;
-	}while(elapsed <= TEST_TIME);
+	}while(elapsed <= TEST_TIME); // Runs the test for 2 seconds 
 	
 	debug("BINSTR COUNT : %lu, END TIME : %d, OPS: %f", find_count, (int)elapsed, (double)find_count / elapsed);
 	
@@ -65,7 +64,7 @@ char* test_find_performance()
 	
 	do{
 		for(i = 0;i < 1000;i++){
-			found_at = String_find(&IN_STR, &ALPHA);
+			found_at = String_find(&IN_STR, &ALPHA); // This will also find the first occurence again and again
 			find_count++;
 		}
 		elapsed = time(NULL) - start;
@@ -91,7 +90,7 @@ char* test_scan_performance()
 			found_at = 0;
 			
 			do{
-				found_at = StringScanner_scan(scan, &ALPHA);
+				found_at = StringScanner_scan(scan, &ALPHA); // finds all occurences of the needle in the haystack
 				find_count++;
 			}while(found_at != -1);
 		}
@@ -110,14 +109,13 @@ char* all_tests()
 {
 	mu_suite_start();
     mu_run_test(test_find_and_scan);
-    /*
+    
 	// this is an idiom for commenting out section of code
 // #if 0
 	mu_run_test(test_scan_performance);
 	mu_run_test(test_find_performance);
 	mu_run_test(test_binstr_performance);
 // #endif
-    */
 	return NULL;
 }
 

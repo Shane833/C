@@ -47,6 +47,7 @@ static inline const unsigned char* String_base_search(const unsigned char *hayst
 
         // since haystack is a pointer and in itself is not const but the underlying datatype is const 
         // hence we can modify the value pointed by the pointer but not the underlying value
+        // as it only stores the address
 
         // Also haystack here copies the address pointed to by the callee haystack, hence any change
         // to the local haystack pointer does not reflect any change in the callee haystack pointer
@@ -87,7 +88,7 @@ int String_find(bstring in, bstring what)
 	
 	found = String_base_search(haystack, hlen, needle, nlen, skip_chars);
 	
-    printf("Difference : %d\n", found - haystack);
+    //printf("Difference : %d\n", found - haystack);
 	return found != NULL ? found - haystack : -1; // This retruns the index of the needle in haystack(first occurence)
 }
 
@@ -128,7 +129,7 @@ int StringScanner_scan(StringScanner* scan, bstring tofind)
 	const unsigned char* found = NULL;
 	ssize_t found_at = 0;
 	
-	if(scan->hlen <= 0){
+	if(scan->hlen <= 0){ // Suggests the haystack has been processes completely
 		StringScanner_reset(scan);
 		return -1;
 	}
@@ -140,10 +141,12 @@ int StringScanner_scan(StringScanner* scan, bstring tofind)
     // uses the same function to find the needle in haystack
 	found = String_base_search(scan->haystack, scan->hlen, scan->needle, scan->nlen, scan->skip_chars); 
 	
-	if(found){
-		found_at = found - (const unsigned char*)bdata(scan->in);
-		scan->haystack = found + scan->nlen;
-		scan->hlen -= found_at - scan->nlen;
+    // TODO : I think the -1 case with found is not handleded
+	if(found){ // If we find the occurence
+		found_at = found - (const unsigned char*)bdata(scan->in); // 'in' is used to refernce the original haystack string
+		scan->haystack = found + scan->nlen; // Then we will update the haystack to point forward in the string
+                                             // skipping the length of the needle from the found location
+		scan->hlen -= found_at - scan->nlen; // decreasing the length of the stack by the same amount
 	}
 	else{
 		// done, reset the setup
