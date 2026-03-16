@@ -1,27 +1,32 @@
 #include <lcthw/string_algos.h>
 #include <limits.h>
 
-static inline void String_setup_skip_chars(size_t* 				    skip_chars,
-										   const unsigned char*     needle,
+
+static inline void String_setup_skip_chars(size_t  				   *skip_chars,
+										   const unsigned char     *needle,
 										   ssize_t 				    nlen)
 {
 	size_t i = 0;
-	size_t last = nlen - 1;
-	
+	size_t last = nlen - 1; // last is the index of the last character in needle
+    
+    //printf("last index : %u\n", last);
+
 	for(i = 0;i < UCHAR_MAX + 1; i++){
-		skip_chars[i] = nlen;
+		skip_chars[i] = nlen; // filling all 256 possible characters with the length of the needle
+        //printf("skip_char[%d] : %u\n", i, skip_chars[i]);
 	}
 	
 	for(i = 0; i < last; i++){
-		skip_chars[needle[i]] = last - i;
+		skip_chars[needle[i]] = last - i; // storing the indexes of the individual characters of the needle
+        //printf("%c : %u \n", needle[i], last - i); // This value will be used to jump the pointer of the haystack
 	}
 }
 
-static inline const unsigned char* String_base_search(const unsigned char* haystack,
+static inline const unsigned char* String_base_search(const unsigned char *haystack,
 													  ssize_t 			   hlen,
-													  const unsigned char* needle,
+													  const unsigned char *needle,
 													  ssize_t 			   nlen,
-													  size_t* 			   skip_chars)
+													  size_t              *skip_chars)
 {
 	size_t i = 0;
 	size_t last = nlen - 1;
@@ -31,13 +36,37 @@ static inline const unsigned char* String_base_search(const unsigned char* hayst
 	check(nlen > 0, "nlen can't be <= 0");
 	check(hlen > 0, "hlen can't be <= 0");
 	
-	while(hlen >= nlen){
+	while(hlen >= nlen){ // matching character by character 
 		for(i = last; haystack[i] == needle[i]; i--){
+            // TEMP
+            // printf("haystack[%d] : %c, needle[%d] : %c\n", i, haystack[i], i, needle[i]);
 			if(i == 0) return haystack;
 		}
-		
-		hlen -= skip_chars[haystack[last]];
-		haystack += skip_chars[haystack[last]];
+        // TEMP
+		//printf("hlen(before) : %u, skip_chars[value] : %lu\n", hlen, skip_chars[haystack[last]]);
+
+        // since haystack is a pointer and in itself is not const but the underlying datatype is const 
+        // hence we can modify the value pointed by the pointer but not the underlying value
+
+        // Also haystack here copies the address pointed to by the callee haystack, hence any change
+        // to the local haystack pointer does not reflect any change in the callee haystack pointer
+
+        // if the characters were not matched at any point then we will
+        // move the pointer ahead by a calculated value and shorten the
+        // length of the haystack by that value as well
+
+        // Now depending on the value stored in skip_char array for that specific
+        // character, if its not part of the string the we move forward by the length
+        // of the string, but if it is part of the string then we move the pointer forward
+        // by the index of the character in the needle, such that the haystack pointer will eventually
+        // point at the end of the required string
+		hlen -= skip_chars[haystack[last]];  
+        // TEMP
+        //printf("hlen(after) : %u\n", hlen);
+		//printf("haystack(before) : %p\n", haystack);
+        haystack += skip_chars[haystack[last]];
+        //printf("haystack(after) : %p\n", haystack);
+        //printf("last : %u ,haystack[last] : %c, Value : %u\n", last, haystack[last], skip_chars[haystack[last]]);
 	}
 	
 error:
@@ -58,11 +87,13 @@ int String_find(bstring in, bstring what)
 	
 	found = String_base_search(haystack, hlen, needle, nlen, skip_chars);
 	
-	return found != NULL ? found - haystack : -1;
+    printf("Difference : %d\n", found - haystack);
+	return found != NULL ? found - haystack : -1; // This retruns the index of the needle in haystack(first occurence)
 }
 
 StringScanner* StringScanner_create(bstring in)
 {
+    // Creating the Scanner
 	StringScanner* scan = calloc(1, sizeof(StringScanner));
 	check_mem(scan);
 	
@@ -70,7 +101,7 @@ StringScanner* StringScanner_create(bstring in)
 	scan->haystack = (const unsigned char*)bdata(in);
 	scan->hlen = blength(in);
 	
-	assert(scan != NULL && "fuck");
+	assert(scan != NULL && "ERROR: Invalid Scanner");
 	return scan;
 
 error:
@@ -102,11 +133,12 @@ int StringScanner_scan(StringScanner* scan, bstring tofind)
 		return -1;
 	}
 	
-	if((const unsigned char*)bdata(tofind) != scan->needle){
+	if((const unsigned char*)bdata(tofind) != scan->needle){ // initializing the needle if its not updated
 		StringScanner_set_needle(scan, tofind);
 	}
 	
-	found = String_base_search(scan->haystack, scan->hlen, scan->needle, scan->nlen, scan->skip_chars);
+    // uses the same function to find the needle in haystack
+	found = String_base_search(scan->haystack, scan->hlen, scan->needle, scan->nlen, scan->skip_chars); 
 	
 	if(found){
 		found_at = found - (const unsigned char*)bdata(scan->in);
