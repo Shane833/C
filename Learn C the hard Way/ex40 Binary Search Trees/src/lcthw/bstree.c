@@ -24,6 +24,7 @@ error:
 	return NULL;
 }
 
+// Node destroy callbacks
 static int BSTree_destroy_cb(BSTreeNode* node)
 {
 	free(node);
@@ -33,6 +34,7 @@ static int BSTree_destroy_cb(BSTreeNode* node)
 void BSTree_destroy(BSTree* map)
 {
 	if(map){
+        // Using the node destroy callback to destroy 
 		BSTree_traverse(map, BSTree_destroy_cb);
 		free(map);
 	}

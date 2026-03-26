@@ -25,7 +25,7 @@
 */
 
 // Comparison Function - used to organize the data
-typedef int (*PQueue_Compare) (const void*, const void* b);
+typedef int (*PQueue_Compare) (const void *a, const void *b);
 
 // PQueue Data Structure
 typedef struct PQueue{

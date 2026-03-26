@@ -1,25 +1,29 @@
 #ifndef _lcthw_BSTree_h
 #define _lcthw_BSTree_h
 
+// Node compare function pointer
 typedef int (*BSTree_compare) (void* a, void* b);
 
+// Single Node of the tree
 typedef struct BSTreeNode{
 	void* key;
 	void* data;
-	
 	struct BSTreeNode* left;
 	struct BSTreeNode* right;
 	struct BSTreeNode* parent;
 }BSTreeNode;
 
+// Tree Struct
 typedef struct BSTree{
 	int count;
 	BSTree_compare compare;
 	BSTreeNode* root;
 }BSTree;
 
+// Tree traverse function pointer
 typedef int (*BSTree_traverse_cb) (BSTreeNode* node);
 
+// Tree Functions
 BSTree* BSTree_create(BSTree_compare compare);
 void BSTree_destroy(BSTree* map);
 
