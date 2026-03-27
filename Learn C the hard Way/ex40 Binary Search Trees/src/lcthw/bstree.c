@@ -8,6 +8,7 @@ static int default_compare(void* a, void* b)
 	return bstrcmp((bstring) a, (bstring) b);
 }
 
+// Allocates a new tree
 BSTree* BSTree_create(BSTree_compare compare)
 {
 	BSTree* map = calloc(1, sizeof(BSTree));
@@ -17,6 +18,7 @@ BSTree* BSTree_create(BSTree_compare compare)
 	
 	return map;
 
+// Destroys
 error:
 	if(map){
 		BSTree_destroy(map);
@@ -40,6 +42,7 @@ void BSTree_destroy(BSTree* map)
 	}
 }
 
+// Helper function for creating the nodes
 static inline BSTreeNode* BSTreeNode_create(BSTreeNode* parent, void* key, void* data)
 {
 	BSTreeNode* node = calloc(1, sizeof(BSTreeNode));
@@ -54,6 +57,7 @@ error:
 	return NULL;
 }
 
+// Recursively compares and adds the nodes to the trees
 static inline void BSTree_setnode(BSTree* map, BSTreeNode* node, void* key, void* data)
 {
 	int cmp = map->compare(node->key, key);
@@ -84,6 +88,7 @@ int BSTree_set(BSTree* map, void* key, void* data)
 		check_mem(map->root);
 	}
 	else{
+        // We start with the root node and sets by recursively comparing it
 		BSTree_setnode(map, map->root, key, data);
 	}
 	
@@ -92,6 +97,7 @@ error:
 	return -1;
 }
 
+// Searching using the binary search 
 static inline BSTreeNode* BSTree_getnode(BSTree* map, BSTreeNode* node, void* key)
 {
 	int cmp = map->compare(node->key, key);
@@ -117,6 +123,7 @@ static inline BSTreeNode* BSTree_getnode(BSTree* map, BSTreeNode* node, void* ke
 	}
 }
 
+// Searching on the root node
 void* BSTree_get(BSTree* map, void* key)
 {
 	if(map->root == NULL){
@@ -128,9 +135,10 @@ void* BSTree_get(BSTree* map, void* key)
 	}
 }
 
+// Traverses the tree using the provided callback
 static inline int BSTree_traverse_nodes(BSTreeNode* node, BSTree_traverse_cb traverse_cb)
 {
-	int rc = 0;
+	int rc = 0; // returns 0 on success
 	
 	if(node->left){
 		rc = BSTree_traverse_nodes(node->left, traverse_cb);
@@ -156,6 +164,7 @@ int BSTree_traverse(BSTree* map, BSTree_traverse_cb traverse_cb)
 	return 0;
 }
 
+// Traverse to the left most node to find the minimum node
 static inline BSTreeNode* BSTree_find_min(BSTreeNode* node)
 {
 	while(node->left){
@@ -168,6 +177,7 @@ static inline BSTreeNode* BSTree_find_min(BSTreeNode* node)
 static inline void BSTree_replace_node_in_parent(BSTree* map, BSTreeNode* node, BSTreeNode* new_value)
 {
 	if(node->parent){
+        // Replacing the node of a parent, be it a left child or a right child
 		if(node == node->parent->left){
 			node->parent->left = new_value;
 		}
@@ -179,12 +189,14 @@ static inline void BSTree_replace_node_in_parent(BSTree* map, BSTreeNode* node, 
 		// this is the root so gotta change it
 		map->root = new_value;
 	}
-	
+
+    // If the new_value node is not null then we can set its parent as the parent of previous node	
 	if(new_value){
 		new_value->parent = node->parent;
 	}
 }
 
+// Simple util function for swapping two nodes
 static inline void BSTree_swap(BSTreeNode* a, BSTreeNode* b)
 {
 	void* temp = NULL;
@@ -197,6 +209,7 @@ static inline void BSTree_swap(BSTreeNode* a, BSTreeNode* b)
 	b->data = a->data;
 	a->data = temp;
 }
+
 
 static inline BSTreeNode* BSTree_node_delete(BSTree* map, BSTreeNode* node, void* key)
 {
@@ -222,7 +235,12 @@ static inline BSTreeNode* BSTree_node_delete(BSTree* map, BSTreeNode* node, void
 	}
 	else{
 		if(node->left && node->right){
-			// swap this node for the smallest node that is bigger than us
+            // In case, where the node to be deleted have both childs
+            // we can replace this node with the max child in the left sub tree
+            // or the smallest child in right subtree
+            
+            // In this case we are finding the minimum node in the right sub tree
+            // to replace it with the node to be deleted
 			BSTreeNode* successor = BSTree_find_min(node->right);
 			BSTree_swap(successor, node);
 			
@@ -231,18 +249,19 @@ static inline BSTreeNode* BSTree_node_delete(BSTree* map, BSTreeNode* node, void
 			BSTree_replace_node_in_parent(map, successor, successor->right);
 			
 			// finally its swapped, so return successor instead of node
+            // as the values of the node have been swapped with the successor
 			return successor;
-		}
+		} // If there is only one child then we can simply replace the current node with its child
 		else if(node->left){
 			BSTree_replace_node_in_parent(map, node, node->left);
 		}
 		else if(node->right){
 			BSTree_replace_node_in_parent(map, node, node->right);
 		}
-		else{
+		else{ // In case of root
 			BSTree_replace_node_in_parent(map, node, NULL);
 		}
-		
+		// In this case, we can simply return the node itself
 		return node;
 	}
 }

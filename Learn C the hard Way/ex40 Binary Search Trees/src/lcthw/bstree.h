@@ -26,7 +26,7 @@ typedef int (*BSTree_traverse_cb) (BSTreeNode* node);
 // Tree Functions
 BSTree* BSTree_create(BSTree_compare compare);
 void BSTree_destroy(BSTree* map);
-
+// Setter and getter functions
 int BSTree_set(BSTree* map, void* key, void* data);
 void* BSTree_get(BSTree* map, void* key);
 

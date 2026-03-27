@@ -1,3 +1,4 @@
+#if defined (_WIN32)
 #include <stdio.h>
 #include <pthread.h>
 #include <semaphore.h>
@@ -26,3 +27,15 @@ int main()
 
 	return 0;
 }
+
+#elif defined (__linux__)
+#include <threads.h>
+#include <stdio.h>
+
+typedef int (*thrd_start_t)(void*);
+
+int main(){
+   
+    return 0;
+}
+#endif
