@@ -1,0 +1,56 @@
+#include <path.h>
+#include <string.h>
+#include <path.h>
+#include <dbg.h>
+
+// Assumes the max line len to be 1024 characters
+#define MAXLINE 1024
+void getFiles(const char *path){
+    // We can open a directory - '.' & '..' are extra directories for referring to
+    // the current and previous directory respectively
+    DIR *logdir = opendir(path);
+    if(!logdir){ fprintf(stderr, "ERROR : Unable to open directory!\n"); return; }
+   
+    // Absolute path of the directory
+    printf("Directory : %s\n", logdir->dd_name);
+    printf("Directory Name len : %llu\n", strlen(logdir->dd_name));
+    
+    const size_t parent_len = strlen(logdir->dd_name);
+    // char parent_directory[parent_len] = { '\0' }; Variable sized objects can't be initialized
+    char parent_directory[parent_len]; 
+    strcpy(parent_directory, logdir->dd_name);
+    parent_directory[parent_len - 1] = '\0';
+    printf("Directory Name : %s\n", parent_directory); 
+    
+    // We can obtain the various entries in our directory using readdir
+    struct dirent *result = nullptr;
+
+    while((result = readdir(logdir)) != NULL){
+        printf("Name : %s ", result->d_name);
+
+        // You should provide absolute path by appending the name of the parent directory
+        const size_t child_len = parent_len + strlen(result->d_name);
+        char child[child_len + 1]; // adding the extra 1 for null characters
+        strcpy(child, parent_directory);
+        strcat(child, result->d_name);
+
+        //printf("-> %s\n", PATHTYPE(child));
+    }
+    // After use close the directory
+    closedir(logdir);
+}
+
+int main(int argc, char* argv[]){
+    //getFiles(argv[1]);
+    Path *path = Path_open(argv[1]);
+    check(path != NULL, "Failed to create Path Object!");
+
+    printf("Directory Path : %s\n", path->path);
+
+    Path_listDirEnt(argv[1]);
+    printf("%s\n", Path_type(argv[1]));
+    printf("%u\n", Path_exists(argv[2]));
+error:
+    return 0;
+}
+
