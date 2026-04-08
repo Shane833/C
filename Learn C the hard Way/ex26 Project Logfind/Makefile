@@ -1,5 +1,6 @@
-CFLAGS=-Wall -Wextra -Wpedantic -ggdb -O2 -std=c23 -Isrc 
-SANITIZE=-fsanitize=undefined -fsanitize-trap
+CFLAGS=-Wall -Wextra -Wpedantic -ggdb -O2 -std=c23 -Isrc -DNDEBUG
+SANITIZEW=-fsanitize=undefined -fsanitize-trap
+SANITIZEL=-fsanitize=address
 
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o, $(SRC))
@@ -7,20 +8,28 @@ OBJ = $(patsubst %.c,%.o, $(SRC))
 TEST_SRC = $(wildcard tests/*.c)
 TESTS = $(patsubst %.c,%, $(TEST_SRC))
 
-TARGET = logfind
+windows: compilew testw
 
-all: compile test
+linux: compilel testl
 
-compile: $(OBJ) src/path.h src/file.h
+compilew: CFLAGS+=$(SANITIZEW)
+compilew: src/path.h src/file.h $(OBJ)
 
-link:
-	$(CC) $(SANITIZE) $(OBJ) -o $(TARGET) 
+compilel: CFLAGS+=$(SANITIZEL)
+compilel: src/path.h src/file.h $(OBJ)
 
-test: CFLAGS+=$(OBJ)
-test: $(TESTS)
-	./$(TESTS)
+testw: CFLAGS+=$(OBJ)
+testw: $(TESTS)
+	powershell -ExecutionPolicy Bypass -File ./run_tests.ps1
 
-clean:
+testl: CFLAGS+=$(OBJ)
+testl: $(TESTS)
+	./run_tests.sh
+
+cleanw:
 	-rm src/*.o
-	-rm *.exe
 	-rm tests/*.exe
+
+cleanl:
+	-rm $(OBJ)
+	-rm $(TESTS)

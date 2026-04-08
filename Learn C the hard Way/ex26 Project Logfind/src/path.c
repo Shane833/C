@@ -129,7 +129,6 @@ Path *Path_open(const char *path){
     }
 
     return temp;
-
 error:
     return NULL;
 }
@@ -143,7 +142,7 @@ inline bool Path_isFile(const char *filepath){
     fclose(file);
     return true;
 error:
-    fclose(file);
+    if(file) fclose(file);
     return false;
 }
 
@@ -156,7 +155,7 @@ inline bool Path_isDir(const char *dirpath){
     closedir(dir);
     return true;
 error:
-    closedir(dir);
+    if(dir) closedir(dir);
     return false;
 }
 
@@ -180,6 +179,9 @@ inline void Path_listDirEnt(const char *dirpath){
 
         items = NULL;
         closedir(dir);
+    }
+    else{
+        log_err("Invalid directory!");
     }
 error:
     return;

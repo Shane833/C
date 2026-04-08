@@ -4,7 +4,9 @@
 #include <dbg.h>
 
 // Assumes the max line len to be 1024 characters
-#define MAXLINE 1024
+// #define MAXLINE 1024
+
+/*
 void getFiles(const char *path){
     // We can open a directory - '.' & '..' are extra directories for referring to
     // the current and previous directory respectively
@@ -39,8 +41,10 @@ void getFiles(const char *path){
     // After use close the directory
     closedir(logdir);
 }
+*/
 
 int main(int argc, char* argv[]){
+    /*
     //getFiles(argv[1]);
     Path *path = Path_open(argv[1]);
     check(path != NULL, "Failed to create Path Object!");
@@ -50,6 +54,8 @@ int main(int argc, char* argv[]){
     Path_listDirEnt(argv[1]);
     printf("%s\n", Path_type(argv[1]));
     printf("%u\n", Path_exists(argv[2]));
+    */
+
 error:
     return 0;
 }

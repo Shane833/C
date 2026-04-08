@@ -9,8 +9,8 @@
 
 // Definition of the DArray Struct
 typedef struct DArray{
-	int end; // maintains the end pointer, the point where insertion takes place
-	int max; // holds the maximum array size and then flags to grow it once the limit is reached
+	size_t end; // maintains the end pointer, the point where insertion takes place
+	size_t max; // holds the maximum array size and then flags to grow it once the limit is reached
 	size_t element_size; // fixed size of each element that it needs to store
 	size_t expand_rate; // defines how much ammount you want to grow the array after its initial size
 	void** contents; // the data of the array itself will be stored here
