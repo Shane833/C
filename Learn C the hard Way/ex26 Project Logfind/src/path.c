@@ -85,7 +85,12 @@ error:
    parent = NULL;
 }
 
-static inline DArray *getParts(const char *
+static inline DArray *getParts(const char *path){
+  char *path_cpy = strdup(path);
+  check(path_cpy != NULL, "Failed to duplicate string!");
+
+  
+}
 
 static inline bstring getFileStem(const char *path){
 
