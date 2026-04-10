@@ -3,76 +3,42 @@
 #include <string.h>
 
 // Building it for setting up files for now
-static inline bstring getParent(const char *path){
+static inline bstring getFileParent(const char *path){
     bstring parent = NULL;
 
-   // 1. If its a file
-   if(Path_isFile(path)){
-        // We can search for the first '\\' character from the last
-        // and then move until that pointer, if nothing is found
-        // then this suggests that the file belongs to the same 
-        // directory as the the binary itself
-        // Checking for both type of slashes
-       char *char_ptr = strrchr(path, '\\') == NULL ? (strrchr(path, '/') \
-               == NULL ? NULL : strrchr(path,'/')) : strrchr(path, '\\');
+    // We can search for the first '\\' character from the last
+    // and then move until that pointer, if nothing is found
+    // then this suggests that the file belongs to the same 
+    // directory as the the binary itself
+    // Checking for both type of slashes
+   char *char_ptr = strrchr(path, '\\') == NULL ? (strrchr(path, '/') \
+           == NULL ? NULL : strrchr(path,'/')) : strrchr(path, '\\');
 
-       if(char_ptr){
-          // then we would need to get the path before the file name
-          //size_t parent_size = (char_ptr - path) + 1; // +1 to include '\\' character
-          size_t parent_size = char_ptr - path;
-          
-          char *parent_ptr = calloc(1, parent_size + 1); // +1 for the null character
-          check(parent_ptr != NULL, "Failed to initialize parent!");
-          
-          strncpy(parent_ptr, path, parent_size);
-          
-          parent = bfromcstr(parent_ptr);
-          check(parent != NULL, "Failed to initialize parent");
-            
-          free(parent_ptr);
-       }else{
-           char *parent_ptr = calloc(1, sizeof(char) + 1);
-           check(parent_ptr != NULL, "Failed to initialize parent!");
-           
-           strcpy(parent_ptr,".");
-            
-           parent = bfromcstr(parent_ptr);
-           check(parent != NULL, "Failed to initialize parent");
-
-           free(parent_ptr);
-       } 
-   }else if(Path_isDir(path)){
-       char *char_ptr = strrchr(path, '\\') == NULL ? (strrchr(path, '/') \
-               == NULL ? NULL : strrchr(path,'/')) : strrchr(path, '\\');
+   if(char_ptr){
+      // then we would need to get the path before the file name
+      //size_t parent_size = (char_ptr - path) + 1; // +1 to include '\\' character
+      size_t parent_size = char_ptr - path;
+      
+      char *parent_ptr = calloc(1, parent_size + 1); // +1 for the null character
+      check(parent_ptr != NULL, "Failed to initialize parent!");
+      
+      strncpy(parent_ptr, path, parent_size);
+      
+      parent = bfromcstr(parent_ptr);
+      check(parent != NULL, "Failed to initialize parent");
         
-       if(char_ptr){
-           /*
-           if(*(char_ptr + 1) == '\0'){ // This means its still the same directory
-                                        // But this would still be true for other directories too
-               char *parent_ptr = calloc(1, sizeof(char) + 1);
-               check(parent_ptr != NULL, "Failed to initialize parent!");
-            
-               strcpy(parent_ptr,".");
-                 
-               parent = bfromcstr(parent_ptr);
-               check(parent != NULL, "Failed to initialize parent");
+      free(parent_ptr);
+   }else{
+       char *parent_ptr = calloc(1, sizeof(char) + 1);
+       check(parent_ptr != NULL, "Failed to initialize parent!");
+       
+       strcpy(parent_ptr,".");
+        
+       parent = bfromcstr(parent_ptr);
+       check(parent != NULL, "Failed to initialize parent");
 
-               free(parent_ptr);
-           */ 
-            
-
-      }else{
-            char *parent_ptr = calloc(1, sizeof(char) + 1);
-            check(parent_ptr != NULL, "Failed to initialize parent!");
-            
-            strcpy(parent_ptr,".");
-             
-            parent = bfromcstr(parent_ptr);
-            check(parent != NULL, "Failed to initialize parent");
-
-            free(parent_ptr);
-      }
-   }
+       free(parent_ptr);
+   } 
 
    return parent;
 error:
@@ -81,21 +47,75 @@ error:
    return NULL;
 }
 
+static inline bstring getDirParent(const char *path){
+    bstring parent = NULL;
+
+   char *char_ptr = strrchr(path, '\\') == NULL ? (strrchr(path, '/') \
+           == NULL ? NULL : strrchr(path,'/')) : strrchr(path, '\\');
+    
+   if(char_ptr){
+       /* 
+       if(*(char_ptr + 1) == '\0'){ // This means its still the same directory
+                                    // But this would still be true for other directories too
+           char *parent_ptr = calloc(1, sizeof(char) + 1);
+           check(parent_ptr != NULL, "Failed to initialize parent!");
+        
+           strcpy(parent_ptr,".");
+             
+           parent = bfromcstr(parent_ptr);
+           check(parent != NULL, "Failed to initialize parent");
+
+           free(parent_ptr);
+        */
+  }else{
+        char *parent_ptr = calloc(1, sizeof(char) + 1);
+        check(parent_ptr != NULL, "Failed to initialize parent!");
+        
+        strcpy(parent_ptr,".");
+         
+        parent = bfromcstr(parent_ptr);
+        check(parent != NULL, "Failed to initialize parent");
+
+        free(parent_ptr);
+  }
+
+   return parent;
+error:
+   if(parent) bdestroy(parent);
+   parent = NULL;
+}
+
+static inline DArray *getParts(const char *
+
+static inline bstring getFileStem(const char *path){
+
+error:
+    return NULL;
+}
+
+static inline bstring getDirStem(const char *path){
+
+error:
+    return NULL;
+}
+
+static inline bstring getFileSuffix(const char *path){
+    
+}
+
 static inline void setupDirectory(Path *temp, const char *path){
     DIR *dir = opendir(path);
     check(dir != NULL, "Failed to open path!");
 
-    temp->_path = bfromcstr(dir->dd_name);
-    check(path != NULL, "Failed to create bstring!");
+    temp->name = bfromcstr(path);
+    check_debug(temp->name != NULL, "Failed to create name bstring!");
+
+    temp->path = bfromcstr(dir->dd_name);
+    check_debug(temp->path != NULL, "Failed to create path bstring!");
     
     // Cleanup the asterisk - slen is the actual length of the string
-    bdelete(temp->_path, temp->_path->slen - 1, 1);
-    // Initializing everything else
-    temp->is_file = false;
-    // Pointing to the actual data
-    temp->path = bdata(temp->_path);
-    
-    getParent(path);
+    check_debug(bdelete(temp->path, temp->path->slen - 1, 1) == BSTR_OK,"Failed to modify the path string!");
+
     closedir(dir);
 
 error:
@@ -166,27 +186,6 @@ error:
     return false;
 }
 
-inline void Path_listDirEnt(const char *dirpath){
-    if(Path_exists(dirpath) && Path_isDir(dirpath)){
-        DIR *dir = opendir(dirpath);
-        check(dir != NULL, "Unable to open directory!");
-
-        struct dirent *items = NULL;
-
-        while((items = readdir(dir)) != NULL){
-           fprintf(stdout, "%s\n", items->d_name); 
-        }
-
-        items = NULL;
-        closedir(dir);
-    }
-    else{
-        log_err("Invalid directory!");
-    }
-error:
-    return;
-}
-
 // Handy macro for identifying path type
 #define PATHTYPE(path) Path_isDir((path)) ? "Directory" : (Path_isFile((path)) ? "File" : NULL)
 
@@ -201,11 +200,10 @@ error:
 // Destroying path object
 void Path_destroy(Path *path){
     if(path){
-       if(path->_path) bdestroy(path->_path);
-       if(path->_parent) bdestroy(path->_parent);
-       if(path->_name) bdestroy(path->_name);
-       if(path->_stem) bdestroy(path->_stem);
-       if(path->_suffix) bdestroy(path->_suffix);
+       if(path->path) bdestroy(path->path);
+       if(path->name) bdestroy(path->name);
+       if(path->stem) bdestroy(path->stem);
+       if(path->suffix) bdestroy(path->suffix);
 
        free(path); 
     }                                             

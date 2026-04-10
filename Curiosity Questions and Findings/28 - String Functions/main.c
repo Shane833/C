@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "bstrlib.h"
 
 int main(int argc, char* argv[]){
    // Searching and Splitting string functions
@@ -73,6 +74,6 @@ int main(int argc, char* argv[]){
     }else{
         printf("File doesn't have an extension\n");
     }
-
+    
     return 0;
 }

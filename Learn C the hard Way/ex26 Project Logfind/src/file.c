@@ -155,16 +155,38 @@ int File_search(File *file, bstring word, DArray *result){
     check(word != NULL, "Invalid word!")
     check(word->slen >= 0 && word->mlen >= word->slen && word->data != NULL, "Invalid word data!");
     check(result != NULL, "Invalid result DArray!");
+        
+    // TODO : Another Idea is to have DArray of DArrays in which
+    // each of the member DArray corresponds to a file
+    // TODO : Or simply this is a DArray of bstrings with
+    // the format [file_name:line_no:col_no -> found_word]
 
-    while(!feof(file->fileptr)){
-        if(File_readline(file) == 0){
-            
-        }else{
-            break;
+    // Read all the lines
+    check(File_readlines(file) == 0, "Failed to read lines!");
+    // Go through each of the lines and search for the word
+    for(size_t i = 0;i < DArray_count(file->lines); i++){
+        Line *line = (Line *)DArray_get(file->lines, i);
+        if(line){
+            // Search for the word
+            if(binstr(line->data, 0, word) != BSTR_ERR){
+                // I'll be copying the whole line hence no need to
+                // check the line again, if the word is found once
+                // then we won't be checking for multiple occurences
+                Line *found = malloc(sizeof(Line));
+                check_debug(found != NULL, "Failed to copy line!");
+                
+                found->data = bstrcpy(line->data);
+                check_debug(found->data != NULL, "Failed to copy line data!");
+
+                found->line_no = line->line_no;
+
+                check_debug(DArray_push(result, found) == 0,"Failed to add line!");
+            }
         }
     }
 
-    return 0;
+
+   return 0;
 error:
     return -1;
 }
@@ -234,10 +256,12 @@ void File_close(File *file){
         }
         if(file->lines){
             for(size_t i = 0;i < DArray_count(file->lines);i++){
-                bstring temp = (bstring)DArray_get(file->lines, i);
-                if(temp){
-                    bdestroy(temp);
+                Line *line = (Line *)DArray_get(file->lines, i);
+                if(line){
+                    bdestroy(line->data);
+                    free(line);
                 }
+                
             }
             DArray_destroy(file->lines);
             file->lines = NULL;

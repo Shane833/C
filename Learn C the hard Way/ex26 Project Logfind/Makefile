@@ -26,9 +26,9 @@ testl: CFLAGS+=$(OBJ)
 testl: $(TESTS)
 	./run_tests.sh
 
-cleanw:
-	-rm src/*.o
-	-rm tests/*.exe
+cleanw: 	
+	-del /q src\*.o
+	-del /q tests\*.exe
 
 cleanl:
 	-rm $(OBJ)

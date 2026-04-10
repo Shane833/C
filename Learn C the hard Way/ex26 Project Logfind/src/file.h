@@ -30,7 +30,7 @@ int File_readline(File *file);
 int File_writeline(File *file);
 int File_writelines(File *file);
 // Searches a words in a file
-int File_search(File *file, const char *word, DArray *result);
+int File_search(File *file, bstring word, DArray *result);
 
 int File_reset(File *file);
 void File_close(File *file);

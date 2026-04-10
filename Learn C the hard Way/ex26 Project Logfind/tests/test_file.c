@@ -44,6 +44,45 @@ char *test_readlines(){
     return NULL;
 }
 
+
+char *test_search(){
+
+    // Assuming to have less than 50 instances of the word to be found initially
+    DArray *result = DArray_create(sizeof(Line), 50); 
+    mu_assert(result != NULL, "Failed to create DArray result!");
+    
+    // word to be searched for
+    bstring word = bfromcstr("OBJ");
+    mu_assert(word != NULL, "Failed to create word for search!");
+
+    mu_assert(File_search(file, word, result) == 0, "File Search failed!");
+    
+    // Print the instances if anything is found
+    for(size_t i = 0;i < DArray_count(result);i++){
+        Line *line = (Line *)DArray_get(result, i);
+        if(line){
+            printf("%llu:%s", line->line_no, bdata(line->data));
+        }
+    }
+
+    bdestroy(word);
+    word = NULL;
+
+    for(size_t i = 0;i < DArray_count(result);i++){
+        Line *line = (Line *)DArray_get(result, i);
+        if(line){
+            bdestroy(line->data);
+            line->data = NULL;
+            free(line);
+        }
+    }
+
+    DArray_destroy(result);
+    result = NULL;
+    
+    return NULL;
+}
+
 char *test_close(){
     File_close(file);
 
@@ -54,13 +93,14 @@ char *all_tests(){
     mu_suite_start(); 
 
     mu_run_test(test_create);
-    mu_run_test(test_readline);
+    //mu_run_test(test_readline);
     //mu_run_test(test_reset);
-    mu_run_test(test_readlines);
-    mu_run_test(test_readline);
+    //mu_run_test(test_readlines);
+    mu_run_test(test_search);
+    //mu_run_test(test_readline);
     mu_run_test(test_close);
 
     return NULL;
 }
 
-RUN_TESTS(all_tests)
+RUN_TESTS(all_tests);

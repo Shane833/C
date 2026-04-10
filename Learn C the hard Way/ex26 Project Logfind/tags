@@ -22,8 +22,6 @@
 !_TAG_KIND_DESCRIPTION!C	t,typedef	/typedefs/
 !_TAG_KIND_DESCRIPTION!C	u,union	/union names/
 !_TAG_KIND_DESCRIPTION!C	v,variable	/variable definitions/
-!_TAG_KIND_DESCRIPTION!C++	M,module	/modules/
-!_TAG_KIND_DESCRIPTION!C++	P,partition	/partitions/
 !_TAG_KIND_DESCRIPTION!C++	c,class	/classes/
 !_TAG_KIND_DESCRIPTION!C++	d,macro	/macro definitions/
 !_TAG_KIND_DESCRIPTION!C++	e,enumerator	/enumerators (values inside an enumeration)/
@@ -48,7 +46,6 @@
 !_TAG_KIND_DESCRIPTION!Markdown	t,subsubsection	/level 3 sections/
 !_TAG_KIND_DESCRIPTION!Markdown	u,l5subsection	/level 5 sections/
 !_TAG_KIND_DESCRIPTION!PowerShell	c,class	/classes/
-!_TAG_KIND_DESCRIPTION!PowerShell	e,enumlabel	/enum labels/
 !_TAG_KIND_DESCRIPTION!PowerShell	f,function	/functions/
 !_TAG_KIND_DESCRIPTION!PowerShell	g,enum	/enum names/
 !_TAG_KIND_DESCRIPTION!PowerShell	i,filter	/filter/
@@ -67,37 +64,30 @@
 !_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
-!_TAG_OUTPUT_VERSION	1.1	/current.age/
+!_TAG_OUTPUT_VERSION	0.0	/current.age/
 !_TAG_PARSER_VERSION!C	1.1	/current.age/
-!_TAG_PARSER_VERSION!C++	2.2	/current.age/
-!_TAG_PARSER_VERSION!Make	1.1	/current.age/
+!_TAG_PARSER_VERSION!C++	1.1	/current.age/
+!_TAG_PARSER_VERSION!Make	0.0	/current.age/
 !_TAG_PARSER_VERSION!Markdown	1.1	/current.age/
-!_TAG_PARSER_VERSION!PowerShell	1.1	/current.age/
-!_TAG_PARSER_VERSION!Python	1.1	/current.age/
+!_TAG_PARSER_VERSION!PowerShell	0.0	/current.age/
+!_TAG_PARSER_VERSION!Python	0.0	/current.age/
 !_TAG_PARSER_VERSION!Sh	0.0	/current.age/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	D:/Shane/C/Github/C/Learn C the hard Way/ex26 Project Logfind/	//
+!_TAG_PROC_CWD	E:/Shane/C/GitHub/C/Learn C the hard Way/ex26 Project Logfind/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	6.2.1	//
+!_TAG_PROGRAM_VERSION	6.1.0	/v6.1.0/
 !_TAG_ROLE_DESCRIPTION!C!function	foreigndecl	/declared in foreign languages/
 !_TAG_ROLE_DESCRIPTION!C!header	local	/local header/
 !_TAG_ROLE_DESCRIPTION!C!header	system	/system header/
 !_TAG_ROLE_DESCRIPTION!C!macro	undef	/undefined/
 !_TAG_ROLE_DESCRIPTION!C!struct	foreigndecl	/declared in foreign languages/
-!_TAG_ROLE_DESCRIPTION!C++!header	exported	/exported with "exported imported ..."/
-!_TAG_ROLE_DESCRIPTION!C++!header	imported	/imported with "imported ..."/
 !_TAG_ROLE_DESCRIPTION!C++!header	local	/local header/
 !_TAG_ROLE_DESCRIPTION!C++!header	system	/system header/
 !_TAG_ROLE_DESCRIPTION!C++!macro	undef	/undefined/
-!_TAG_ROLE_DESCRIPTION!C++!module	imported	/imported with "imported ..."/
-!_TAG_ROLE_DESCRIPTION!C++!module	partOwner	/used for specifying a partition/
-!_TAG_ROLE_DESCRIPTION!C++!partition	imported	/imported with "imported ..."/
 !_TAG_ROLE_DESCRIPTION!Make!makefile	included	/included/
 !_TAG_ROLE_DESCRIPTION!Make!makefile	optional	/optionally included/
-!_TAG_ROLE_DESCRIPTION!Python!function	entryPoint	/specified as an entry point/
-!_TAG_ROLE_DESCRIPTION!Python!module	entryPoint	/specified as a module of an entry point/
 !_TAG_ROLE_DESCRIPTION!Python!module	imported	/imported modules/
 !_TAG_ROLE_DESCRIPTION!Python!module	indirectlyImported	/module imported in alternative name/
 !_TAG_ROLE_DESCRIPTION!Python!module	namespace	/namespace from where classes\/variables\/functions are imported/
@@ -145,6 +135,8 @@ DArray_remove	./src/darray.h	/^static inline void* DArray_remove(DArray* array, 
 DArray_resize	./src/darray.c	/^static inline int DArray_resize(DArray* array, size_t newsize)$/;"	f	typeref:typename:int	file:
 DArray_set	./src/darray.h	/^static inline void DArray_set(DArray* array, int i, void* el)$/;"	f	typeref:typename:void
 DEFAULT_EXPAND_RATE	./src/darray.h	/^#define DEFAULT_EXPAND_RATE /;"	d
+DIRECTORY_H	./src/directory.h	/^#define DIRECTORY_H$/;"	d
+Directory	./src/directory.h	/^}Directory;$/;"	t	typeref:struct:__anon33a770240108
 FILE_H	./src/file.h	/^#define FILE_H$/;"	d
 File	./src/file.h	/^}File;$/;"	t	typeref:struct:__anonc589fb8f0308
 File_close	./src/file.c	/^void File_close(File *file){$/;"	f	typeref:typename:void
@@ -152,12 +144,14 @@ File_open	./src/file.c	/^File *File_open(const char *filepath, ACCESS_MODE mode)
 File_readline	./src/file.c	/^int File_readline(File *file){$/;"	f	typeref:typename:int
 File_readlines	./src/file.c	/^int File_readlines(File *file){$/;"	f	typeref:typename:int
 File_reset	./src/file.c	/^int File_reset(File *file){$/;"	f	typeref:typename:int
+File_search	./src/file.c	/^int File_search(File *file, bstring word, DArray *result){$/;"	f	typeref:typename:int
+File_writeline	./src/file.c	/^int File_writeline(File *file){$/;"	f	typeref:typename:int
+File_writelines	./src/file.c	/^int File_writelines(File *file){$/;"	f	typeref:typename:int
 INITIAL_STATIC_FIND_INDEX_COUNT	./src/bstrlib.c	/^#define INITIAL_STATIC_FIND_INDEX_COUNT /;"	d	file:
 LONG_BITS_QTY	./src/bstrlib.c	/^#define LONG_BITS_QTY /;"	d	file:
 LONG_LOG_BITS_QTY	./src/bstrlib.c	/^#define LONG_LOG_BITS_QTY /;"	d	file:
 LONG_TYPE	./src/bstrlib.c	/^#define LONG_TYPE /;"	d	file:
 Line	./src/file.h	/^}Line;$/;"	t	typeref:struct:__anonc589fb8f0208
-MAXLINELEN	./src/file.h	/^#define MAXLINELEN /;"	d
 MAX_LINE	./tests/Solution/logfind2.c	/^const size_t MAX_LINE = 1024;$/;"	v	typeref:typename:const size_t
 NDEBUG	./tests/Solution/logfind2.c	/^#define NDEBUG$/;"	d	file:
 OBJ	./Makefile	/^OBJ = $(patsubst %.c,%.o, $(SRC))$/;"	m
@@ -184,6 +178,7 @@ WRITE_ONLY	./src/file.h	/^    WRITE_ONLY,$/;"	e	enum:__anonc589fb8f0103
 _CRT_SECURE_NO_WARNINGS	./src/bstrlib.c	/^# define _CRT_SECURE_NO_WARNINGS$/;"	d	file:
 _DArray_h	./src/darray.h	/^#define _DArray_h$/;"	d
 _GNU_SOURCE	./tests/Solution/logfind2.c	/^#define _GNU_SOURCE /;"	d	file:
+__anon33a770240108	./src/directory.h	/^typedef struct{$/;"	s
 __anonc589fb8f0103	./src/file.h	/^typedef enum {$/;"	g
 __anonc589fb8f0208	./src/file.h	/^typedef struct{$/;"	s
 __anonc589fb8f0308	./src/file.h	/^typedef struct{$/;"	s
@@ -373,7 +368,7 @@ clean_errno	./tests/Test/1 - Checking for arguments/dbg.h	/^#define clean_errno(
 clean_errno	./tests/Test/2 - Opening files/dbg.h	/^#define clean_errno(/;"	d
 clean_errno	./tests/Test/3  - Searching for data within a file/dbg.h	/^#define clean_errno(/;"	d
 cleanl	./Makefile	/^cleanl:$/;"	t
-cleanw	./Makefile	/^cleanw:$/;"	t
+cleanw	./Makefile	/^cleanw: 	$/;"	t
 compilel	./Makefile	/^compilel: CFLAGS+=$(SANITIZEL)$/;"	t
 compilel	./Makefile	/^compilel: src\/path.h src\/file.h $(OBJ)$/;"	t
 compilew	./Makefile	/^compilew: CFLAGS+=$(SANITIZEW)$/;"	t
@@ -384,7 +379,7 @@ content	./src/bstrlib.c	/^struct charField { unsigned char content[CFCLEN]; };$/
 contents	./src/darray.h	/^	void** contents; \/\/ the data of the array itself will be stored here$/;"	m	struct:DArray	typeref:typename:void **
 cstr2bstr	./src/bstrlib.h	/^#define cstr2bstr /;"	d
 cstr2tbstr	./src/bstrlib.h	/^#define cstr2tbstr /;"	d
-current_line	./src/file.h	/^    Line current_line;$/;"	m	struct:__anonc589fb8f0308	typeref:typename:Line
+current_line	./src/file.h	/^    Line *current_line;$/;"	m	struct:__anonc589fb8f0308	typeref:typename:Line *
 data	./src/bstrlib.h	/^	unsigned char * data;$/;"	m	struct:tagbstring	typeref:typename:unsigned char *
 data	./src/file.h	/^    bstring data;$/;"	m	struct:__anonc589fb8f0208	typeref:typename:bstring
 dbg_h	./src/dbg.h	/^#define dbg_h \/\/ It says if not defined __dbg_h_/;"	d
@@ -398,9 +393,10 @@ debug	./tests/Test/2 - Opening files/dbg.h	/^#define debug(/;"	d
 debug	./tests/Test/2 - Opening files/dbg.h	/^#define debug(M, ...) \/\/ Here in case of NDEBUG the debug /;"	d
 debug	./tests/Test/3  - Searching for data within a file/dbg.h	/^#define debug(/;"	d
 debug	./tests/Test/3  - Searching for data within a file/dbg.h	/^#define debug(M, ...) \/\/ Here in case of NDEBUG the debug /;"	d
+dirptr	./src/directory.h	/^    DIR *dirptr;$/;"	m	struct:__anon33a770240108	typeref:typename:DIR *
 downcase	./src/bstrlib.c	/^#define downcase(/;"	d	file:
 element_size	./src/darray.h	/^	size_t element_size; \/\/ fixed size of each element that it needs to store$/;"	m	struct:DArray	typeref:typename:size_t
-end	./src/darray.h	/^	int end; \/\/ maintains the end pointer, the point where insertion takes place$/;"	m	struct:DArray	typeref:typename:int
+end	./src/darray.h	/^	size_t end; \/\/ maintains the end pointer, the point where insertion takes place$/;"	m	struct:DArray	typeref:typename:size_t
 entry	./src/bstrlib.h	/^    bstring * entry;$/;"	m	struct:bstrList	typeref:typename:bstring *
 expand_rate	./src/darray.h	/^	size_t expand_rate; \/\/ defines how much ammount you want to grow the array after its initial /;"	m	struct:DArray	typeref:typename:size_t
 exvsnprintf	./src/bstrlib.c	/^#define exvsnprintf(/;"	d	file:
@@ -440,7 +436,7 @@ main	./tests/Solution/logfind.c	/^int main(int argc,char *argv[])$/;"	f	typeref:
 main	./tests/Solution/logfind2.c	/^int main(int argc, char *argv[])$/;"	f	typeref:typename:int
 main	./tests/Test/1 - Checking for arguments/main.c	/^int main(int argc,char *argv[])$/;"	f	typeref:typename:int
 main	./tests/Test/2 - Opening files/main.c	/^int main(int argc,char *argv[])$/;"	f	typeref:typename:int
-max	./src/darray.h	/^	int max; \/\/ holds the maximum array size and then flags to grow it once the limit is reached$/;"	m	struct:DArray	typeref:typename:int
+max	./src/darray.h	/^	size_t max; \/\/ holds the maximum array size and then flags to grow it once the limit is reach/;"	m	struct:DArray	typeref:typename:size_t
 maxBuffSz	./src/bstrlib.c	/^	int maxBuffSz;$/;"	m	struct:bStream	typeref:typename:int	file:
 mlen	./src/bstrlib.h	/^	int mlen;$/;"	m	struct:tagbstring	typeref:typename:int
 mlen	./src/bstrlib.h	/^    int qty, mlen;$/;"	m	struct:bstrList	typeref:typename:int
@@ -451,6 +447,7 @@ name	./src/path.h	/^    const char *name;$/;"	m	struct:__anondc513d9c0108	typere
 parent	./src/path.h	/^    const char *parent;$/;"	m	struct:__anondc513d9c0108	typeref:typename:const char *
 parm	./src/bstrlib.c	/^	void * parm;		\/* The stream handle for core stream *\/$/;"	m	struct:bStream	typeref:typename:void *	file:
 parse_args	./tests/Solution/logfind2.c	/^int parse_args(int *use_or, int *argc, char **argv[]) $/;"	f	typeref:typename:int
+path	./src/directory.h	/^    Path *path;$/;"	m	struct:__anon33a770240108	typeref:typename:Path *
 path	./src/path.h	/^    const char *path;$/;"	m	struct:__anondc513d9c0108	typeref:typename:const char *
 path	./src/path.py	/^path = Path('src\/')$/;"	v
 qty	./src/bstrlib.h	/^    int qty, mlen;$/;"	m	struct:bstrList	typeref:typename:int
@@ -477,6 +474,7 @@ test_file	./tests/test_path.c	/^char *test_file()$/;"	f	typeref:typename:char *
 test_readline	./tests/test_file.c	/^char *test_readline(){$/;"	f	typeref:typename:char *
 test_readlines	./tests/test_file.c	/^char *test_readlines(){$/;"	f	typeref:typename:char *
 test_reset	./tests/test_file.c	/^char *test_reset(){$/;"	f	typeref:typename:char *
+test_search	./tests/test_file.c	/^char *test_search(){$/;"	f	typeref:typename:char *
 testl	./Makefile	/^testl: $(TESTS)$/;"	t
 testl	./Makefile	/^testl: CFLAGS+=$(OBJ)$/;"	t
 tests	./run_tests.ps1	/^$tests = Get-ChildItem "tests\/*.exe" # Get all the generated executables$/;"	v
