@@ -11,8 +11,10 @@ File *File_open(const char *filepath, ACCESS_MODE mode){
     
     temp->file = Path_open(filepath);
     check(temp->file != NULL, "Failed to open file!");
-
-    temp->fileptr = fopen(filepath, "r+");
+    
+    // Opening in binary to mode for better compatibility between
+    // windows and linux such that \r\n and \n are equivalent
+    temp->fileptr = fopen(filepath, "rb");
     check(temp->fileptr != NULL, "Failed to open file!");
     
     temp->current_line = malloc(sizeof(Line));
@@ -34,14 +36,11 @@ int File_readline(File *file){
     check(file->fileptr != NULL, "No file opened!");
 
     size_t line_len = 0; 
-    //unsigned char c = '\0';
-    //int c = 0;
-    signed char c = '\0';
-    while(!feof(file->fileptr)){
+    unsigned char c = '\0';
 
+    while(!feof(file->fileptr)){
         c = fgetc(file->fileptr);
         line_len++;
-        
         
         if(c == '\n'){
             check(file->current_line != NULL, "");
@@ -49,7 +48,7 @@ int File_readline(File *file){
             if(file->current_line->data){
                 bdestroy(file->current_line->data);
                 file->current_line->data = NULL;
-        }
+            }
             // Allocate the line
             file->current_line->data = malloc(sizeof(struct tagbstring));
             check(file->current_line->data != NULL, "Failed to initialized line");
@@ -66,17 +65,17 @@ int File_readline(File *file){
             // fgets, if successful returns the address of the passed buffer
             check(fgets(file->current_line->data->data, line_len + 1,\
                         file->fileptr) == file->current_line->data->data, "Failed to read the line!");
-            printf("Line : %s", bdata(file->current_line->data));
 
             break;
         }
         
     }
-
+    
+    // TODO: Fix the case when the file contains only one line
     // If we are already at the end of the file don't do anything 
     if(feof(file->fileptr)){
         fprintf(stderr, "[INFO] End of File reached!\n");
-        if(file->current_line->line_no == 0){ file->current_line->line_no = 1; }
+        //if(file->current_line->line_no == 0){ file->current_line->line_no = 1; }
         return 0; // but this is not a failed state, its completely fine 
     }else{
         check(file->current_line != NULL, "");

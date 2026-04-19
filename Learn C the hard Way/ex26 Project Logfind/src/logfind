@@ -47,6 +47,8 @@ int main(int argc, char* argv[]){
 
     check(argc == 2, "Wrong Usage!");
     
+    Debug_init(NULL);
+
     bstring word = bfromcstr(argv[1]);
     check(word != NULL, "Failed to create bstring word!");
 
@@ -126,7 +128,8 @@ int main(int argc, char* argv[]){
     DArray_destroy(result);
 
     Directory_close(dir);
-
+    
+    Debug_close();
     return 0;
 error:
     return -1;

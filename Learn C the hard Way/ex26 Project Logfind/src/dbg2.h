@@ -24,37 +24,13 @@ TYPES :
 #include <errno.h>
 #include <string.h>
 
-FILE *file = NULL;
-
-static inline void Debug_init(const char *filepath){
-    #ifdef OUT
-        #define OUTPUT file
-        file = fopen(filepath,"a");
-    #else
-        #define OUTPUT stderr
-    #endif
-    
-    #if OUTPUT == 0
-        // redefine OUTPUT to point to stderr
-         fprintf(stderr, "[INFO] (%s:%d) Failed to open %s! Redirecting Output to stderr!\n",__FILE__, __LINE__, filepath);
-        #undef OUTPUT
-        #define OUTPUT stderr
-    #endif
-}
-
-static inline void Debug_close(){
-    if(file){
-        fflush(file);
-        fclose(file);
-    }
-}
 
 #ifndef NDEBUG // This statement will let us turn on/off the debugging messages as per our need 
 // This is simply means that if you have already defined the NDEBUG variable then the given statement will be executed
-#define debug(M, ...) // Here in case of NDEBUG the debug macro is empty and has no value (Check the makefile to gain info about how to define vairables while compiling)
+#define debug(M, ...) // Here in case of NDEBUG the debug macro is empty and has no value (Check the makestderr to gain info about how to define vairables while compiling)
 #else
 // However if you have not defined NDEBUG then the program is to be ran with debug messages and we define the debug macro properly
-#define debug(M, ...) fprintf(OUTPUT, "[DEBUG] %s:%d: " M "\n",__FILE__, __LINE__, ##__VA_ARGS__)
+#define debug(M, ...) fprintf(stderr, "[DEBUG] %s:%d: " M "\n",__stderr__, __LINE__, ##__VA_ARGS__)
 #endif
 
 // This macro makes use of a ternary operator(statement ? True : False)
@@ -64,19 +40,19 @@ static inline void Debug_close(){
 // This macro is used for simple logging a message to the error stream
 // As discussed earlier you can very much call other functions in the definition of the macro
 // So here we are simply calling the fprintf() function with a specific format : Syntax : fprintf(output-stream,format,arguments)
-// __FILE__ : This is pre-defined string which contains the name of the file where it is called
+// __stderr__ : This is pre-defined string which contains the name of the stderr where it is called
 // __LINE__ : This is a pre-defined variable which stores the line number where its called is used
 // ##__VA_ARGS__ : This is used to store the variable argument provided by the user replacing the '...' part of the argument and all the contents of the '...' are stored in the variable defined just in front of it
 // In this case the the variable M stores all of the data provided in __VA_ARGS__
-#define log_err(M, ...) fprintf(OUTPUT,"[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__,\
+#define log_err(M, ...) fprintf(stderr,"[ERROR] (%s:%d: errno: %s) " M "\n", __stderr__, __LINE__,\
 						clean_errno(), ##__VA_ARGS__)
 
 // This macro is exactly the same as the macro above but has a different use case as we will use this to log warnings
-#define log_warn(M, ...) fprintf(OUTPUT,"[WARN] (%s:%d: errno: %s) " M "\n",__FILE__, __LINE__,\
+#define log_warn(M, ...) fprintf(stderr,"[WARN] (%s:%d: errno: %s) " M "\n",__stderr__, __LINE__,\
 						clean_errno(), ##__VA_ARGS__)
 
 // This macro is exactly the same as the macro above but has a different use case as we will use this to log information
-#define log_info(M, ...) fprintf(OUTPUT, "[INFO] (%s:%d) " M "\n",__FILE__, __LINE__, ##__VA_ARGS__)
+#define log_info(M, ...) fprintf(stderr, "[INFO] (%s:%d) " M "\n",__stderr__, __LINE__, ##__VA_ARGS__)
 
 // Now the general case of defining a function is : 
 // 1. Do some work 2. Check for errors 3. Cleanup the resources

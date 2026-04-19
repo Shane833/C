@@ -5,7 +5,7 @@
 File *file = NULL;
 
 char *test_create(){
-    file = File_open("Makefile", READWRITE_ONLY);
+    file = File_open("tests/file.txt", READWRITE_ONLY);
     mu_assert(file != NULL, "Failed to open file!");
 
     return NULL;
@@ -20,7 +20,7 @@ char *test_readline(){
     }
     */
     mu_assert(File_readline(file) == 0, "Failed to read line!");
-    //fprintf(stderr, "%llu: %s",file->current_line->line_no, bdata(file->current_line->data));
+    fprintf(stderr, "%llu: %s",file->current_line->line_no, bdata(file->current_line->data));
 
     return NULL;
 }
@@ -53,7 +53,7 @@ char *test_search(){
     mu_assert(result != NULL, "Failed to create DArray result!");
     
     // word to be searched for
-    bstring word = bfromcstr("OBJ");
+    bstring word = bfromcstr("line");
     mu_assert(word != NULL, "Failed to create word for search!");
 
     mu_assert(File_search(file, word, result) == 0, "File Search failed!");
