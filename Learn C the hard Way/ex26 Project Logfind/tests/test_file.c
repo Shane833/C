@@ -1,5 +1,6 @@
 #include <file.h>
 #include "minunit.h"
+#undef NDEBUG
 
 File *file = NULL;
 
@@ -19,7 +20,7 @@ char *test_readline(){
     }
     */
     mu_assert(File_readline(file) == 0, "Failed to read line!");
-    printf("%llu: %s",file->current_line->line_no, bdata(file->current_line->data));
+    //fprintf(stderr, "%llu: %s",file->current_line->line_no, bdata(file->current_line->data));
 
     return NULL;
 }
@@ -38,7 +39,7 @@ char *test_readlines(){
 
     for(size_t i = 0;i < DArray_count(file->lines);i++){
         Line *line = (Line*)DArray_get(file->lines, i);
-        printf("%llu:%s",line->line_no, bdata(line->data));
+        fprintf(stderr, "%llu:%s",line->line_no, bdata(line->data));
     }
    
     return NULL;
@@ -48,7 +49,7 @@ char *test_readlines(){
 char *test_search(){
 
     // Assuming to have less than 50 instances of the word to be found initially
-    DArray *result = DArray_create(sizeof(Line), 50); 
+    DArray *result = DArray_create(sizeof(bstring), 50); 
     mu_assert(result != NULL, "Failed to create DArray result!");
     
     // word to be searched for
@@ -59,9 +60,9 @@ char *test_search(){
     
     // Print the instances if anything is found
     for(size_t i = 0;i < DArray_count(result);i++){
-        Line *line = (Line *)DArray_get(result, i);
+        bstring line = (bstring)DArray_get(result, i);
         if(line){
-            printf("%llu:%s", line->line_no, bdata(line->data));
+            fprintf(stderr, "%s", bdata(line));
         }
     }
 
@@ -69,11 +70,10 @@ char *test_search(){
     word = NULL;
 
     for(size_t i = 0;i < DArray_count(result);i++){
-        Line *line = (Line *)DArray_get(result, i);
+        bstring line = (bstring)DArray_get(result, i);
         if(line){
-            bdestroy(line->data);
-            line->data = NULL;
-            free(line);
+            bdestroy(line);
+            line= NULL;
         }
     }
 
@@ -93,10 +93,10 @@ char *all_tests(){
     mu_suite_start(); 
 
     mu_run_test(test_create);
-    //mu_run_test(test_readline);
+    mu_run_test(test_readline);
     //mu_run_test(test_reset);
     //mu_run_test(test_readlines);
-    mu_run_test(test_search);
+    //mu_run_test(test_search);
     //mu_run_test(test_readline);
     mu_run_test(test_close);
 

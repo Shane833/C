@@ -34,13 +34,15 @@ int File_readline(File *file){
     check(file->fileptr != NULL, "No file opened!");
 
     size_t line_len = 0; 
-    unsigned char c = '\0';
-
+    //unsigned char c = '\0';
+    //int c = 0;
+    signed char c = '\0';
     while(!feof(file->fileptr)){
 
         c = fgetc(file->fileptr);
         line_len++;
-
+        
+        
         if(c == '\n'){
             check(file->current_line != NULL, "");
             // Deallocate line if it has something
@@ -50,27 +52,32 @@ int File_readline(File *file){
         }
             // Allocate the line
             file->current_line->data = malloc(sizeof(struct tagbstring));
-            check_debug(file->current_line->data != NULL, "Failed to initialized line");
+            check(file->current_line->data != NULL, "Failed to initialized line");
             // Currently line_len represents index
             // we convert to actual size by adding one
             // Move back the to the start of the line
-            fseek(file->fileptr, -(line_len + 1), SEEK_CUR);
+            //fseek(file->fileptr, -(line_len + 1), SEEK_CUR);
+            fseek(file->fileptr, -(line_len), SEEK_CUR);
             // get the line
             // Allocate the line data and copy the line
             file->current_line->data->data = calloc(1, line_len + 1);
-            check_debug(file->current_line->data->data != NULL, " Failed to initialize line data");
+            check(file->current_line->data->data != NULL, " Failed to initialize line data");
             file->current_line->data->mlen = file->current_line->data->mlen = line_len; 
             // fgets, if successful returns the address of the passed buffer
             check(fgets(file->current_line->data->data, line_len + 1,\
                         file->fileptr) == file->current_line->data->data, "Failed to read the line!");
+            printf("Line : %s", bdata(file->current_line->data));
 
             break;
         }
+        
     }
+
     // If we are already at the end of the file don't do anything 
     if(feof(file->fileptr)){
         fprintf(stderr, "[INFO] End of File reached!\n");
-        return -1; // but this is not a failed state, its completely fine 
+        if(file->current_line->line_no == 0){ file->current_line->line_no = 1; }
+        return 0; // but this is not a failed state, its completely fine 
     }else{
         check(file->current_line != NULL, "");
         file->current_line->line_no++;
@@ -91,10 +98,10 @@ int File_readlines(File *file){
     check(file != NULL, "Invalid File Object!");
     // store the current position in the file
     long pos = ftell(file->fileptr);
-    check_debug(pos != -1, "Failed to get the file position!");
+    check(pos != -1, "Failed to get the file position!");
 
     // Reset the file position 
-    check_debug(fseek(file->fileptr, 0, SEEK_SET) == 0, "Failed to set the file position!");
+    check(fseek(file->fileptr, 0, SEEK_SET) == 0, "Failed to set the file position!");
     
     // Create our DArray of lines
     // Assuming initially the file to have 100 lines
@@ -112,28 +119,29 @@ int File_readlines(File *file){
         
         if(c == '\n'){
             Line *line = malloc(sizeof(Line));
-            check_debug(line != NULL, "Failed to initialize the line!");  
+            check(line != NULL, "Failed to initialize the line!");  
             
             line->data = malloc(sizeof(struct tagbstring));
-            check_debug(line->data != NULL, "Failed to initialize bstring!");
+            check(line->data != NULL, "Failed to initialize bstring!");
             
             line->data->data = calloc(1, line_len + 1);
-            check_debug(line->data->data != NULL, "Failed to initialize bstring data!");
+            check(line->data->data != NULL, "Failed to initialize bstring data!");
             line->data->slen = line->data->mlen = line_len;
             // Moving back the file pointer
-            fseek(file->fileptr, -(line_len + 1), SEEK_CUR);
-            /// fgets, if successful returns the address of the passed buffer
+            //fseek(file->fileptr, -(line_len + 1), SEEK_CUR);
+            fseek(file->fileptr, -(line_len), SEEK_CUR);
+            // fgets, if successful returns the address of the passed buffer
             check(fgets(line->data->data, line_len + 1, file->fileptr) == line->data->data, "Failed to read the line!");
 
             line->line_no = ++line_no;
-            check_debug(DArray_push(file->lines, line) == 0, "Failed to push line!");
+            check(DArray_push(file->lines, line) == 0, "Failed to push line!");
             
             line_len = 0;
         }
     }
     
     // Go back to the same file position
-    check_debug(fseek(file->fileptr, pos, SEEK_SET) == 0, "Failed to set the file position!");
+    check(fseek(file->fileptr, pos, SEEK_SET) == 0, "Failed to set the file position!");
     
     return 0;
 error:
@@ -172,15 +180,19 @@ int File_search(File *file, bstring word, DArray *result){
                 // I'll be copying the whole line hence no need to
                 // check the line again, if the word is found once
                 // then we won't be checking for multiple occurences
-                Line *found = malloc(sizeof(Line));
-                check_debug(found != NULL, "Failed to copy line!");
+                bstring found = NULL;
                 
-                found->data = bstrcpy(line->data);
-                check_debug(found->data != NULL, "Failed to copy line data!");
+                found = bformat("(%s:%llu) : %s", bdata(file->file->path), line->line_no, bdata(line->data));
+                check(found != NULL, "Failed to copy line data!");
 
-                found->line_no = line->line_no;
+                /*  
+                check(bformata(found->data)
+                check(bconcat(found->data, line->data) == BSTR_OK,"Failed to copy line data");
+                */
 
-                check_debug(DArray_push(result, found) == 0,"Failed to add line!");
+                //found->line_no = line->line_no;
+
+                check(DArray_push(result, found) == 0,"Failed to add line!");
             }
         }
     }
@@ -194,7 +206,7 @@ error:
 int File_reset(File *file){
     check(file != NULL, "Invalid File Object!");
     // Reset file position
-    check_debug(fseek(file->fileptr, 0, SEEK_SET) == 0, "Failed to set the file position!");
+    check(fseek(file->fileptr, 0, SEEK_SET) == 0, "Failed to set the file position!");
     // Reset the current line
     if(file->current_line->data){
         bdestroy(file->current_line->data);
@@ -251,7 +263,7 @@ void File_close(File *file){
             file->fileptr = NULL;
         }
         if(file->file){
-            Path_destroy(file->file);
+            Path_close(file->file);
             file->file = NULL;
         }
         if(file->lines){

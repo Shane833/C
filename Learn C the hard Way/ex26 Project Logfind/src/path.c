@@ -3,7 +3,7 @@
 #include <string.h>
 
 // Building it for setting up files for now
-static inline bstring getFileParent(const char *path){
+static bstring getFileParent(const char *path){
     bstring parent = NULL;
 
     // We can search for the first '\\' character from the last
@@ -47,16 +47,17 @@ error:
    return NULL;
 }
 
-static inline bstring getDirParent(const char *path){
+static bstring getDirParent(const char *path){
     bstring parent = NULL;
 
    char *char_ptr = strrchr(path, '\\') == NULL ? (strrchr(path, '/') \
            == NULL ? NULL : strrchr(path,'/')) : strrchr(path, '\\');
     
    if(char_ptr){
-       /* 
        if(*(char_ptr + 1) == '\0'){ // This means its still the same directory
                                     // But this would still be true for other directories too
+           // Hence we must check again
+           /*
            char *parent_ptr = calloc(1, sizeof(char) + 1);
            check(parent_ptr != NULL, "Failed to initialize parent!");
         
@@ -66,17 +67,14 @@ static inline bstring getDirParent(const char *path){
            check(parent != NULL, "Failed to initialize parent");
 
            free(parent_ptr);
-        */
+           */
+       }else{
+        parent = bfromcstr(".");
+        check(parent != NULL, "Failed to initialize parent!");
+       }
   }else{
-        char *parent_ptr = calloc(1, sizeof(char) + 1);
-        check(parent_ptr != NULL, "Failed to initialize parent!");
-        
-        strcpy(parent_ptr,".");
-         
-        parent = bfromcstr(parent_ptr);
-        check(parent != NULL, "Failed to initialize parent");
-
-        free(parent_ptr);
+        parent = bfromcstr(".");
+        check(parent != NULL, "Failed to initialize parent!");
   }
 
    return parent;
@@ -85,52 +83,71 @@ error:
    parent = NULL;
 }
 
-static inline DArray *getParts(const char *path){
-  char *path_cpy = strdup(path);
-  check(path_cpy != NULL, "Failed to duplicate string!");
-
-  
+/*
+inline int getParts(const char *path, DArray *parts){
+    //char *path_cpy = strdup(path);
+    //check(path_cpy != NULL, "Failed to duplicate string!");
 }
 
-static inline bstring getFileStem(const char *path){
+inline bstring getFileStem(const char *path){
 
 error:
     return NULL;
 }
 
-static inline bstring getDirStem(const char *path){
+inline bstring getDirStem(const char *path){
 
 error:
     return NULL;
 }
+*/
 
-static inline bstring getFileSuffix(const char *path){
+inline bstring Path_getFileSuffix(const char *filepath){
+    check(filepath != NULL, "Invalid filepath!");
+    check(Path_isFile(filepath) != NULL, "File does not exist!");
     
+    bstring suffix = NULL;
+
+   char *dot = strrchr(filepath, '.');
+   if(dot){
+        suffix = bfromcstr(dot);
+        check(suffix != NULL, "Failed to get the suffix!");
+   }else{
+        suffix = bfromcstr(" ");
+        check(suffix != NULL, "Failed to get the suffix!");
+   }
+
+   return suffix;
+error:
+    return NULL;
 }
 
 static inline void setupDirectory(Path *temp, const char *path){
     DIR *dir = opendir(path);
     check(dir != NULL, "Failed to open path!");
 
-    temp->name = bfromcstr(path);
-    check_debug(temp->name != NULL, "Failed to create name bstring!");
-
     temp->path = bfromcstr(dir->dd_name);
     check_debug(temp->path != NULL, "Failed to create path bstring!");
     
+    closedir(dir);
+
     // Cleanup the asterisk - slen is the actual length of the string
     check_debug(bdelete(temp->path, temp->path->slen - 1, 1) == BSTR_OK,"Failed to modify the path string!");
-
-    closedir(dir);
+    
+    // Gettings its parent
+    temp->parent = getDirParent(path);
+    check(temp->parent != NULL, "Failed to create parent bstring!");
 
 error:
     return;
 }
 
 static inline void setupFile(Path *temp, const char *path){
-    temp->_parent = getParent(path);
-    check(temp->_parent != NULL, "Failed to find parent");
-    temp->parent = bdata(temp->_parent);
+    temp->parent = getFileParent(path);
+    check(temp->parent != NULL, "Failed to find parent");
+    
+    temp->path = bfromcstr(path);
+    check(temp->path != NULL, "Failed to set path!");
 
 error:
     return;
@@ -203,12 +220,12 @@ error:
 }
 
 // Destroying path object
-void Path_destroy(Path *path){
+void Path_close(Path *path){
     if(path){
        if(path->path) bdestroy(path->path);
-       if(path->name) bdestroy(path->name);
        if(path->stem) bdestroy(path->stem);
        if(path->suffix) bdestroy(path->suffix);
+       if(path->parent) bdestroy(path->parent);
 
        free(path); 
     }                                             

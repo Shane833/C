@@ -8,6 +8,11 @@ OBJ = $(patsubst %.c,%.o, $(SRC))
 TEST_SRC = $(wildcard tests/*.c)
 TESTS = $(patsubst %.c,%, $(TEST_SRC))
 
+TARGET = logfind
+
+logfind: compilew
+	$(CC) $(CFLAGS) $(SANITIZEW) $(OBJ) -o $(TARGET)
+
 windows: compilew testw
 
 linux: compilel testl
@@ -27,8 +32,8 @@ testl: $(TESTS)
 	./run_tests.sh
 
 cleanw: 	
-	-del /q src\*.o
-	-del /q tests\*.exe
+	-rm src/*.o
+	-rm tests/*.exe
 
 cleanl:
 	-rm $(OBJ)

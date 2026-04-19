@@ -22,6 +22,8 @@
 !_TAG_KIND_DESCRIPTION!C	t,typedef	/typedefs/
 !_TAG_KIND_DESCRIPTION!C	u,union	/union names/
 !_TAG_KIND_DESCRIPTION!C	v,variable	/variable definitions/
+!_TAG_KIND_DESCRIPTION!C++	M,module	/modules/
+!_TAG_KIND_DESCRIPTION!C++	P,partition	/partitions/
 !_TAG_KIND_DESCRIPTION!C++	c,class	/classes/
 !_TAG_KIND_DESCRIPTION!C++	d,macro	/macro definitions/
 !_TAG_KIND_DESCRIPTION!C++	e,enumerator	/enumerators (values inside an enumeration)/
@@ -46,6 +48,7 @@
 !_TAG_KIND_DESCRIPTION!Markdown	t,subsubsection	/level 3 sections/
 !_TAG_KIND_DESCRIPTION!Markdown	u,l5subsection	/level 5 sections/
 !_TAG_KIND_DESCRIPTION!PowerShell	c,class	/classes/
+!_TAG_KIND_DESCRIPTION!PowerShell	e,enumlabel	/enum labels/
 !_TAG_KIND_DESCRIPTION!PowerShell	f,function	/functions/
 !_TAG_KIND_DESCRIPTION!PowerShell	g,enum	/enum names/
 !_TAG_KIND_DESCRIPTION!PowerShell	i,filter	/filter/
@@ -64,30 +67,37 @@
 !_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
-!_TAG_OUTPUT_VERSION	0.0	/current.age/
+!_TAG_OUTPUT_VERSION	1.1	/current.age/
 !_TAG_PARSER_VERSION!C	1.1	/current.age/
-!_TAG_PARSER_VERSION!C++	1.1	/current.age/
-!_TAG_PARSER_VERSION!Make	0.0	/current.age/
+!_TAG_PARSER_VERSION!C++	2.2	/current.age/
+!_TAG_PARSER_VERSION!Make	1.1	/current.age/
 !_TAG_PARSER_VERSION!Markdown	1.1	/current.age/
-!_TAG_PARSER_VERSION!PowerShell	0.0	/current.age/
-!_TAG_PARSER_VERSION!Python	0.0	/current.age/
+!_TAG_PARSER_VERSION!PowerShell	1.1	/current.age/
+!_TAG_PARSER_VERSION!Python	1.1	/current.age/
 !_TAG_PARSER_VERSION!Sh	0.0	/current.age/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	E:/Shane/C/GitHub/C/Learn C the hard Way/ex26 Project Logfind/	//
+!_TAG_PROC_CWD	D:/Shane/C/GitHub/C/Learn C the hard Way/ex26 Project Logfind/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	6.1.0	/v6.1.0/
+!_TAG_PROGRAM_VERSION	6.2.1	//
 !_TAG_ROLE_DESCRIPTION!C!function	foreigndecl	/declared in foreign languages/
 !_TAG_ROLE_DESCRIPTION!C!header	local	/local header/
 !_TAG_ROLE_DESCRIPTION!C!header	system	/system header/
 !_TAG_ROLE_DESCRIPTION!C!macro	undef	/undefined/
 !_TAG_ROLE_DESCRIPTION!C!struct	foreigndecl	/declared in foreign languages/
+!_TAG_ROLE_DESCRIPTION!C++!header	exported	/exported with "exported imported ..."/
+!_TAG_ROLE_DESCRIPTION!C++!header	imported	/imported with "imported ..."/
 !_TAG_ROLE_DESCRIPTION!C++!header	local	/local header/
 !_TAG_ROLE_DESCRIPTION!C++!header	system	/system header/
 !_TAG_ROLE_DESCRIPTION!C++!macro	undef	/undefined/
+!_TAG_ROLE_DESCRIPTION!C++!module	imported	/imported with "imported ..."/
+!_TAG_ROLE_DESCRIPTION!C++!module	partOwner	/used for specifying a partition/
+!_TAG_ROLE_DESCRIPTION!C++!partition	imported	/imported with "imported ..."/
 !_TAG_ROLE_DESCRIPTION!Make!makefile	included	/included/
 !_TAG_ROLE_DESCRIPTION!Make!makefile	optional	/optionally included/
+!_TAG_ROLE_DESCRIPTION!Python!function	entryPoint	/specified as an entry point/
+!_TAG_ROLE_DESCRIPTION!Python!module	entryPoint	/specified as a module of an entry point/
 !_TAG_ROLE_DESCRIPTION!Python!module	imported	/imported modules/
 !_TAG_ROLE_DESCRIPTION!Python!module	indirectlyImported	/module imported in alternative name/
 !_TAG_ROLE_DESCRIPTION!Python!module	namespace	/namespace from where classes\/variables\/functions are imported/
@@ -137,6 +147,9 @@ DArray_set	./src/darray.h	/^static inline void DArray_set(DArray* array, int i, 
 DEFAULT_EXPAND_RATE	./src/darray.h	/^#define DEFAULT_EXPAND_RATE /;"	d
 DIRECTORY_H	./src/directory.h	/^#define DIRECTORY_H$/;"	d
 Directory	./src/directory.h	/^}Directory;$/;"	t	typeref:struct:__anon33a770240108
+Directory_close	./src/directory.c	/^void Directory_close(Directory *dir){$/;"	f	typeref:typename:void
+Directory_getDirEnt	./src/directory.c	/^inline int Directory_getDirEnt(Directory *dir, DArray *entries){$/;"	f	typeref:typename:int
+Directory_open	./src/directory.c	/^Directory* Directory_open(const char *dirpath){$/;"	f	typeref:typename:Directory *
 FILE_H	./src/file.h	/^#define FILE_H$/;"	d
 File	./src/file.h	/^}File;$/;"	t	typeref:struct:__anonc589fb8f0308
 File_close	./src/file.c	/^void File_close(File *file){$/;"	f	typeref:typename:void
@@ -158,11 +171,11 @@ OBJ	./Makefile	/^OBJ = $(patsubst %.c,%.o, $(SRC))$/;"	m
 PATHTYPE	./src/path.c	/^#define PATHTYPE(/;"	d	file:
 PATH_H	./src/path.h	/^#define PATH_H$/;"	d
 Path	./src/path.h	/^}Path;$/;"	t	typeref:struct:__anondc513d9c0108
-Path_destroy	./src/path.c	/^void Path_destroy(Path *path){$/;"	f	typeref:typename:void
+Path_close	./src/path.c	/^void Path_close(Path *path){$/;"	f	typeref:typename:void
 Path_exists	./src/path.c	/^inline bool Path_exists(const char *path){$/;"	f	typeref:typename:bool
+Path_getFileSuffix	./src/path.c	/^inline bstring Path_getFileSuffix(const char *filepath){$/;"	f	typeref:typename:bstring
 Path_isDir	./src/path.c	/^inline bool Path_isDir(const char *dirpath){$/;"	f	typeref:typename:bool
 Path_isFile	./src/path.c	/^inline bool Path_isFile(const char *filepath){$/;"	f	typeref:typename:bool
-Path_listDirEnt	./src/path.c	/^inline void Path_listDirEnt(const char *dirpath){$/;"	f	typeref:typename:void
 Path_open	./src/path.c	/^Path *Path_open(const char *path){$/;"	f	typeref:typename:Path *
 Path_type	./src/path.c	/^inline char *Path_type(const char *path){$/;"	f	typeref:typename:char *
 READWRITE_ONLY	./src/file.h	/^    READWRITE_ONLY,$/;"	e	enum:__anonc589fb8f0103
@@ -172,6 +185,7 @@ SANITIZEL	./Makefile	/^SANITIZEL=-fsanitize=address$/;"	m
 SANITIZEW	./Makefile	/^SANITIZEW=-fsanitize=undefined -fsanitize-trap$/;"	m
 SRC	./Makefile	/^SRC = $(wildcard src\/*.c)$/;"	m
 START_VSNBUFF	./src/bstrlib.c	/^#define START_VSNBUFF /;"	d	file:
+TARGET	./Makefile	/^TARGET = logfind$/;"	m
 TESTS	./Makefile	/^TESTS = $(patsubst %.c,%, $(TEST_SRC))$/;"	m
 TEST_SRC	./Makefile	/^TEST_SRC = $(wildcard tests\/*.c)$/;"	m
 WRITE_ONLY	./src/file.h	/^    WRITE_ONLY,$/;"	e	enum:__anonc589fb8f0103
@@ -188,15 +202,11 @@ __dbg_h__	./tests/Test/1 - Checking for arguments/dbg.h	/^#define __dbg_h__ \/\/
 __dbg_h__	./tests/Test/2 - Opening files/dbg.h	/^#define __dbg_h__ \/\/ It says if not defined __dbg_h__ /;"	d
 __dbg_h__	./tests/Test/3  - Searching for data within a file/dbg.h	/^#define __dbg_h__ \/\/ It says if not defined __dbg_h__ /;"	d
 _minunit_h	./tests/minunit.h	/^#define _minunit_h$/;"	d
-_name	./src/path.h	/^    bstring _name;$/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
-_parent	./src/path.h	/^    bstring _parent; $/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
-_path	./src/path.h	/^    bstring _path; \/\/ original path passed as argument$/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
-_stem	./src/path.h	/^    bstring _stem;$/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
-_suffix	./src/path.h	/^    bstring _suffix;$/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
 all	./tests/Solution/Makefile	/^all:$/;"	t
 all	./tests/Test/1 - Checking for arguments/Makefile	/^all: main$/;"	t
 all	./tests/Test/2 - Opening files/Makefile	/^all: main$/;"	t
 all	./tests/Test/3  - Searching for data within a file/Makefile	/^all: main$/;"	t
+all_tests	./tests/test_directory.c	/^char *all_tests(){$/;"	f	typeref:typename:char *
 all_tests	./tests/test_file.c	/^char *all_tests(){$/;"	f	typeref:typename:char *
 all_tests	./tests/test_path.c	/^char *all_tests(){$/;"	f	typeref:typename:char *
 b	./src/bstrlib.c	/^	bstring b;$/;"	m	struct:genBstrList	typeref:typename:bstring	file:
@@ -393,6 +403,9 @@ debug	./tests/Test/2 - Opening files/dbg.h	/^#define debug(/;"	d
 debug	./tests/Test/2 - Opening files/dbg.h	/^#define debug(M, ...) \/\/ Here in case of NDEBUG the debug /;"	d
 debug	./tests/Test/3  - Searching for data within a file/dbg.h	/^#define debug(/;"	d
 debug	./tests/Test/3  - Searching for data within a file/dbg.h	/^#define debug(M, ...) \/\/ Here in case of NDEBUG the debug /;"	d
+dir	./src/directory.h	/^    Path *dir;$/;"	m	struct:__anon33a770240108	typeref:typename:Path *
+dir	./tests/test_directory.c	/^Directory *dir = NULL;$/;"	v	typeref:typename:Directory *
+dir	./tests/test_path.c	/^Path *dir = NULL;$/;"	v	typeref:typename:Path *
 dirptr	./src/directory.h	/^    DIR *dirptr;$/;"	m	struct:__anon33a770240108	typeref:typename:DIR *
 downcase	./src/bstrlib.c	/^#define downcase(/;"	d	file:
 element_size	./src/darray.h	/^	size_t element_size; \/\/ fixed size of each element that it needs to store$/;"	m	struct:DArray	typeref:typename:size_t
@@ -402,11 +415,13 @@ expand_rate	./src/darray.h	/^	size_t expand_rate; \/\/ defines how much ammount 
 exvsnprintf	./src/bstrlib.c	/^#define exvsnprintf(/;"	d	file:
 file	./src/file.h	/^    Path *file; $/;"	m	struct:__anonc589fb8f0308	typeref:typename:Path *
 file	./tests/test_file.c	/^File *file = NULL;$/;"	v	typeref:typename:File *
+file	./tests/test_path.c	/^Path *file = NULL;$/;"	v	typeref:typename:Path *
 fileptr	./src/file.h	/^    FILE *fileptr;$/;"	m	struct:__anonc589fb8f0308	typeref:typename:FILE *
 findreplaceengine	./src/bstrlib.c	/^static int findreplaceengine (bstring b, const_bstring find,$/;"	f	typeref:typename:int	file:
 found_it	./tests/Solution/logfind2.c	/^int found_it(int use_or, int found_count, int search_len)$/;"	f	typeref:typename:int
 genBstrList	./src/bstrlib.c	/^struct genBstrList {$/;"	s	file:
-getParent	./src/path.c	/^static inline bstring getParent(const char *path){$/;"	f	typeref:typename:bstring	file:
+getDirParent	./src/path.c	/^static bstring getDirParent(const char *path){$/;"	f	typeref:typename:bstring	file:
+getFileParent	./src/path.c	/^static bstring getFileParent(const char *path){$/;"	f	typeref:typename:bstring	file:
 instr_fnptr	./src/bstrlib.c	/^typedef int (*instr_fnptr) (const_bstring s1, int pos, const_bstring s2);$/;"	t	typeref:typename:int (*)(const_bstring s1,int pos,const_bstring s2)	file:
 invertCharField	./src/bstrlib.c	/^static void invertCharField (struct charField * cf) {$/;"	f	typeref:typename:void	file:
 isEOF	./src/bstrlib.c	/^	int isEOF;			\/* track file's EOF state *\/$/;"	m	struct:bStream	typeref:typename:int	file:
@@ -432,6 +447,7 @@ log_warn	./tests/Solution/dbg.h	/^#define log_warn(/;"	d
 log_warn	./tests/Test/1 - Checking for arguments/dbg.h	/^#define log_warn(/;"	d
 log_warn	./tests/Test/2 - Opening files/dbg.h	/^#define log_warn(/;"	d
 log_warn	./tests/Test/3  - Searching for data within a file/dbg.h	/^#define log_warn(/;"	d
+main	./src/logfind.c	/^int main(int argc, char* argv[]){$/;"	f	typeref:typename:int
 main	./tests/Solution/logfind.c	/^int main(int argc,char *argv[])$/;"	f	typeref:typename:int
 main	./tests/Solution/logfind2.c	/^int main(int argc, char *argv[])$/;"	f	typeref:typename:int
 main	./tests/Test/1 - Checking for arguments/main.c	/^int main(int argc,char *argv[])$/;"	f	typeref:typename:int
@@ -443,12 +459,10 @@ mlen	./src/bstrlib.h	/^    int qty, mlen;$/;"	m	struct:bstrList	typeref:typename
 mu_assert	./tests/minunit.h	/^#define mu_assert(/;"	d
 mu_run_test	./tests/minunit.h	/^#define mu_run_test(/;"	d
 mu_suite_start	./tests/minunit.h	/^#define mu_suite_start(/;"	d
-name	./src/path.h	/^    const char *name;$/;"	m	struct:__anondc513d9c0108	typeref:typename:const char *
-parent	./src/path.h	/^    const char *parent;$/;"	m	struct:__anondc513d9c0108	typeref:typename:const char *
+parent	./src/path.h	/^    bstring parent; \/\/ parent of the file\/dir$/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
 parm	./src/bstrlib.c	/^	void * parm;		\/* The stream handle for core stream *\/$/;"	m	struct:bStream	typeref:typename:void *	file:
 parse_args	./tests/Solution/logfind2.c	/^int parse_args(int *use_or, int *argc, char **argv[]) $/;"	f	typeref:typename:int
-path	./src/directory.h	/^    Path *path;$/;"	m	struct:__anon33a770240108	typeref:typename:Path *
-path	./src/path.h	/^    const char *path;$/;"	m	struct:__anondc513d9c0108	typeref:typename:const char *
+path	./src/path.h	/^    bstring path; \/\/ absolute path of the provided file\/dir$/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
 path	./src/path.py	/^path = Path('src\/')$/;"	v
 qty	./src/bstrlib.h	/^    int qty, mlen;$/;"	m	struct:bstrList	typeref:typename:int
 readFnPtr	./src/bstrlib.c	/^	bNread readFnPtr;	\/* fread compatible fnptr for core stream *\/$/;"	m	struct:bStream	typeref:typename:bNread	file:
@@ -464,17 +478,23 @@ setupDirectory	./src/path.c	/^static inline void setupDirectory(Path *temp, cons
 setupFile	./src/path.c	/^static inline void setupFile(Path *temp, const char *path){$/;"	f	typeref:typename:void	file:
 slen	./src/bstrlib.h	/^	int slen;$/;"	m	struct:tagbstring	typeref:typename:int
 snapUpSize	./src/bstrlib.c	/^static int snapUpSize (int i) {$/;"	f	typeref:typename:int	file:
-stem	./src/path.h	/^    const char *stem;$/;"	m	struct:__anondc513d9c0108	typeref:typename:const char *
-suffix	./src/path.h	/^    const char *suffix;$/;"	m	struct:__anondc513d9c0108	typeref:typename:const char *
+stem	./src/path.h	/^    bstring stem; \/\/ name of the file or directory$/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
+suffix	./src/path.h	/^    bstring suffix; \/\/ extension if its a file$/;"	m	struct:__anondc513d9c0108	typeref:typename:bstring
 tagbstring	./src/bstrlib.h	/^struct tagbstring {$/;"	s
+target	./Makefile	/^target: compilew$/;"	t
 testInCharField	./src/bstrlib.c	/^#define testInCharField(/;"	d	file:
 test_close	./tests/test_file.c	/^char *test_close(){$/;"	f	typeref:typename:char *
+test_close	./tests/test_path.c	/^char *test_close(){$/;"	f	typeref:typename:char *
 test_create	./tests/test_file.c	/^char *test_create(){$/;"	f	typeref:typename:char *
-test_file	./tests/test_path.c	/^char *test_file()$/;"	f	typeref:typename:char *
+test_dirEnt	./tests/test_directory.c	/^char *test_dirEnt(){$/;"	f	typeref:typename:char *
+test_open	./tests/test_path.c	/^char *test_open()$/;"	f	typeref:typename:char *
+test_parent	./tests/test_path.c	/^char *test_parent(){$/;"	f	typeref:typename:char *
+test_path	./tests/test_path.c	/^char *test_path(){$/;"	f	typeref:typename:char *
 test_readline	./tests/test_file.c	/^char *test_readline(){$/;"	f	typeref:typename:char *
 test_readlines	./tests/test_file.c	/^char *test_readlines(){$/;"	f	typeref:typename:char *
 test_reset	./tests/test_file.c	/^char *test_reset(){$/;"	f	typeref:typename:char *
 test_search	./tests/test_file.c	/^char *test_search(){$/;"	f	typeref:typename:char *
+test_suffix	./tests/test_path.c	/^char *test_suffix(){$/;"	f	typeref:typename:char *
 testl	./Makefile	/^testl: $(TESTS)$/;"	t
 testl	./Makefile	/^testl: CFLAGS+=$(OBJ)$/;"	t
 tests	./run_tests.ps1	/^$tests = Get-ChildItem "tests\/*.exe" # Get all the generated executables$/;"	v
