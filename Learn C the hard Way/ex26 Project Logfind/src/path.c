@@ -104,7 +104,6 @@ error:
 
 inline bstring Path_getFileSuffix(const char *filepath){
     check(filepath != NULL, "Invalid filepath!");
-    check(Path_isFile(filepath) != NULL, "File does not exist!");
     
     bstring suffix = NULL;
 

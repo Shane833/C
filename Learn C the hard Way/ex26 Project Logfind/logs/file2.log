@@ -1,0 +1,29 @@
+[DEBUG] (src/path.c:182) Unable to open file!
+[ERROR] (src/path.c:107: errno: None) File does not exist!
+[DEBUG] (src/path.c:182) Unable to open file!
+[ERROR] (src/path.c:107: errno: None) File does not exist!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:182) Unable to open file!
+[ERROR] (src/path.c:107: errno: None) File does not exist!
+[DEBUG] (src/path.c:182) Unable to open file!
+[ERROR] (src/path.c:107: errno: None) File does not exist!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:182) Unable to open file!
+[ERROR] (src/path.c:107: errno: None) File does not exist!
+[DEBUG] (src/path.c:182) Unable to open file!
+[ERROR] (src/path.c:107: errno: None) File does not exist!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:182) Unable to open file!
+[ERROR] (src/path.c:107: errno: None) File does not exist!
+[DEBUG] (src/path.c:182) Unable to open file!
+[ERROR] (src/path.c:107: errno: None) File does not exist!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[DEBUG] (src/path.c:195) Unable to open directory!
+[ERROR] (src/logfind.c:48: errno: None) Wrong Usage!

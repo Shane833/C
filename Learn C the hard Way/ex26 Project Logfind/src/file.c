@@ -163,11 +163,6 @@ int File_search(File *file, bstring word, DArray *result){
     check(word->slen >= 0 && word->mlen >= word->slen && word->data != NULL, "Invalid word data!");
     check(result != NULL, "Invalid result DArray!");
         
-    // TODO : Another Idea is to have DArray of DArrays in which
-    // each of the member DArray corresponds to a file
-    // TODO : Or simply this is a DArray of bstrings with
-    // the format [file_name:line_no:col_no -> found_word]
-
     // Read all the lines
     check(File_readlines(file) == 0, "Failed to read lines!");
     // Go through each of the lines and search for the word
@@ -184,18 +179,10 @@ int File_search(File *file, bstring word, DArray *result){
                 found = bformat("(%s:%llu) : %s", bdata(file->file->path), line->line_no, bdata(line->data));
                 check(found != NULL, "Failed to copy line data!");
 
-                /*  
-                check(bformata(found->data)
-                check(bconcat(found->data, line->data) == BSTR_OK,"Failed to copy line data");
-                */
-
-                //found->line_no = line->line_no;
-
                 check(DArray_push(result, found) == 0,"Failed to add line!");
             }
         }
     }
-
 
    return 0;
 error:
