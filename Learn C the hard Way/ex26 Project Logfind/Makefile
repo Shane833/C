@@ -1,4 +1,4 @@
-CFLAGS=-Wall -Wextra -Wpedantic -ggdb -O2 -std=c23 -Isrc -DNDEBUG
+CFLAGS=-Wall -Wextra -Wpedantic -ggdb -O2 -std=c23 -Isrc -DNDEBUG -DDEBUG_FILE
 SANITIZEW=-fsanitize=undefined -fsanitize-trap
 SANITIZEL=-fsanitize=address
 

@@ -1,0 +1,5 @@
+[DEBUG] (main.c:9) Hello there!
+[ERROR] (main.c:11: errno: None) This is an Error
+[WARN] (main.c:13: errno: None) This is a Warning
+[INFO] (main.c:15: errno: None) This is an Info
+[DEBUG] (main.c:24) Wrong Result
