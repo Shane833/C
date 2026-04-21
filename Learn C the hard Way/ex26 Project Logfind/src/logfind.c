@@ -5,15 +5,17 @@
 
 int main(int argc, char* argv[]){
 
-    check(argc != 1, "Wrong Usage!");
-    
-    bstring word = bfromcstr(argv[1]);
-    check(word != NULL, "Failed to create bstring word!");
-
+    if(argc == 1){ 
+         fprintf(stderr, "[ERROR] Wrong Usage! logfind [word(s)]\n");
+         exit(EXIT_FAILURE);
+    }
     // The location to look for log files will be fixed
     Directory *dir = Directory_open("logs");
     check(dir != NULL, "Failed to create directory!");
-
+ 
+    bstring word = bfromcstr(argv[1]);
+    check(word != NULL, "Failed to create bstring word!");
+   
     // Read the entries
     DArray *entries = DArray_create(sizeof(bstring), 20);
     check(entries != NULL, "Failed to create entries DArray!");
@@ -65,7 +67,6 @@ int main(int argc, char* argv[]){
             printf("%s", bdata(data));
         }
     }
-
     
    // Closing and freeing resources
     bdestroy(word); 
