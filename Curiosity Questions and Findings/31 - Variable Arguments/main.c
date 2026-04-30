@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#define VAR(...) printf(__VA_ARGS__)
+
 void varList(const char *fmt, ...){
    va_list argp;
    va_start(argp, fmt);
@@ -14,5 +16,8 @@ void varList(const char *fmt, ...){
 int main(){
     int a = 5;
     varList("Hello there!");
+
+    VAR("Hello %d", 2);
+
     return 0;
 }

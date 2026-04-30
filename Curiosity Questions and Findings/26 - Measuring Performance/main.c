@@ -1,7 +1,8 @@
-#include <time.h>
+//#include <time.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
+#include "profile.h"
 
 bool isPerfectSquare_brute(int number){
     for(int i = 1; i <= number / 2;i++){
@@ -37,8 +38,9 @@ bool isPerfectSquare_optimized(int number){
 }
 
 int main(){
-    int num = 4'42'49'104;
+    int num = 4'42'49'104; // We can separate the digits with apostrophe character
     
+    /*
     struct timespec start, end; // timespec contains measurements of time in seconds and nanoseconds
 
     clock_gettime(CLOCK_REALTIME, &start); // captures the start time
@@ -56,5 +58,7 @@ int main(){
     printf("OPTIMIZED : %d a perfect square ? -> %s\n", num, (result == 1 ? "True" : "False"));
 
     clock_gettime(CLOCK_REALTIME, &end);
-    
+   */
+    measure_runtime(isPerfectSquare_brute, num);
+    measure_runtime(isPerfectSquare_optimized, num);
 }
